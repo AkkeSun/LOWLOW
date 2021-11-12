@@ -8,9 +8,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -35,7 +37,10 @@ public class MemberDto {
     private String belong;
 
     @NotNull(message = "등록일은 비워둘 수 없습니다")
-    private Date regiDate;
+    private LocalDate regiDate;
+
+    @Min(value=1, message = "또래(생년)는 비워둘수 없습니다")
+    private int birthYear;
 
     @NotNull(message = "성별은 비워둘 수 없습니다")
     private Gender gender;

@@ -1,5 +1,6 @@
 package church.lowlow.rest_api.member.controller;
 
+import church.lowlow.rest_api.member.db.MemberValidation;
 import church.lowlow.rest_api.member.repository.MemberRepository;
 import church.lowlow.rest_api.member.resource.MemberErrorsResource;
 import church.lowlow.rest_api.member.resource.MemberResource;
@@ -31,6 +32,9 @@ public class MemberController {
     private MemberRepository repository;
 
     @Autowired
+    private MemberValidation validation;
+
+    @Autowired
     private  ModelMapper modelMapper;
 
     /**
@@ -40,6 +44,9 @@ public class MemberController {
     public ResponseEntity createMember(@RequestBody @Valid MemberDto dto,
                                        Errors errors){
         // check
+        if(errors.hasErrors())
+            return badRequest().body(new MemberErrorsResource(errors));
+        validation.validate(dto, errors);
         if(errors.hasErrors())
             return badRequest().body(new MemberErrorsResource(errors));
 

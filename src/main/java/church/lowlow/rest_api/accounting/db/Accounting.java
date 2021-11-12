@@ -1,11 +1,13 @@
 package church.lowlow.rest_api.accounting.db;
 
+import church.lowlow.rest_api.common.converter.LocalDateConverter;
 import church.lowlow.rest_api.common.entity.BaseTimeEntity;
 import church.lowlow.rest_api.common.entity.Writer;
 import church.lowlow.rest_api.member.db.Member;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -13,7 +15,7 @@ import java.util.Date;
  *
  * @Column
  * id 고유 식별자
- * person 이름
+ * member 헌금한 사람
  * money 금액
  * offeringKind 종류
  * offeringDate 헌금일
@@ -23,23 +25,24 @@ import java.util.Date;
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 @ToString @EqualsAndHashCode(of = "id")
-@NamedEntityGraph(name = "personGet", attributeNodes = @NamedAttributeNode("person"))
 public class Accounting extends BaseTimeEntity {
 
     @Id @GeneratedValue
     private Integer id;
 
     @ManyToOne
-    private Member person;
+    private Member member;
 
     private int money;
 
     private OfferingKind offeringKind;
-    
-    private Date offeringDate;
+
+    @Convert(converter = LocalDateConverter.class)
+    private LocalDate offeringDate;
 
     private String note;
 
     @Embedded
     private Writer writer;
+
 }

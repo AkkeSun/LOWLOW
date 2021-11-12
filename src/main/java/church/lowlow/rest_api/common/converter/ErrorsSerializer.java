@@ -1,4 +1,4 @@
-package church.lowlow.rest_api.common.util;
+package church.lowlow.rest_api.common.converter;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;

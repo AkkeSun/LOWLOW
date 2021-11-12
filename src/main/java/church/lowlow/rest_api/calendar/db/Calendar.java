@@ -1,10 +1,12 @@
 package church.lowlow.rest_api.calendar.db;
 
+import church.lowlow.rest_api.common.converter.LocalDateConverter;
 import church.lowlow.rest_api.common.entity.BaseTimeEntity;
 import church.lowlow.rest_api.common.entity.Writer;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -29,8 +31,10 @@ public class Calendar extends BaseTimeEntity {
 
     private String content;
 
-    private Date startDate;
+    @Convert(converter = LocalDateConverter.class)
+    private LocalDate startDate;
 
-    private Date endDate;
+    @Convert(converter = LocalDateConverter.class)
+    private LocalDate endDate;
 
 }

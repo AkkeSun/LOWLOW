@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -23,8 +24,8 @@ public class CalendarDto {
     private Writer writer;
 
     @NotNull(message = "시작일을 선택하세요")
-    private Date startDate;
+    private LocalDate startDate;
     
     @NotNull(message = "종료일을 선택하세요")
-    private Date endDate;
+    private LocalDate endDate;
 }

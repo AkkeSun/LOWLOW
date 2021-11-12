@@ -9,8 +9,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 public class AccountingResource extends Resource<Accounting> {
 
-    public AccountingResource(Accounting notice, Link... links) {
-        super(notice, links);
-        add(linkTo(AccountingController.class).slash(notice.getId()).withSelfRel()); // _self
+    public AccountingResource(Accounting accounting, Link... links) {
+        super(accounting, links);
+        add(linkTo(AccountingController.class).slash(accounting.getId()).withSelfRel()); // _self
     }
 }

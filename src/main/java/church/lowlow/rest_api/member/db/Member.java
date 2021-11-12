@@ -1,12 +1,17 @@
 package church.lowlow.rest_api.member.db;
 
+import church.lowlow.rest_api.accounting.db.Accounting;
+import church.lowlow.rest_api.common.converter.LocalDateConverter;
 import church.lowlow.rest_api.common.entity.BaseTimeEntity;
 import church.lowlow.rest_api.common.entity.Image;
 import church.lowlow.rest_api.common.entity.Writer;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * [ 교인 정보 ]
@@ -17,6 +22,7 @@ import java.util.Date;
  * phoneNumber 전화번호
  * address 주소
  * belong 교구
+ * birthYear 또래 (91)
  * regiDate 가입일
  * gender 성별
  * churchOfficer 직분
@@ -39,7 +45,10 @@ public class Member extends BaseTimeEntity{
 
     private String belong;
 
-    private Date regiDate;
+    private int birthYear;
+
+    @Convert(converter = LocalDateConverter.class)
+    private LocalDate regiDate;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;

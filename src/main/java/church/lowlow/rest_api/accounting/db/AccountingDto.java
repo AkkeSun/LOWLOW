@@ -12,10 +12,12 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
  * Accounting 객채 검증을 위한 DTO
+ * 익명인 경우 name="익명"
  */
 @Data
 @Builder @NoArgsConstructor @AllArgsConstructor
@@ -31,13 +33,13 @@ public class AccountingDto {
     private OfferingKind offeringKind;
 
     @NotNull(message = "헌금일을 작성하세요")
-    private Date offeringDate;
+    private LocalDate offeringDate;
 
     @NotNull(message = "작성자는 비워둘 수 없습니다")
     private Writer writer;
 
+    private int birthYear;
+
     private String note;
-
-
 
 }
