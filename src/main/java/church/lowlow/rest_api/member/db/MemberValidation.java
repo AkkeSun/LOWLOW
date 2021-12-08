@@ -29,6 +29,5 @@ public class MemberValidation implements Validator {
         Member checkMember = memberRepository.findByNameAndBirthYear(dto.getName(), dto.getBirthYear());
         if (checkMember != null)
             errors.rejectValue("name", "wrongName", "이미 등록된 교인입니다");
-
     }
 }

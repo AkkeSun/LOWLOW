@@ -53,5 +53,4 @@ public class MemberDto {
 
     private Image image;
 
-
 }
