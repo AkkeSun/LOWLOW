@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+<head th:replace="admin/common/head"></head>
+
+<body>
+<div class="adminWrapper">
+    <div th:replace="admin/common/sidebar"></div>
+    <div class = 'mainContent container mt-5 ml-3'>
+            <h2>SECURITY</h2>
+            <h5>페이지 보안 솔루션</h5>
+            <br>
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#user">USER</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#role">ROLE</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#resource">RESOURCE</a>
+                </li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div id="user" class="container tab-pane active"><br>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">아이디</th>
+                                <th scope="col">접근권한</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="hover" th:each="account : ${accountList}">
+                                <td style="text-align: left;">
+                                    <a th:href="@{'/admin/security/account/' + ${account.id}}"><span th:text="${account.username}"></span></a>
+                                </td>
+                                <td>
+                                    <th:block th:each="role : ${account.userRole}">
+                                        <th:block th:text="${role.roleName}"></th:block>
+                                     </th:block>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="text-align:right;">
+                        <p><a class="btn btn-outline-primary" th:href="@{/admin/security/account}">사용자 등록</a></p>
+                    </div>
+                </div>
+
+                <div id="role" class="container tab-pane fade"><br>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>접근권한</th>
+                                <th>설명</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="role : ${roleList}">
+                                <td style="text-align: left;">
+                                    <a th:href="@{'/admin/security/role/' + ${role.id}}"><span th:text="${role.roleName}"></span></a>
+                                </td>
+                                <td style="text-align: left;" th:text="${role.roleDesc}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="text-align:right;">
+                        <p><a class="btn btn-outline-primary"  th:href="@{/admin/security/role}">권한 등록</a></p>
+                    </div>
+                </div>
+
+                <div id="resource" class="container tab-pane fade"><br>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>리소스명</th>
+                                <th>리소스타입</th>
+                                <th>권한</th>
+                                <th>순서</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="link_btn hover" th:each="res : ${resourceList}">
+
+                                <td style="text-align: left;">
+                                    <a th:href="@{'/admin/security/resource/' + ${res.id}}"><span th:text="${res.resourceName}">회원</span></a>
+                                </td>
+                                <td style="text-align: left;" th:text="${res.resourceType}"></td>
+                                <td style="text-align: left;" th:text="${res.resourceRole.roleName}"></td>
+                                <td style="text-align: left;" th:text="${res.orderNum}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="text-align:right;">
+                        <p><a class="btn btn-outline-primary" th:href="@{/admin/security/resource}">리소드 등록</a></p>
+                    </div>
+            </div>
+    </div>
+</div>
+</div>
+</body>
+</html>

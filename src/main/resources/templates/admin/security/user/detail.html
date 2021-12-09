@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+<head th:replace="admin/common/head"></head>
+<script>
+function updateFunc() {
+
+    let data = {"username":$("#username").val(), "password":$("#password").val(),
+                "passwordCheck":$("#passwordCheck").val(), "role":$("#roleName").val()};
+
+    let csrfHeader = $("#_csrf_header").attr('content');
+    let csrfToken = $("#_csrf").attr('content');
+
+    let callback =
+        $.ajax({
+            type       : "put",
+            url        : "/admin/security/account/" + $("#id").val(),
+            data       : JSON.stringify(data), // object -> json String
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Content-type", "application/json");
+                xhr.setRequestHeader(csrfHeader, csrfToken)
+            }
+        });
+    callback.done( data => {
+        if(data != 'success')
+            alert(data);
+        else{
+            alert("성공적으로 수정되었습니다");
+            location.href = "/admin/security";
+        }
+    });
+}
+
+
+function deleteFunc(){
+
+    let check = confirm('정말 삭제하시겠습니까');
+    if(check){
+        let csrfHeader = $("#_csrf_header").attr('content');
+        let csrfToken = $("#_csrf").attr('content');
+
+        let callback =
+            $.ajax({
+                type       : "delete",
+                url        : "/admin/security/account/" + $("#id").val(),
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Content-type", "application/json");
+                    xhr.setRequestHeader(csrfHeader, csrfToken)
+                }
+            });
+        callback.done( data => {
+            alert("성공적으로 삭제되었습니다");
+            location.href = "/admin/security";
+
+        });
+    }
+}
+
+</script>
+
+
+
+<body>
+<div class="adminWrapper">
+    <div th:replace="admin/common/sidebar"></div>
+    <div class = 'mainContent container mt-5 ml-3'>
+        <h2>SECURITY</h2>
+        <h5>페이지 보안 솔루션</h5>
+        <br>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#user">USER</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#role">ROLE</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#resource">RESOURCE</a>
+            </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div id="user" class="container tab-pane active"><br>
+                <div class="tbl_wrp">
+                    <form class="form-horizontal" th:object="${account}">
+                        <input type="hidden" th:value="*{id}" id="id">
+                        <div class="form-group">
+                            <label for="username" class="col-sm-2 control-label">아이디</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control input-large" id="username" placeholder="username" th:value="*{username}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password" class="col-sm-2 control-label">비밀번호</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control input-large" id="password" placeholder="변경 시에만 입력하세요" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password" class="col-sm-2 control-label">비밀번호 확인</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control input-large" id="passwordCheck" placeholder="Password check" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="roleName" class="col-sm-2 control-label">권한</label>
+                            <div class="col-sm-10">
+                                <select class="custom-select" name="role" id="roleName">
+                                    <option th:each="role: ${roleList}"
+                                            th:value="${role.roleName}"
+                                            th:text="${role.roleName}"/>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="button" th:onclick="updateFunc()" class="btn btn-outline-primary">수정</button>
+                        <button type="button" th:onclick="deleteFunc()" class="btn btn-outline-primary">삭제</button>
+                        <a class="btn btn-outline-primary" th:href="@{/admin/security}">목록 </a>
+
+                    </form>
+                </div>
+            </div>
+
+            <div id="role" class="container tab-pane fade"><br>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>접근권한</th>
+                        <th>설명</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="role : ${roleList}">
+                        <td style="text-align: left;">
+                            <a th:href="@{'/admin/security/role/' + ${role.id}}"><span th:text="${role.roleName}"></span></a>
+                        </td>
+                        <td style="text-align: left;" th:text="${role.roleDesc}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div style="text-align:right;">
+                    <p><a class="btn btn-outline-primary" th:href="@{/admin/security/role}">권한 등록</a></p>
+                </div>
+            </div>
+
+            <div id="resource" class="container tab-pane fade"><br>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>리소스명</th>
+                        <th>리소스타입</th>
+                        <th>권한</th>
+                        <th>순서</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="link_btn hover" th:each="res : ${resourceList}">
+
+                        <td style="text-align: left;">
+                            <a th:href="@{'/admin/security/resource/' + ${res.id}}"><span th:text="${res.resourceName}">회원</span></a>
+                        </td>
+                        <td style="text-align: left;" th:text="${res.resourceType}"></td>
+                        <td style="text-align: left;" th:text="${res.resourceRole.roleName}"></td>
+                        <td style="text-align: left;" th:text="${res.orderNum}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div style="text-align:right;">
+                    <p><a class="btn btn-outline-primary" th:href="@{/admin/security/resource}">리소드 등록</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

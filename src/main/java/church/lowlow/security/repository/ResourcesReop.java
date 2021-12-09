@@ -15,11 +15,11 @@ public interface ResourcesReop extends JpaRepository<Resources, Long> {
     List<Resources> findAllResources();
 
     @EntityGraph(value = "getRole")
-    @Query("select r from Resources r where r.resourceType = 'url' order by r.orderNum desc")
+    @Query("select r from Resources r where r.resourceType = 'url' and r.block = false order by r.orderNum desc")
     List<Resources> findAllUrlResources();
 
     @EntityGraph(value = "getRole")
-    @Query("select r from Resources r where r.resourceType = 'method' order by r.orderNum desc")
+    @Query("select r from Resources r where r.resourceType = 'method' and r.block = false order by r.orderNum desc")
     List<Resources> findAllMethodResources();
 
     Resources findByResourceName(String resourcesName);

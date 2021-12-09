@@ -1,12 +1,3 @@
-//---------- 링크 이동 ---------
-let link = (link) => {
-    let appendContent = $("<span th:replace='admin/contents/test'></span>");
-    $("#mainContent").empty();
-    $("#mainContent").append(appendContent);
-
-}
-
-
 
 
 //---------- 링크 이동 ---------

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 
 @Entity
 @Getter @Setter @ToString @EqualsAndHashCode(of = "id")
@@ -17,6 +16,8 @@ public class Account {
     private String username;
 
     private String password;
+
+    private boolean block; // 차단 유무
 
     @JsonManagedReference // 순환참조 방지 (부모 엔티티에 붙이기)
     @ManyToOne(fetch = FetchType.EAGER, cascade={CascadeType.ALL})

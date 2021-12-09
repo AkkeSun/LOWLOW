@@ -7,6 +7,7 @@ import church.lowlow.security.repository.AccountRepo;
 import church.lowlow.security.repository.RoleRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -60,20 +61,15 @@ public class AccountService implements UserDetailsService {
 
     // ==============================================================================
 
-
     @Transactional
-    public void createUser(AccountDto dto){
+    public Account createUser(AccountDto dto){
         Account account = modelMapper.map(dto, Account.class);
         account.setUserRole(roleRepo.findByRoleName(dto.getRole()));
-        accountRepo.save(account);
+        return accountRepo.save(account);
     };
 
     @Transactional
     public void updateUser(Long id, AccountDto dto){
-
-        // 가입 여부 확인
-        Optional<Account> optional = accountRepo.findById(id);
-        optional.orElseThrow(NullPointerException::new);
 
         // password setting
         if(dto.getPassword().equals(""))
@@ -90,7 +86,7 @@ public class AccountService implements UserDetailsService {
 
     @Transactional
     public List<Account> findAll(){
-        return accountRepo.findAll();
+        return accountRepo.getList();
     };
 
     @Transactional
@@ -98,4 +94,13 @@ public class AccountService implements UserDetailsService {
         Optional<Account> optional = accountRepo.findById(id);
         return optional.orElseThrow(NullPointerException::new);
     };
+
+    @Transactional
+    public void delete(Long id){
+        Optional<Account> optional = accountRepo.findById(id);
+        Account account = optional.orElseThrow(NullPointerException::new);
+        account.setBlock(true);
+        accountRepo.save(account);
+    };
+
 }

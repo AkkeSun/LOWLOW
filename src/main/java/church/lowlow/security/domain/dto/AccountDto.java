@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 
 
@@ -16,8 +17,14 @@ public class AccountDto {
 
     @NotNull
     private String username;
+
     @NotNull
     private String password;
+
+    @NotNull
+    private String passwordCheck;
+
     @NotNull
     private String role;
+
 }

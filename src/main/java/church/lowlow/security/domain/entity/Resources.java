@@ -21,6 +21,8 @@ public class Resources implements Serializable {
 
     private String resourceName;
 
+    private boolean block; // 차단 유무
+
     private int orderNum;
 
     @JsonBackReference // 순환참조 방지 (부모엔티티에 붙이기)

@@ -28,7 +28,7 @@ public class RoleService {
 
     @Transactional
     public List<Role> getRoles() {
-        return roleRepo.findAll();
+        return roleRepo.getList();
     }
 
     @Transactional
@@ -57,7 +57,7 @@ public class RoleService {
     @Transactional
     public String findAllHierarchy() {
 
-        List<Role> roles = roleRepo.findAll();
+        List<Role> roles = roleRepo.getList();
         StringBuffer concatedRoles = new StringBuffer();
 
         if (roles.size() <= 1)

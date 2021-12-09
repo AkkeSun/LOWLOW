@@ -20,4 +20,6 @@ public class Role implements Serializable {
 
     private int roleNum;
 
+    private boolean block; // 차단 유무
+
 }
