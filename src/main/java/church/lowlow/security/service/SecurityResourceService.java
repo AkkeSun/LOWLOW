@@ -1,7 +1,7 @@
 package church.lowlow.security.service;
 
 import church.lowlow.security.domain.entity.Resources;
-import church.lowlow.security.repository.ResourcesReop;
+import church.lowlow.security.repository.ResourcesRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
@@ -20,7 +20,7 @@ import java.util.List;
 public class SecurityResourceService {
 
     @Autowired
-    private ResourcesReop resourcesRepository;
+    private ResourcesRepo resourcesRepository;
 
     // ========================= URL Resource 최종 Return ==========================
     // LinkedHashMap ( path : roleList )

@@ -4,57 +4,41 @@
 <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
 <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
 <head th:replace="admin/common/head"></head>
-<script>
-function updateFunc() {
 
-    let data = {"username":$("#username").val(), "password":$("#password").val(),
-                "passwordCheck":$("#passwordCheck").val(), "role":$("#roleName").val()};
+<script th:inline="javascript">
 
-    let csrfHeader = $("#_csrf_header").attr('content');
-    let csrfToken = $("#_csrf").attr('content');
+$(document).ready(function (){
+    securityTabControl([[${nowTab}]]);
+    securityPaging([[${accountPagingData}]],
+                   [[${rolePagingData}]],
+                   [[${resourcePagingData}]]);
+})
 
-    let callback =
-        $.ajax({
-            type       : "put",
-            url        : "/admin/security/account/" + $("#id").val(),
-            data       : JSON.stringify(data), // object -> json String
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("Content-type", "application/json");
-                xhr.setRequestHeader(csrfHeader, csrfToken)
-            }
-        });
-    callback.done( data => {
-        if(data != 'success')
-            alert(data);
-        else{
-            alert("성공적으로 수정되었습니다");
-            location.href = "/admin/security";
-        }
-    });
+
+function updateFunc(){
+    let type        = "put";
+    let url         = "/admin/security/account/" + $("#id").val();
+    let redirectUrl = "/admin/security";
+    let csrfHeader  = $("#_csrf_header").attr('content');
+    let csrfToken   = $("#_csrf").attr('content');
+    let data        = {"username":$("#username").val(), "password":$("#password").val(),
+                       "passwordCheck":$("#passwordCheck").val(), "role":$("#roleName").val()};
+
+    ajaxComm(type, data, type, url, redirectUrl, csrfHeader, csrfToken);
 }
 
 
 function deleteFunc(){
-
     let check = confirm('정말 삭제하시겠습니까');
-    if(check){
-        let csrfHeader = $("#_csrf_header").attr('content');
-        let csrfToken = $("#_csrf").attr('content');
+    if(check) {
+        let type        = "delete";
+        let url         = "/admin/security/account/" + $("#id").val();
+        let redirectUrl = "/admin/security";
+        let csrfHeader  = $("#_csrf_header").attr('content');
+        let csrfToken   = $("#_csrf").attr('content');
+        let data        = "";
 
-        let callback =
-            $.ajax({
-                type       : "delete",
-                url        : "/admin/security/account/" + $("#id").val(),
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("Content-type", "application/json");
-                    xhr.setRequestHeader(csrfHeader, csrfToken)
-                }
-            });
-        callback.done( data => {
-            alert("성공적으로 삭제되었습니다");
-            location.href = "/admin/security";
-
-        });
+        ajaxComm(type, data, type, url, redirectUrl, csrfHeader, csrfToken);
     }
 }
 
@@ -72,13 +56,13 @@ function deleteFunc(){
         <!-- Nav tabs -->
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link active" data-toggle="tab" href="#user">USER</a>
+                <a id="tab1" class="nav-link active" data-toggle="tab" href="#user">USER</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#role">ROLE</a>
+                <a id="tab2" class="nav-link" data-toggle="tab" href="#role">ROLE</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#resource">RESOURCE</a>
+                <a id="tab3" class="nav-link" data-toggle="tab" href="#resource">RESOURCE</a>
             </li>
         </ul>
 
@@ -134,6 +118,7 @@ function deleteFunc(){
                     <tr>
                         <th>접근권한</th>
                         <th>설명</th>
+                        <th>순서</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -142,9 +127,15 @@ function deleteFunc(){
                             <a th:href="@{'/admin/security/role/' + ${role.id}}"><span th:text="${role.roleName}"></span></a>
                         </td>
                         <td style="text-align: left;" th:text="${role.roleDesc}"></td>
+                        <td style="text-align: left;" th:text="${role.roleNum}"></td>
                     </tr>
                     </tbody>
                 </table>
+                <div class="container">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination" id="rolePagination" style="justify-content:center;"></ul>
+                    </nav>
+                </div>
                 <div style="text-align:right;">
                     <p><a class="btn btn-outline-primary" th:href="@{/admin/security/role}">권한 등록</a></p>
                 </div>
@@ -172,6 +163,11 @@ function deleteFunc(){
                     </tr>
                     </tbody>
                 </table>
+                <div class="container">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination" id="resourcePagination" style="justify-content:center;"></ul>
+                    </nav>
+                </div>
                 <div style="text-align:right;">
                     <p><a class="btn btn-outline-primary" th:href="@{/admin/security/resource}">리소드 등록</a></p>
                 </div>

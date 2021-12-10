@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+<head th:replace="admin/common/head"></head>
+
+<script th:inline="javascript">
+
+$(document).ready(function (){
+    securityTabControl([[${nowTab}]]);
+    securityPaging([[${accountPagingData}]],
+                   [[${rolePagingData}]],
+                   [[${resourcePagingData}]]);
+})
+
+
+function updateFunc(){
+    let type        = "put";
+    let url         = "/admin/security/role/" + $("#id").val();
+    let redirectUrl = "/admin/security?nowTab=tab2";
+    let csrfHeader  = $("#_csrf_header").attr('content');
+    let csrfToken   = $("#_csrf").attr('content');
+    let data        = {"id":$("#id").val(), "roleName":$("#roleName").val(),
+                       "roleDesc":$("#roleDesc").val(), "roleNum":$("#roleNum").val()};
+
+    ajaxComm(type, data, type, url, redirectUrl, csrfHeader, csrfToken);
+}
+
+
+function deleteFunc(){
+    let check = confirm('정말 삭제하시겠습니까');
+    if(check) {
+        let type        = "delete";
+        let url         = "/admin/security/role/" + $("#id").val();
+        let redirectUrl = "/admin/security?nowTab=tab2";
+        let csrfHeader  = $("#_csrf_header").attr('content');
+        let csrfToken   = $("#_csrf").attr('content');
+        let data        = "";
+
+        ajaxComm(type, data, type, url, redirectUrl, csrfHeader, csrfToken);
+    }
+}
+
+</script>
+
+
+
+<body>
+<div class="adminWrapper">
+    <div th:replace="admin/common/sidebar"></div>
+    <div class = 'mainContent container mt-5 ml-3'>
+        <h2>SECURITY</h2>
+        <h5>페이지 보안 솔루션</h5>
+        <br>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a id='tab1' class="nav-link active" data-toggle="tab" href="#user">USER</a>
+            </li>
+            <li class="nav-item">
+                <a id='tab2' class="nav-link" data-toggle="tab" href="#role">ROLE</a>
+            </li>
+            <li class="nav-item">
+                <a id='tab3' class="nav-link" data-toggle="tab" href="#resource">RESOURCE</a>
+            </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div id="user" class="container tab-pane active"><br>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">아이디</th>
+                        <th scope="col">접근권한</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="hover" th:each="account : ${accountList}">
+                        <td style="text-align: left;">
+                            <a th:href="@{'/admin/security/account/' + ${account.id}}"><span th:text="${account.username}"></span></a>
+                        </td>
+                        <td>
+                            <th:block th:each="role : ${account.userRole}">
+                                <th:block th:text="${role.roleName}"></th:block>
+                            </th:block>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="container">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination" id="accountPagination" style="justify-content:center;"></ul>
+                    </nav>
+                </div>
+                <div style="text-align:right;">
+                    <p><a class="btn btn-outline-primary" th:href="@{/admin/security/account}">사용자 등록</a></p>
+                </div>
+            </div>
+
+            <div id="role" class="container tab-pane fade"><br>
+                <form class="form-horizontal"  th:object="${role}">
+                    <input type="hidden" th:field="*{id}">
+                    <div class="form-group">
+                        <label for="roleName" class="col-sm-2 control-label">권한이름</label>
+                        <div class="col-sm-10">
+                            <input class="form-control input-large" id="roleName" type="text" th:field="*{roleName}"  placeholder="ROLE_0000"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="roleName" class="col-sm-2 control-label">순서</label>
+                        <div class="col-sm-10">
+                            <input class="form-control input-large" id="roleNum" type="text" th:field="*{roleNum}"  placeholder="낮을수록 높은 권한"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="roleDesc" class="col-sm-2 control-label">설명</label>
+                        <div class="col-sm-10">
+                            <input class="form-control input-large" id="roleDesc" type="text" th:field="*{roleDesc}" placeholder="설명"/>
+                        </div>
+                    </div>
+
+                    <input type="hidden" th:field="*{id}" />
+                    <input type="button" class="btn btn-outline-primary" th:onclick="updateFunc()" value="수정"/>
+                    <a class="btn btn-outline-primary" th:href="@{/admin/security?nowTab=tab2}">목록</a>
+                </form>
+            </div>
+
+            <div id="resource" class="container tab-pane fade"><br>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>리소스명</th>
+                        <th>리소스타입</th>
+                        <th>권한</th>
+                        <th>순서</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="link_btn hover" th:each="res : ${resourceList}">
+
+                        <td style="text-align: left;">
+                            <a th:href="@{'/admin/security/resource/' + ${res.id}}"><span th:text="${res.resourceName}">회원</span></a>
+                        </td>
+                        <td style="text-align: left;" th:text="${res.resourceType}"></td>
+                        <td style="text-align: left;" th:text="${res.resourceRole.roleName}"></td>
+                        <td style="text-align: left;" th:text="${res.orderNum}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="container">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination" id="resourcePagination" style="justify-content:center;"></ul>
+                    </nav>
+                </div>
+                <div style="text-align:right;">
+                    <p><a class="btn btn-outline-primary" th:href="@{/admin/security/resource}">리소드 등록</a></p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

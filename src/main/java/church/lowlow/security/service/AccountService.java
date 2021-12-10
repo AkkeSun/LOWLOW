@@ -8,6 +8,8 @@ import church.lowlow.security.repository.RoleRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -87,6 +89,12 @@ public class AccountService implements UserDetailsService {
     @Transactional
     public List<Account> findAll(){
         return accountRepo.getList();
+    };
+
+    @Transactional
+    public Page<Account> getAccountWithPage(int page){
+        Pageable pageable = PageRequest.of(page, 5);
+        return accountRepo.getListForPage(pageable);
     };
 
     @Transactional

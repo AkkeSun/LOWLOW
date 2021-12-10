@@ -2,10 +2,13 @@ package church.lowlow.security.service;
 import church.lowlow.security.UrlMetadataSource;
 import church.lowlow.security.domain.dto.ResourcesDto;
 import church.lowlow.security.domain.entity.Resources;
-import church.lowlow.security.repository.ResourcesReop;
+import church.lowlow.security.repository.ResourcesRepo;
 import church.lowlow.security.repository.RoleRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -16,7 +19,7 @@ import java.util.Optional;
 public class ResourcesService {
 
     @Autowired
-    private ResourcesReop resourcesRepo;
+    private ResourcesRepo resourcesRepo;
 
     @Autowired
     private RoleRepo roleRepo;
@@ -40,6 +43,12 @@ public class ResourcesService {
     @Transactional
     public List<Resources> getResources() {
         return resourcesRepo.findAllResources();
+    }
+
+    @Transactional
+    public Page<Resources> getResourceWithPage(int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+        return resourcesRepo.getListForPage(pageable);
     }
 
     @Transactional

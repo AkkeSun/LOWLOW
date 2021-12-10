@@ -5,7 +5,7 @@ import church.lowlow.security.domain.entity.Account;
 import church.lowlow.security.domain.entity.Resources;
 import church.lowlow.security.domain.entity.Role;
 import church.lowlow.security.repository.AccountRepo;
-import church.lowlow.security.repository.ResourcesReop;
+import church.lowlow.security.repository.ResourcesRepo;
 import church.lowlow.security.repository.RoleRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -41,7 +41,7 @@ public class SecurityPostListener implements ApplicationListener<ApplicationStar
 
 
     @Autowired
-    private ResourcesReop resourcesRepo;
+    private ResourcesRepo resourcesRepo;
 
     @Autowired
     private RoleRepo roleRepo;

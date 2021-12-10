@@ -1,10 +1,14 @@
 package church.lowlow.security.service;
 
 import church.lowlow.security.domain.dto.RoleDto;
+import church.lowlow.security.domain.entity.Account;
 import church.lowlow.security.domain.entity.Role;
 import church.lowlow.security.repository.RoleRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -30,6 +34,11 @@ public class RoleService {
     public List<Role> getRoles() {
         return roleRepo.getList();
     }
+    @Transactional
+    public Page<Role> getRoleWithPage(int page) {
+        Pageable pageable = PageRequest.of(page, 5);
+        return roleRepo.getListForPage(pageable);
+    }
 
     @Transactional
     public void createRole(RoleDto dto) {
@@ -39,14 +48,18 @@ public class RoleService {
 
     @Transactional
     public void updateRole(Long id, RoleDto roledto) {
-
-        Optional<Role> optional = roleRepo.findById(id);
-        optional.orElseThrow(NullPointerException::new);
-
         Role role = modelMapper.map(roledto, Role.class);
         role.setId(id);
         roleRepo.save(role);
     }
+
+    @Transactional
+    public void delete(Long id){
+        Optional<Role> optional = roleRepo.findById(id);
+        Role role = optional.orElseThrow(NullPointerException::new);
+        role.setBlock(true);
+        roleRepo.save(role);
+    };
 
 
     /**

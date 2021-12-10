@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
-import java.util.List;
-
 
 @Component
 public class AccountValidation  {
@@ -31,8 +29,7 @@ public class AccountValidation  {
                 nullCheck = false;
         }
         if(nullCheck == false){
-            Account account = accountRepo.findByUsername(dto.getUsername());
-            if(account != null)
+            if(accountRepo.findByUsername(dto.getUsername()) != null)
                 errors.rejectValue("username", "wrongName", "이미 등록된 아이디입니다");
         }
 

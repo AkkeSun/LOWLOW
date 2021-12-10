@@ -5,6 +5,15 @@
 <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
 <head th:replace="admin/common/head"></head>
 
+<script th:inline="javascript">
+$(document).ready(function(){
+    securityTabControl([[${nowTab}]]);
+    securityPaging([[${accountPagingData}]],
+                   [[${rolePagingData}]],
+                   [[${resourcePagingData}]]);
+});
+</script>
+
 <body>
 <div class="adminWrapper">
     <div th:replace="admin/common/sidebar"></div>
@@ -15,13 +24,13 @@
             <!-- Nav tabs -->
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#user">USER</a>
+                    <a id='tab1' class="nav-link active" data-toggle="tab" href="#user">USER</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#role">ROLE</a>
+                    <a id='tab2' class="nav-link" data-toggle="tab" href="#role">ROLE</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#resource">RESOURCE</a>
+                    <a id='tab3' class="nav-link" data-toggle="tab" href="#resource">RESOURCE</a>
                 </li>
             </ul>
 
@@ -48,6 +57,11 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="container">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination" id="accountPagination" style="justify-content:center;"></ul>
+                        </nav>
+                    </div>
                     <div style="text-align:right;">
                         <p><a class="btn btn-outline-primary" th:href="@{/admin/security/account}">사용자 등록</a></p>
                     </div>
@@ -59,6 +73,7 @@
                             <tr>
                                 <th>접근권한</th>
                                 <th>설명</th>
+                                <th>순서</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -67,9 +82,15 @@
                                     <a th:href="@{'/admin/security/role/' + ${role.id}}"><span th:text="${role.roleName}"></span></a>
                                 </td>
                                 <td style="text-align: left;" th:text="${role.roleDesc}"></td>
+                                <td style="text-align: left;" th:text="${role.roleNum}"></td>
                             </tr>
                         </tbody>
                     </table>
+                    <div class="container">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination" id="rolePagination" style="justify-content:center;"></ul>
+                        </nav>
+                    </div>
                     <div style="text-align:right;">
                         <p><a class="btn btn-outline-primary"  th:href="@{/admin/security/role}">권한 등록</a></p>
                     </div>
@@ -97,6 +118,11 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="container">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination" id="resourcePagination" style="justify-content:center;"></ul>
+                        </nav>
+                    </div>
                     <div style="text-align:right;">
                         <p><a class="btn btn-outline-primary" th:href="@{/admin/security/resource}">리소드 등록</a></p>
                     </div>
