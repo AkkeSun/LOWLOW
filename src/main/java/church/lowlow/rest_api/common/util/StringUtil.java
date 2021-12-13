@@ -21,6 +21,12 @@ public class StringUtil {
             str = "";
         return str;
     }
+    public static boolean StringNullCheck(String str){
+        if(str == null || str.equals(""))
+            return true;
+        return false;
+    }
+
 
 
     /**********************

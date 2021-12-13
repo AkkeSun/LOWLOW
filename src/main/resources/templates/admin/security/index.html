@@ -6,12 +6,14 @@
 <head th:replace="admin/common/head"></head>
 
 <script th:inline="javascript">
-$(document).ready(function(){
-    securityTabControl([[${nowTab}]]);
-    securityPaging([[${accountPagingData}]],
-                   [[${rolePagingData}]],
-                   [[${resourcePagingData}]]);
-});
+    $(document).ready(function(){
+        securityTabControl([[${nowTab}]]);
+        securityPaging([[${accountPagingData}]],
+                       [[${rolePagingData}]],
+                       [[${resourcePagingData}]]);
+    });
+
+
 </script>
 
 <body>
@@ -20,9 +22,9 @@ $(document).ready(function(){
     <div class = 'mainContent container mt-5 ml-3'>
         <th:block th:replace="admin/security/fragment/tabContents :: header"/>
         <div class="tab-content">
-            <th:block th:replace="admin/security/fragment/tabContents :: userList"/>
-            <th:block th:replace="admin/security/fragment/tabContents :: ${r}"/>
-            <th:block th:replace="admin/security/fragment/tabContents :: resourceList"/>
+            <th:block th:replace="admin/security/fragment/tabContents :: ${userFragment}"/>
+            <th:block th:replace="admin/security/fragment/tabContents :: ${roleFragment}"/>
+            <th:block th:replace="admin/security/fragment/tabContents :: ${resourceFragment}"/>
         </div>
     </div>
 </div>

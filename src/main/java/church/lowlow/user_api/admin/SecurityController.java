@@ -2,11 +2,13 @@ package church.lowlow.user_api.admin;
 
 import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.security.domain.dto.AccountDto;
+import church.lowlow.security.domain.dto.ResourcesDto;
 import church.lowlow.security.domain.dto.RoleDto;
 import church.lowlow.security.domain.entity.Account;
 import church.lowlow.security.domain.entity.Resources;
 import church.lowlow.security.domain.entity.Role;
 import church.lowlow.security.domain.validation.AccountValidation;
+import church.lowlow.security.domain.validation.ResourceValidation;
 import church.lowlow.security.domain.validation.RoleValidation;
 import church.lowlow.security.service.AccountService;
 import church.lowlow.security.service.ResourcesService;
@@ -29,7 +31,7 @@ import java.util.List;
 @RequestMapping("/admin/security")
 @SessionAttributes({"roleList",     "rolePagingData",
                     "resourceList", "resourcePagingData",
-                    "accountList",  "accountPagingData"})
+                    "accountList",  "accountPagingData", "nowTab"})
 public class SecurityController {
 
     @Autowired
@@ -50,20 +52,27 @@ public class SecurityController {
     @Autowired
     private RoleValidation roleValidation;
 
+    @Autowired
+    private ResourceValidation resourceValidation;
+
 
     /*********************************************
      *                   LIST VIEW
      *********************************************/
     @GetMapping
-    public String getList(Model model, @RequestParam(required = false) String nowTab) {
+    public String getList(Model model, @RequestParam(required = false) String tab) {
 
-        if(nowTab != null)
-            model.addAttribute("nowTab",  nowTab);
         listInitialize(model);
 
-        return "admin/security/list";
-    }
+        if(tab != null)
+            model.addAttribute("nowTab", "tab"+tab);
 
+        model.addAttribute("userFragment", "userList");
+        model.addAttribute("roleFragment", "roleList");
+        model.addAttribute("resourceFragment", "resourceList");
+
+        return "admin/security/index";
+    }
 
 
 
@@ -71,33 +80,11 @@ public class SecurityController {
     /*********************************************
      *                  COMMON
      *********************************************/
-    // ============ 페이징 리로드 함수  ==========
-    @GetMapping("/pagingReload")
-    public String pagingReload(int num, String dbName, Model model) {
-        String nowTab = "";
-        switch(dbName){
-            case "account" :
-                Page <Account> accountPage = accountService.getAccountWithPage(num -1);
-                model.addAttribute("accountList",  accountPage.getContent());
-                model.addAttribute("accountPagingData", new PagingDto(num, accountPage.getTotalPages()));
-                nowTab = "tab1";
-                break;
-            case "role" :
-                Page <Role> rolePage = roleService.getRoleWithPage(num -1);
-                model.addAttribute("roleList",  rolePage.getContent());
-                model.addAttribute("rolePagingData", new PagingDto(num, rolePage.getTotalPages()));
-                nowTab = "tab2";
-                break;
-            case "resource" :
-                Page <Resources> resourcePage = resourcesService.getResourceWithPage(num -1);
-                model.addAttribute("resourceList",  resourcePage.getContent());
-                model.addAttribute("resourcePagingData", new PagingDto(num, resourcePage.getTotalPages()));
-                nowTab = "tab3";
-                break;
-        }
-        return "redirect:/admin/security?nowTab="+nowTab;
-    }
 
+    @ModelAttribute("nowTab")
+    public String nowTab(String tab){
+        return tab;
+    }
 
     // ================ List 초기화 함수 ==============
     public void listInitialize (Model model) {
@@ -131,6 +118,37 @@ public class SecurityController {
     }
 
 
+    // ============ 페이징 리로드 함수  ==========
+    @GetMapping("/pagingReload")
+    public String pagingReload(int num, String dbName, Model model) {
+        String tab = "";
+        switch(dbName){
+            case "account" :
+                Page <Account> accountPage = accountService.getAccountWithPage(num -1);
+                model.addAttribute("accountList",  accountPage.getContent());
+                model.addAttribute("accountPagingData", new PagingDto(num, accountPage.getTotalPages()));
+                tab = "1";
+                break;
+            case "role" :
+                Page <Role> rolePage = roleService.getRoleWithPage(num -1);
+                model.addAttribute("roleList",  rolePage.getContent());
+                model.addAttribute("rolePagingData", new PagingDto(num, rolePage.getTotalPages()));
+                tab = "2";
+                break;
+            case "resource" :
+                Page <Resources> resourcePage = resourcesService.getResourceWithPage(num -1);
+                model.addAttribute("resourceList",  resourcePage.getContent());
+                model.addAttribute("resourcePagingData", new PagingDto(num, resourcePage.getTotalPages()));
+                tab = "3";
+                break;
+        }
+        return "redirect:/admin/security?tab="+tab;
+    }
+
+
+
+
+
 
 
 
@@ -144,7 +162,11 @@ public class SecurityController {
         model.addAttribute("account", new AccountDto());
         listInitialize(model);
 
-        return "admin/security/user/create";
+        model.addAttribute("userFragment", "userCreate");
+        model.addAttribute("roleFragment", "roleList");
+        model.addAttribute("resourceFragment", "resourceList");
+
+        return "admin/security/index";
     }
 
     @ResponseBody
@@ -171,10 +193,15 @@ public class SecurityController {
     // ================ UPDATE ==============
     @GetMapping("/account/{id}")
     public String accountDetailView(@PathVariable("id") Long id, Model model) {
-
-        listInitialize(model);
         model.addAttribute("account", accountService.getUser(id));
-        return "admin/security/user/detail";
+        model.addAttribute("nowTab", "tab1");
+        listInitialize(model);
+
+        model.addAttribute("userFragment", "userDetail");
+        model.addAttribute("roleFragment", "roleList");
+        model.addAttribute("resourceFragment", "resourceList");
+
+        return "admin/security/index";
 
     }
 
@@ -225,17 +252,21 @@ public class SecurityController {
     @GetMapping("/role")
     public String roleCreateView(Model model) {
 
-
         model.addAttribute("role", new RoleDto());
         model.addAttribute("nowTab", "tab2");
+
         listInitialize(model);
 
-        return "admin/security/role/create";
+        model.addAttribute("userFragment", "userList");
+        model.addAttribute("roleFragment", "roleCreate");
+        model.addAttribute("resourceFragment", "resourceList");
+
+        return "admin/security/index";
     }
     @ResponseBody
     @PostMapping("/role")
     public String roleCreateProcess(@RequestBody RoleDto roleDto,
-                                    SessionStatus sessionStatus, Errors errors)  {
+                                    SessionStatus sessionStatus, Errors errors, Model model)  {
 
         String returnMsg = "success";
         roleValidation.createValidate(roleDto, errors);
@@ -249,6 +280,7 @@ public class SecurityController {
         else {
             roleService.createRole(roleDto);
             sessionStatus.setComplete();
+            model.addAttribute("nowTab", "tab2");
         }
         return returnMsg;
     }
@@ -261,7 +293,11 @@ public class SecurityController {
         model.addAttribute("role", roleService.getRole(id));
         listInitialize(model);
 
-        return "admin/security/role/detail";
+        model.addAttribute("userFragment", "userList");
+        model.addAttribute("roleFragment", "roleDetail");
+        model.addAttribute("resourceFragment", "resourceList");
+
+        return "admin/security/index";
     }
 
     @ResponseBody
@@ -271,7 +307,7 @@ public class SecurityController {
                                     SessionStatus sessionStatus){
 
         String returnMsg = "success";
-        roleValidation.updateValidate(roleDto, errors);
+        roleValidation.updateValidate(roleDto, id, errors);
 
         if(errors.hasErrors()){
             returnMsg = errors.getAllErrors().get(0).getDefaultMessage();
@@ -307,24 +343,87 @@ public class SecurityController {
     //====================== RESOURCES ======================
 
     @GetMapping("/resource")
-    public String createResources(Model model) throws Exception {
-        model.addAttribute("roleList", roleService.getRoles());
+    public String createResources(Model model) {
+
+        model.addAttribute("nowTab", "tab3");
         model.addAttribute("res", new Resources());
-        return "admin/resources/resourceCreate";
+        listInitialize(model);
+
+        model.addAttribute("userFragment", "userList");
+        model.addAttribute("roleFragment", "roleList");
+        model.addAttribute("resourceFragment", "resourceCreate");
+
+        return "admin/security/index";
     }
 
+    @ResponseBody
+    @PostMapping("/resource")
+    public String resourceCreateProcess(@RequestBody ResourcesDto resourcesDto,
+                                       SessionStatus sessionStatus, Errors errors, Model model)  {
+
+        String returnMsg = "success";
+        resourceValidation.createValidate(resourcesDto, errors);
+
+        if(errors.hasErrors()){
+            returnMsg = errors.getAllErrors().get(0).getDefaultMessage();
+            log.info ("[ SECURITY USER INSERT ERROR ]");
+            log.info ("[ERROR CODE] "+ errors.getAllErrors().get(0).getCode());
+            log.info ("[ERROR MSG] " + returnMsg);
+        }
+        else {
+            resourcesService.createResource(resourcesDto);
+            sessionStatus.setComplete();
+            model.addAttribute("nowTab", "tab3");
+        }
+        return returnMsg;
+    }
+
+    // ================ UPDATE ==============
     @GetMapping("/resource/{id}")
-    public String resources(@PathVariable("id") Long id, Model model) throws Exception {
-        model.addAttribute("roleList", roleService.getRoles());
-        model.addAttribute("res", resourcesService.getResource(id));
-        return "admin/resources/resourceDetail";
+    public String resourceDetailView(@PathVariable("id") Long id, Model model) {
+
+        model.addAttribute("nowTab", "tab3");
+        model.addAttribute("role", roleService.getRole(id));
+        listInitialize(model);
+
+        model.addAttribute("userFragment", "userList");
+        model.addAttribute("roleFragment", "roleList");
+        model.addAttribute("resourceFragment", "resourceDetail");
+
+        return "admin/security/index";
     }
 
-    @GetMapping("/session")
-    public void deleteSession() {
+    @ResponseBody
+    @PutMapping("/resource/{id}")
+    public String resourceUpdateProcess(@RequestBody ResourcesDto resourcesDto,
+                                        @PathVariable("id") Long id, Errors errors,
+                                        SessionStatus sessionStatus){
 
+        String returnMsg = "success";
+        resourceValidation.updateValidate(resourcesDto, id, errors);
+
+        if(errors.hasErrors()){
+            returnMsg = errors.getAllErrors().get(0).getDefaultMessage();
+            log.info ("[ SECURITY USER INSERT ERROR ]");
+            log.info ("[ERROR CODE] "+ errors.getAllErrors().get(0).getCode());
+            log.info ("[ERROR MSG] " + returnMsg);
+        }
+        else {
+            resourcesService.updateResources(id, resourcesDto);
+            sessionStatus.setComplete();
+        }
+        return returnMsg;
     }
 
+    // ================ DELETE ==============
+    @ResponseBody
+    @DeleteMapping("/resource/{id}")
+    public String resourceDeleteProcess(@PathVariable("id") Long id, SessionStatus sessionStatus)  {
 
+        String returnMsg = "success";
+        resourcesService.delete(id);
+        sessionStatus.setComplete();
 
+        return returnMsg;
+    }
 }

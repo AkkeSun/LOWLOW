@@ -86,10 +86,6 @@ public class AccountService implements UserDetailsService {
         accountRepo.save(account);
     };
 
-    @Transactional
-    public List<Account> findAll(){
-        return accountRepo.getList();
-    };
 
     @Transactional
     public Page<Account> getAccountWithPage(int page){

@@ -1,6 +1,7 @@
 package church.lowlow.security.domain.validation;
 
 import church.lowlow.security.domain.dto.RoleDto;
+import church.lowlow.security.domain.entity.Role;
 import church.lowlow.security.repository.RoleRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,10 +35,13 @@ public class RoleValidation {
 
     }
 
-    public void updateValidate(RoleDto dto, Errors errors) {
+    public void updateValidate(RoleDto dto, Long id, Errors errors) {
 
-        if(roleRepo.findByRoleNum(dto.getRoleNum()) != null)
-            errors.rejectValue("roleNum", "wrongRoleNum", "동일한 권한 순서가 존재합니다");
+        Role byRoleNum = roleRepo.findByRoleNum(dto.getRoleNum());
+        if(byRoleNum != null){
+            if(byRoleNum.getId() != id)
+                errors.rejectValue("roleNum", "wrongRoleNum", "동일한 권한 순서가 존재합니다");
+        }
     }
 }
 

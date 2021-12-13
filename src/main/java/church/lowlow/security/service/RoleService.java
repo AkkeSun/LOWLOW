@@ -31,10 +31,6 @@ public class RoleService {
     }
 
     @Transactional
-    public List<Role> getRoles() {
-        return roleRepo.getList();
-    }
-    @Transactional
     public Page<Role> getRoleWithPage(int page) {
         Pageable pageable = PageRequest.of(page, 5);
         return roleRepo.getListForPage(pageable);

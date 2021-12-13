@@ -66,7 +66,7 @@ function securityPaging( accountPagingData, rolePagingData, resourcePagingData )
     });
 }
 
-
+// JSON 공용 처리 함수
 function ajaxComm(type, data, url, redirectUrl, csrfHeader, csrfToken) {
 
     let returnMsg = "";
@@ -95,4 +95,92 @@ function ajaxComm(type, data, url, redirectUrl, csrfHeader, csrfToken) {
             location.href = redirectUrl;
         }
     });
+}
+
+
+
+// serializeArray() -> Json Object
+function objToJson(formData){
+    var data = formData;
+    var obj = {};
+    $.each(data, function(idx, ele){
+        obj[ele.name] = ele.value;
+    });
+    return obj;
+}
+
+
+// Common Create Function
+function createFunc(database){
+
+    let url         = "/admin/security/"+database;
+    let csrfHeader  = $("#_csrf_header").attr('content');
+    let csrfToken   = $("#_csrf").attr('content');
+    let redirectUrl = "";
+    let data        = "";
+
+    switch (database){
+        case "account" :
+            data = objToJson($("#accountFrm").serializeArray());
+            redirectUrl = "/admin/security"
+            break;
+        case "role"     :
+            data = objToJson($('#roleFrm').serializeArray());
+            redirectUrl = "/admin/security?tab=2"
+            break;
+        case "resource" :
+            data = objToJson($('#resourceFrm').serializeArray());
+            redirectUrl = "/admin/security?tab=3";
+    }
+
+    ajaxComm("post", data, url, redirectUrl, csrfHeader, csrfToken);
+}
+
+
+
+// Common Update Function
+function updateFunc(database){
+
+    let url         = "/admin/security/"+ database +"/" + $("#id").val();
+    let csrfHeader  = $("#_csrf_header").attr('content');
+    let csrfToken   = $("#_csrf").attr('content');
+    let redirectUrl = "";
+    let data        = "";
+
+    switch (database){
+        case "account" :
+            data = objToJson($("#accountFrm").serializeArray());
+            redirectUrl = "/admin/security"
+            break;
+        case "role"     :
+            data = objToJson($('#roleFrm').serializeArray());
+            redirectUrl = "/admin/security?tab=2"
+            break;
+        case "resource" :
+            data = objToJson($('#resourceFrm').serializeArray());
+            redirectUrl = "/admin/security?tab=3";
+    }
+
+    ajaxComm("put", data, url, redirectUrl, csrfHeader, csrfToken);
+}
+
+
+// Common Delete Function
+function deleteFunc(database){
+    let check = confirm('정말 삭제하시겠습니까');
+    if(check) {
+
+        let url         = "/admin/security/"+ database +"/" + $("#id").val();
+        let csrfHeader  = $("#_csrf_header").attr('content');
+        let csrfToken   = $("#_csrf").attr('content');
+        let redirectUrl = "";
+
+        switch (database){
+            case "account"  : redirectUrl = "/admin/security";        break;
+            case "role"     : redirectUrl = "/admin/security?tab=2";  break;
+            case "resource" : redirectUrl = "/admin/security?tab=3";
+        }
+
+        ajaxComm("delete", "", url, redirectUrl, csrfHeader, csrfToken);
+    }
 }

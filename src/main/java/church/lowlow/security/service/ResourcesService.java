@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,27 +40,13 @@ public class ResourcesService {
     }
 
     @Transactional
-    public List<Resources> getResources() {
-        return resourcesRepo.findAllResources();
-    }
-
-    @Transactional
     public Page<Resources> getResourceWithPage(int page) {
         Pageable pageable = PageRequest.of(page, 5);
         return resourcesRepo.getListForPage(pageable);
     }
 
     @Transactional
-    public Resources getResource(Long id) {
-        Optional<Resources> optional = resourcesRepo.findById(id);
-        return optional.orElseThrow(NullPointerException::new);
-    }
-
-    @Transactional
     public void updateResources(Long id, ResourcesDto dto) {
-
-        Optional<Resources> optional = resourcesRepo.findById(id);
-        optional.orElseThrow(NullPointerException::new);
 
         Resources resources = modelMapper.map(dto, Resources.class);
         resources.setResourceRole(roleRepo.findByRoleName(dto.getRoleName()));
@@ -71,4 +56,13 @@ public class ResourcesService {
         // 실시간 업데이트
         urlMetadataSource.reload();
     }
+
+    @Transactional
+    public void delete(Long id){
+        Optional<Resources> optional = resourcesRepo.findById(id);
+        Resources resources = optional.orElseThrow(NullPointerException::new);
+        resources.setBlock(true);
+        resourcesRepo.save(resources);
+    };
+
 }

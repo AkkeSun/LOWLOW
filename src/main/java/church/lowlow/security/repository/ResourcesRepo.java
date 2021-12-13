@@ -14,11 +14,11 @@ import java.util.List;
 public interface ResourcesRepo extends JpaRepository<Resources, Long> {
 
     @EntityGraph(value = "getRole")
-    @Query("select r from Resources r order by r.orderNum")
+    @Query("select r from Resources r where r.block = false order by r.orderNum")
     List<Resources> findAllResources();
 
     @EntityGraph(value = "getRole")
-    @Query("select r from Resources r order by r.orderNum")
+    @Query("select r from Resources r where r.block = false order by r.orderNum desc")
     Page<Resources> getListForPage(Pageable pageable);
 
     @EntityGraph(value = "getRole")
@@ -29,5 +29,9 @@ public interface ResourcesRepo extends JpaRepository<Resources, Long> {
     @Query("select r from Resources r where r.resourceType = 'method' and r.block = false order by r.orderNum desc")
     List<Resources> findAllMethodResources();
 
+    @Query("select r from Resources r where r.resourceName = :resourcesName and r.block = false")
     Resources findByResourceName(String resourcesName);
+
+    @Query("select r from Resources r where r.orderNum = :num and r.block = false")
+    Resources findByOrderNum(int num);
 }
