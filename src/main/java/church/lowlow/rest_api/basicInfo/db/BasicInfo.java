@@ -20,7 +20,7 @@ import javax.persistence.*;
  * address 주소
  * callNumber 전화번호
  * kakaoPage 카카오페이지
- * liveWorshipURL 예배 링크
+ * liveWorshipURL 온라인 예배 링크 (Youtube Page, vimeo)
  * infoImage 교회 소개글 이미지 (최대 6개)
  * carouselImg 메인 carousel 이미지 (최대 6개)
  * organizationChart 섬기는 사람들 이미지 (최대 3개)

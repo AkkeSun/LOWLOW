@@ -6,10 +6,12 @@
 <head th:replace="admin/common/head"></head>
 
 <body>
-<div class="adminWrapper">
-   <div th:replace="admin/common/sidebar"></div>
-   <div class = 'mainContent'>
-      <h1>Main</h1>
+<div class="container-fluid">
+   <div class="row flex-nowrap">
+      <div th:replace="admin/common/sidebar"></div>
+      <div class="col py-3">
+         <h1>Main</h1>
+      </div>
    </div>
 </div>
 

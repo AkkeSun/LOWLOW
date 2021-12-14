@@ -73,7 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //=========== 인증 처리 ===============
         http
                 .formLogin()
-                .loginPage("/admin/login")
+                .loginPage("/adminLogin")
         .and()
                 .addFilterBefore(ajaxLoginFilter(), UsernamePasswordAuthenticationFilter.class)
         ;
@@ -145,7 +145,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     // ================== DB 인가처리 Filter ================
-    private String[] permitAllResources = {"/", "/admin/login", "/admin/longin*"};
+    private String[] permitAllResources = {"/", "/adminLogin", "/adminLogin*", "/adminLogout"};
     @Bean
     public PermitAllFilter customFilterSecurityInterceptor() throws Exception {
         PermitAllFilter permitAllFilter = new PermitAllFilter(permitAllResources);

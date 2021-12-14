@@ -17,16 +17,19 @@
 </script>
 
 <body>
-<div class="adminWrapper">
-    <div th:replace="admin/common/sidebar"></div>
-    <div class = 'mainContent container mt-5 ml-3'>
-        <th:block th:replace="admin/security/fragment/tabContents :: header"/>
-        <div class="tab-content">
-            <th:block th:replace="admin/security/fragment/tabContents :: ${userFragment}"/>
-            <th:block th:replace="admin/security/fragment/tabContents :: ${roleFragment}"/>
-            <th:block th:replace="admin/security/fragment/tabContents :: ${resourceFragment}"/>
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <div th:replace="admin/common/sidebar"></div>
+        <div class="col py-3">
+            <th:block th:replace="admin/security/fragment/tabContents :: header"/>
+            <div class="tab-content">
+                <th:block th:replace="admin/security/fragment/tabContents :: ${userFragment}"/>
+                <th:block th:replace="admin/security/fragment/tabContents :: ${roleFragment}"/>
+                <th:block th:replace="admin/security/fragment/tabContents :: ${resourceFragment}"/>
+            </div>
         </div>
     </div>
 </div>
+
 </body>
 </html>

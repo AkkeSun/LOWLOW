@@ -37,6 +37,11 @@ public class RoleService {
     }
 
     @Transactional
+    public List<Role> getRoleList() {
+        return roleRepo.getList();
+    }
+
+    @Transactional
     public void createRole(RoleDto dto) {
         Role role = modelMapper.map(dto, Role.class);
         roleRepo.save(role);

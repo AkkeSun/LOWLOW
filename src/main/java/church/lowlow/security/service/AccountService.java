@@ -67,6 +67,7 @@ public class AccountService implements UserDetailsService {
     public Account createUser(AccountDto dto){
         Account account = modelMapper.map(dto, Account.class);
         account.setUserRole(roleRepo.findByRoleName(dto.getRole()));
+        account.setPassword(passwordEncoder.encode(dto.getPassword()));
         return accountRepo.save(account);
     };
 

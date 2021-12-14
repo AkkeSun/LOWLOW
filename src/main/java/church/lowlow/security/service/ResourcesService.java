@@ -33,10 +33,15 @@ public class ResourcesService {
     public void createResource(ResourcesDto dto) {
 
         Resources resources = modelMapper.map(dto, Resources.class);
-        resources.setResourceRole(roleRepo.findByRoleName(dto.getRoleName()));
+        resources.setResourceRole(roleRepo.findByRoleName(dto.getRole()));
         resourcesRepo.save(resources);
         // 실시간 업데이트
         urlMetadataSource.reload();
+    }
+
+    @Transactional
+    public Resources getResource(Long id) {
+        return resourcesRepo.findById(id).orElseThrow(RuntimeException::new);
     }
 
     @Transactional
@@ -49,7 +54,7 @@ public class ResourcesService {
     public void updateResources(Long id, ResourcesDto dto) {
 
         Resources resources = modelMapper.map(dto, Resources.class);
-        resources.setResourceRole(roleRepo.findByRoleName(dto.getRoleName()));
+        resources.setResourceRole(roleRepo.findByRoleName(dto.getRole()));
         resources.setId(id);
 
         resourcesRepo.save(resources);

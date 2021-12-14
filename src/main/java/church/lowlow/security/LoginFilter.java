@@ -31,7 +31,7 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
 
-        // ajax 요청인지 확인 -> 굳이?
+        // ajax 요청인지 확인
         if(!isAjax(request))
             throw new IllegalStateException("Authentication is not supported");
 

@@ -13,26 +13,24 @@ function login() {
      let csrfHeader = $("#_csrf_header").attr('content');
      let csrfToken = $("#_csrf").attr('content');
 
-     let callback =
-             $.ajax({
-                  type       : "post",
-                  url        : "/ajax/login",
-                  data       : JSON.stringify(data), // object -> json String
-                  dataType   : "json",
-                  beforeSend: function (xhr) {
-                       xhr.setRequestHeader("Content-type", "application/json");
-                       xhr.setRequestHeader(csrfHeader, csrfToken)
-                  }
-             })
-
-     callback.success( data => {
-          location.href = "/admin";
-     });
-     callback.error( (xhr, status, error) => {
-          console.log("[STATUS] : " + xhr.status);
-          console.log("[MESSAGE] : " + xhr.responseText);
-          location.href = "/admin/login?error=true&exception=" + xhr.responseText;
-     })
+        $.ajax({
+             type       : "post",
+             url        : "/ajax/login",
+             data       : JSON.stringify(data), // object -> json String
+             dataType   : "json",
+             beforeSend : function (xhr) {
+                  xhr.setRequestHeader("Content-type", "application/json");
+                  xhr.setRequestHeader(csrfHeader, csrfToken)
+             },
+             success    : function(data){
+                  location.href = "/admin";
+             },
+             error      : function(xhr, status, error){
+                  console.log("[STATUS] : " + xhr.status);
+                  console.log("[MESSAGE] : " + xhr.responseText);
+                  location.href = "/adminLogin?error=true&exception=" + xhr.responseText;
+             }
+        });
 
 }
 </script>

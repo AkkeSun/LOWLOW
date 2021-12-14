@@ -7,7 +7,7 @@ import lombok.*;
  * resourceName : url = path (/test/**)
  *              : method = package.class.method (church.lowlow.api.service.testMethod)
  * orderNum     : 적용순서 = 낮을수록 순위가 높음
- * roleName     : 접근 가능 Role
+ * role     : 접근 가능 Role
  */
 @Data
 @ToString
@@ -18,6 +18,6 @@ public class ResourcesDto {
     private String resourceType;
     private String resourceName;
     private int orderNum;
-    private String roleName;
+    private String role;
 
 }

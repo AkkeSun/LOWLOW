@@ -33,7 +33,7 @@ public class SecurityPostListener implements ApplicationListener<ApplicationStar
     private final String PASSWORD = "1111";
 
     // RESOURCE
-    private final String RESOURCE_NAME = "/admin";
+    private final String RESOURCE_NAME = "/admin/**";
     private final String RESOURCE_TYPE = "url";
 
 

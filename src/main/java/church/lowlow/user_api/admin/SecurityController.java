@@ -29,7 +29,7 @@ import java.util.List;
 @Controller
 @Log4j2
 @RequestMapping("/admin/security")
-@SessionAttributes({"roleList",     "rolePagingData",
+@SessionAttributes({"roleList",     "rolePagingData", "roleListSub",
                     "resourceList", "resourcePagingData",
                     "accountList",  "accountPagingData", "nowTab"})
 public class SecurityController {
@@ -106,6 +106,12 @@ public class SecurityController {
             model.addAttribute("roleList", (List<Account>) session.getAttribute("roleList"));
             model.addAttribute("rolePagingData", (PagingDto) session.getAttribute("rolePagingData"));
         }
+        if(session.getAttribute("roleListSub") == null) {
+            model.addAttribute("roleListSub", roleService.getRoleList());
+        }
+        else{
+            model.addAttribute("roleListSub", (List<Account>) session.getAttribute("roleListSub"));
+        }
         if(session.getAttribute("resourceList") == null) {
             Page<Resources> page = resourcesService.getResourceWithPage(0);
             model.addAttribute("resourceList", page.getContent());
@@ -160,6 +166,7 @@ public class SecurityController {
     public String accountCreateView(Model model) {
 
         model.addAttribute("account", new AccountDto());
+        model.addAttribute("nowTab", "tab1");
         listInitialize(model);
 
         model.addAttribute("userFragment", "userCreate");
@@ -340,8 +347,10 @@ public class SecurityController {
 
 
 
-    //====================== RESOURCES ======================
-
+    /*********************************************
+     *                  ACCOUNT
+     *********************************************/
+    // ================ CREATE ==============
     @GetMapping("/resource")
     public String createResources(Model model) {
 
@@ -383,7 +392,7 @@ public class SecurityController {
     public String resourceDetailView(@PathVariable("id") Long id, Model model) {
 
         model.addAttribute("nowTab", "tab3");
-        model.addAttribute("role", roleService.getRole(id));
+        model.addAttribute("res", resourcesService.getResource(id));
         listInitialize(model);
 
         model.addAttribute("userFragment", "userList");

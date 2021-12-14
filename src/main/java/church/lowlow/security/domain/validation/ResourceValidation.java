@@ -27,8 +27,6 @@ public class ResourceValidation {
                 errors.rejectValue("resourceType", "wrongResourceType", "리소스타입을 입력하지 않았습니다");
             else if(StringNullCheck(dto.getResourceName()))
                 errors.rejectValue("resourceName", "wrongResourceName", "리소스이름을 입력하지 않았습니다");
-            else if(StringNullCheck(dto.getRoleName()))
-                errors.rejectValue("roleName", "wrongRoleName", "권한이름을 입력하지 않았습니다");
             else
                 nullCheck = false;
         }

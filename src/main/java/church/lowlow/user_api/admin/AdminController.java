@@ -13,16 +13,15 @@ import javax.servlet.http.HttpServletResponse;
  * index 이동 및 로그인 처리 컨트롤러
  */
 @Controller
-@RequestMapping("/admin")
-
+@RequestMapping
 public class AdminController {
     
-    @GetMapping
+    @GetMapping("/admin")
     public String adminMainView(){
         return "admin/index";
     }
     
-    @GetMapping("/login")
+    @GetMapping("/adminLogin")
     public String adminLoginView(@RequestParam(required = false) String error,
                                  @RequestParam(required = false) String exception,
                                  Model model, Authentication auth){
@@ -41,7 +40,7 @@ public class AdminController {
         return "admin/login";
     }
 
-    @GetMapping("/logout")
+    @GetMapping("/adminLogout")
     public String logout(HttpServletRequest request, HttpServletResponse response, Authentication auth) {
 
         if(auth != null)
@@ -53,7 +52,7 @@ public class AdminController {
     @ResponseBody
     @GetMapping("/denied")
     public String denied(){
-        return "error";
+        return "<script> alert('접근 권한이 없습니다'); location.href='/admin'; </script>";
     }
 
 }
