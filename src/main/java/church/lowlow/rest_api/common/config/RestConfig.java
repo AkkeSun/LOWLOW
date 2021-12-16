@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -25,5 +26,13 @@ public class RestConfig {
     @Bean
     public ModelMapper modelMapper(){
         return new ModelMapper();
+    }
+
+    @Bean
+    public WebClient webClient(){
+        String BASE_URL = "http://localhost:8090/api";
+        return WebClient.builder()
+                .baseUrl(BASE_URL)
+                .build();
     }
 }

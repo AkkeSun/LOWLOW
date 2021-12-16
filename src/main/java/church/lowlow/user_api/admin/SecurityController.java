@@ -289,6 +289,7 @@ public class SecurityController {
             sessionStatus.setComplete();
             model.addAttribute("nowTab", "tab2");
         }
+
         return returnMsg;
     }
 

@@ -1,6 +1,5 @@
 package church.lowlow.rest_api.member.db;
 
-import church.lowlow.rest_api.accounting.db.Accounting;
 import church.lowlow.rest_api.common.converter.LocalDateConverter;
 import church.lowlow.rest_api.common.entity.BaseTimeEntity;
 import church.lowlow.rest_api.common.entity.Image;
@@ -37,8 +36,6 @@ public class Member extends BaseTimeEntity{
     private String name;
 
     private String phoneNumber;
-
-    private String address;
 
     private String belong;
 

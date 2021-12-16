@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- HEADER -->
+<th:block th:fragment="header">
+<div class="container">
+<br>
+<h2>SECURITY</h2>
+<h5>페이지 보안 솔루션</h5>
+<br>
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a id='tab1' class="nav-link active" data-toggle="tab" href="#user">USER</a>
+    </li>
+    <li class="nav-item">
+        <a id='tab2' class="nav-link" data-toggle="tab" href="#role">ROLE</a>
+    </li>
+    <li class="nav-item">
+        <a id='tab3' class="nav-link" data-toggle="tab" href="#resource">RESOURCE</a>
+    </li>
+</ul>
+</div>
+</th:block>
+
+</body>
+</html>

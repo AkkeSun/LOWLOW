@@ -21,11 +21,11 @@
     <div class="row flex-nowrap">
         <div th:replace="admin/common/sidebar"></div>
         <div class="col py-3">
-            <th:block th:replace="admin/security/fragment/tabContents :: header"/>
+            <th:block th:replace="admin/security/fragment/navTab :: header"/>
             <div class="tab-content">
-                <th:block th:replace="admin/security/fragment/tabContents :: ${userFragment}"/>
-                <th:block th:replace="admin/security/fragment/tabContents :: ${roleFragment}"/>
-                <th:block th:replace="admin/security/fragment/tabContents :: ${resourceFragment}"/>
+                <th:block th:replace="admin/security/fragment/user     :: ${userFragment}"/>
+                <th:block th:replace="admin/security/fragment/role     :: ${roleFragment}"/>
+                <th:block th:replace="admin/security/fragment/resource :: ${resourceFragment}"/>
             </div>
         </div>
     </div>
