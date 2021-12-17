@@ -86,18 +86,28 @@ function ajaxComm(type, data, url, csrfHeader, csrfToken) {
 }
 
 // Ajax 콜백 처리 함수
-function ajaxCallbackProcess(data, type, redirectUrl){
+function ajaxCallbackProcess(isSecurity, data, type, redirectUrl){
 
     let returnMsg = "";
-    switch(type){
+
+    switch(type)
+    {
         case "post"    : returnMsg="성공적으로 등록되었습니다"; break;
         case "put"     : returnMsg="성공적으로 수정되었습니다"; break;
         case "delete"  : returnMsg="성공적으로 삭제되었습니다";
     }
 
-    if(data != 'success')
-        alert(data);
-    else{
+    if(isSecurity)
+    {
+        if(data != 'success')
+            alert(data);
+        else{
+            alert(returnMsg);
+            location.href = redirectUrl;
+        }
+    }
+    else
+    {
         alert(returnMsg);
         location.href = redirectUrl;
     }
@@ -144,9 +154,10 @@ function securityCreateFunc(database){
     let csrfToken   = $("#_csrf").attr('content');
     let redirectUrl = securityRedirectUrlSetting(database);
     let data        = securityFormDataSetting(database);
+    let isSecurity  = true;
 
     let callback = ajaxComm("post", data, url, csrfHeader, csrfToken);
-    callback.done( data => ajaxCallbackProcess(data, type, redirectUrl) );
+    callback.done( data => ajaxCallbackProcess(isSecurity, data, type, redirectUrl) );
 }
 
 function securityUpdateFunc(database){
@@ -157,9 +168,10 @@ function securityUpdateFunc(database){
     let csrfToken   = $("#_csrf").attr('content');
     let redirectUrl = securityRedirectUrlSetting(database);
     let data        = securityFormDataSetting(database);
+    let isSecurity  = true;
 
     let callback = ajaxComm(type, data, url, csrfHeader, csrfToken);
-    callback.done( data => ajaxCallbackProcess(data, type, redirectUrl) );
+    callback.done( data => ajaxCallbackProcess(isSecurity, data, type, redirectUrl) );
 }
 
 function securityDeleteFunc(database){
@@ -171,18 +183,12 @@ function securityDeleteFunc(database){
         let csrfHeader  = $("#_csrf_header").attr('content');
         let csrfToken   = $("#_csrf").attr('content');
         let redirectUrl = securityRedirectUrlSetting(database);
+        let isSecurity  = true;
 
         let callback = ajaxComm(type, "", url, csrfHeader, csrfToken);
-        callback.done( data => ajaxCallbackProcess(data, type, redirectUrl) );
+        callback.done( data => ajaxCallbackProcess(isSecurity, data, type, redirectUrl) );
     }
 }
-
-
-
-
-
-
-
 
 
 
@@ -237,7 +243,7 @@ function churchOfficerChangeToKor(churchOfficer){
 function memberListLoad(nowPage){
 
     let type        = "get";
-    let data         = "";
+    let data        = "";
     let url         = "/api/members";
     let csrfHeader  = $("#_csrf_header").attr('content');
     let csrfToken   = $("#_csrf").attr('content');
@@ -259,7 +265,7 @@ function memberListLoad(nowPage){
                                     ${data.belong}
                                 </td>
                                 <td style="text-align: left;">
-                                    <a href='/admin/security/account/ + ${data.id}'>
+                                    <a href='/admin/members/${data.id}'>
                                         ${data.name}
                                     </a>
                                 </td>
@@ -289,29 +295,48 @@ function memberListLoad(nowPage){
 
 function memberCreate(){
 
-    let fileNameList = fileUpload();
-    alert(JSON.stringify(fileNameList));
+    let csrfHeader  = $("#_csrf_header").attr('content');
+    let csrfToken   = $("#_csrf").attr('content');
+    let type        = "post";
+    let url         = "/api/members";
+    let redirectUrl = "/admin/members";
+    let isSecurity  = false;
+    let data        = objToJson($('#withFileUploadFrm').serializeArray());
+
+    if($("#image").val()){
+        let fileUploadCallback = ajaxFileUpload(csrfHeader, csrfToken);
+        fileUploadCallback.done( uploadData => {
+            data.uploadName   = uploadData.uploadName;
+            data.originalName = uploadData.originalName;
+        });
+    }
+
+    let callback = ajaxComm(type, JSON.stringify(data), url, csrfHeader, csrfToken);
+
+    callback.done( data => ajaxCallbackProcess(isSecurity, data, type, redirectUrl) );
+
+    callback.fail ( (xhr, status, error) => {
+        let errorResource = JSON.parse(xhr.responseText).content[0];
+        console.log("[ERROR STATUS] : " + xhr.status);
+        console.log(errorResource);
+        alert(errorResource.defaultMessage);
+    });
+
 };
 
 
-function fileUpload(){
-
-    if( $("#image").val() ) {
-
-        let csrfHeader  = $("#_csrf_header").attr('content');
-        let csrfToken   = $("#_csrf").attr('content');
+function ajaxFileUpload (csrfHeader, csrfToken){
 
         let callback =
-            $.ajax({
-                type       : "post",
-                url        : "/fileUpload",
-                enctype    : 'multipart/form-data',
-                processData: false,
-                contentType: false,
-                data       :  new FormData($("#withFileUploadFrm")[0]),
-                beforeSend : xhr  => { xhr.setRequestHeader(csrfHeader, csrfToken) },
-                done       : data => { return data; }
-            });
-    }
+        $.ajax({
+            type       : "post",
+            url        : "/fileUpload",
+            enctype    : 'multipart/form-data',
+            async      : false,
+            processData: false,
+            contentType: false,
+            data       : new FormData($("#withFileUploadFrm")[0]),
+            beforeSend : xhr  => { xhr.setRequestHeader(csrfHeader, csrfToken) }
+        });
+        return callback;
 };
-

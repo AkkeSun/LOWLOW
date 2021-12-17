@@ -2,7 +2,7 @@ package church.lowlow.rest_api.member.db;
 
 import church.lowlow.rest_api.common.converter.LocalDateConverter;
 import church.lowlow.rest_api.common.entity.BaseTimeEntity;
-import church.lowlow.rest_api.common.entity.Image;
+import church.lowlow.rest_api.common.entity.Files;
 import church.lowlow.rest_api.common.entity.Writer;
 import lombok.*;
 
@@ -51,7 +51,7 @@ public class Member extends BaseTimeEntity{
     private ChurchOfficer churchOfficer;
 
     @Embedded
-    private Image image;
+    private Files image;
 
     @Embedded
     private Writer writer;

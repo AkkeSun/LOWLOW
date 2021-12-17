@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberRepository extends JpaRepository<Member, Integer> {
     Member findByName(String name);
-    Member findByNameAndBirthYear(String name, int birthYear);
+    Member findByNameAndPhoneNumber(String name, String phoneNumber);
 }

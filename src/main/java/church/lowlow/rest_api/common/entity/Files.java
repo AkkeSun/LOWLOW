@@ -10,7 +10,7 @@ import javax.persistence.Embeddable;
  */
 @Embeddable
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
-public class Image {
+public class Files {
     private String originalName;
     private String uploadName;
 }

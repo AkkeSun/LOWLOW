@@ -12,4 +12,5 @@ public class WebConfig implements WebMvcConfigurer{
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         WebMvcConfigurer.super.configureDefaultServletHandling(configurer);
     }
+
 }

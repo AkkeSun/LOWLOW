@@ -21,6 +21,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 
+import static church.lowlow.rest_api.common.util.WriterUtil.getWriter;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.http.ResponseEntity.badRequest;
 
@@ -41,16 +42,15 @@ public class MemberController {
      * CREATE API
      */
     @PostMapping
-    public ResponseEntity createMember(@RequestBody @Valid MemberDto dto,
+    public ResponseEntity createMember(@RequestBody MemberDto dto,
                                        Errors errors){
         // check
-        if(errors.hasErrors())
-            return badRequest().body(new MemberErrorsResource(errors));
-        validation.validate(dto, errors);
+        validation.createValidate(dto, errors);
         if(errors.hasErrors())
             return badRequest().body(new MemberErrorsResource(errors));
 
         // save
+        dto.setWriter( getWriter() );
         Member member = modelMapper.map(dto, Member.class);
         Member newMember = repository.save(member);
         URI createdUri = linkTo(MemberController.class).slash(newMember.getId()).toUri();

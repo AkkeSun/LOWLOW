@@ -1,7 +1,7 @@
 package church.lowlow.rest_api.weekly.db;
 
 import church.lowlow.rest_api.common.entity.BaseTimeEntity;
-import church.lowlow.rest_api.common.entity.Image;
+import church.lowlow.rest_api.common.entity.Files;
 import church.lowlow.rest_api.common.entity.Writer;
 import lombok.*;
 
@@ -34,26 +34,26 @@ public class Weekly extends BaseTimeEntity {
             @AttributeOverride(name = "originalName", column = @Column(name = "img1_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "img1_UploadName")),
     })
-    private Image img1;
+    private Files img1;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "img2_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "img2_UploadName")),
     })
-    private Image img2;
+    private Files img2;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "img3_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "img3_UploadName")),
     })
-    private Image img3;
+    private Files img3;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "img4_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "img4_UploadName")),
     })
-    private Image img4;
+    private Files img4;
 }

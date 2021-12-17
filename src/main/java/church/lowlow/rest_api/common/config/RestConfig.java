@@ -30,7 +30,7 @@ public class RestConfig {
 
     @Bean
     public WebClient webClient(){
-        String BASE_URL = "http://localhost:8090/api";
+        String BASE_URL = "http://localhost:8080/api";
         return WebClient.builder()
                 .baseUrl(BASE_URL)
                 .build();

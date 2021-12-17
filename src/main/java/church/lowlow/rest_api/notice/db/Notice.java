@@ -1,7 +1,7 @@
 package church.lowlow.rest_api.notice.db;
 
 import church.lowlow.rest_api.common.entity.BaseTimeEntity;
-import church.lowlow.rest_api.common.entity.Image;
+import church.lowlow.rest_api.common.entity.Files;
 import church.lowlow.rest_api.common.entity.Writer;
 import lombok.*;
 
@@ -37,40 +37,40 @@ public class Notice extends BaseTimeEntity {
             @AttributeOverride(name = "originalName", column = @Column(name = "img1_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "img1_UploadName")),
     })
-    private Image image1;
+    private Files image1;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "img2_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "img2_UploadName")),
     })
-    private Image image2;
+    private Files image2;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "img3_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "img3_UploadName")),
     })
-    private Image image3;
+    private Files image3;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "img4_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "img4_UploadName")),
     })
-    private Image image4;
+    private Files image4;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "img5_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "img5_UploadName")),
     })
-    private Image image5;
+    private Files image5;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "img6_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "img6_UploadName")),
     })
-    private Image image6;
+    private Files image6;
 }

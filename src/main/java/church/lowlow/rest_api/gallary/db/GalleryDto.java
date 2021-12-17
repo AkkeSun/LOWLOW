@@ -1,6 +1,6 @@
 package church.lowlow.rest_api.gallary.db;
 
-import church.lowlow.rest_api.common.entity.Image;
+import church.lowlow.rest_api.common.entity.Files;
 import church.lowlow.rest_api.common.entity.Writer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,10 +23,10 @@ public class GalleryDto {
     @NotNull(message = "작성자는 비워둘 수 없습니다")
     private Writer writer;
 
-    private Image image1;
-    private Image image2;
-    private Image image3;
-    private Image image4;
-    private Image image5;
-    private Image image6;
+    private Files image1;
+    private Files image2;
+    private Files image3;
+    private Files image4;
+    private Files image5;
+    private Files image6;
 }
