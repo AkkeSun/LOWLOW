@@ -4,7 +4,7 @@ import lombok.*;
 
 import javax.persistence.Embeddable;
 /**
- * [ 업로드 이미지 ]
+ * [ 파일 업로드 정보 ]
  * originalName 원본명
  * uploadName 업로드명
  */

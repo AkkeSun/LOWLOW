@@ -18,7 +18,7 @@ import java.time.LocalDate;
  * phoneNumber 전화번호
  * address 주소
  * belong 교구
- * birthYear 또래 (91)
+ * birthDay 생일
  * regiDate 가입일
  * gender 성별
  * churchOfficer 직분
@@ -39,7 +39,7 @@ public class Member extends BaseTimeEntity{
 
     private String belong;
 
-    private int birthYear;
+    private LocalDate birthDay;
 
     @Convert(converter = LocalDateConverter.class)
     private LocalDate regiDate;

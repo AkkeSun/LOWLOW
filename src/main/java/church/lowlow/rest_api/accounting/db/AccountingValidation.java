@@ -38,11 +38,9 @@ public class AccountingValidation implements Validator {
     public void notUnKnowUserValidation(AccountingDto dto, Errors errors){
         Member member = memberRepository.findByName(dto.getName());
 
-        if(dto.getBirthYear()==0)
-            errors.rejectValue("birthYear", "wrongBirthYear", "또래(생년)를 입력하세요");
-        else if (member == null)
+        if (member == null)
             errors.rejectValue("name", "wrongName", "존재하지 않은 사람입니다");
-        else if(dto.getBirthYear() != member.getBirthYear())
+        else if(dto.getBirthDay() != member.getBirthDay())
             errors.rejectValue("birthDay", "wrongBirthDay", "존재하지 않은 사람입니다");
     }
 }

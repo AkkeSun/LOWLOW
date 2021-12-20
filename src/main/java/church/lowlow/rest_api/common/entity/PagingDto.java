@@ -1,16 +1,13 @@
 package church.lowlow.rest_api.common.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class PagingDto {
-
     private int nowPage;
     private int totalPages;
 }

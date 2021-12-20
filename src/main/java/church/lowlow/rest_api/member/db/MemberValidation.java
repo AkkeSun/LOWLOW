@@ -29,8 +29,6 @@ public class MemberValidation {
                 errors.rejectValue("name", "wrongName", "이름은 비워둘 수 없습니다");
             else if(!pattern.matcher(dto.getPhoneNumber()).matches())
                 errors.rejectValue("phoneNumber", "wrongPhoneNumber", "000-0000-0000 형식의 전화번호를 입력하세요");
-            else if(dto.getBirthYear() == 0)
-                errors.rejectValue("birthYear", "wrongBirthYear", "또래(생년)는 비워둘수 없습니다");
             else if(dto.getGender() == null)
                 errors.rejectValue("gender", "wrongGender", "성별은 비워둘 수 없습니다");
             else if(dto.getChurchOfficer() == null)

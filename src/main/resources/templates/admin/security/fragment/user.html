@@ -60,6 +60,12 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label for="password" class="col-sm-2 control-label">교구 (목장)</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control input-large" id="belong" name="belong" placeholder="리더의 경우 입력" th:value="*{belong}">
+                    </div>
+                </div>
+                <div class="form-group">
                     <label for="roleName" class="col-sm-2 control-label">권한</label>
                     <div class="col-sm-10">
                         <select class="custom-select" name="role" id="roleName">
@@ -69,6 +75,8 @@
                         </select>
                     </div>
                 </div>
+                <br>
+                &nbsp;&nbsp;
                 <button type="button" th:onclick="securityCreateFunc('account')" class="btn btn-outline-primary">등록</button>
                 <a class="btn btn-outline-primary" th:href="@{/admin/security}">목록 </a>
             </form>
@@ -85,19 +93,25 @@
                 <div class="form-group">
                     <label for="username" class="col-sm-2 control-label">아이디</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control input-large" id="username" name="username" placeholder="username" th:value="*{username}" readonly>
+                        <input type="text" class="form-control input-large" id="username" name="username" placeholder="username" th:value="*{username}">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="password" class="col-sm-2 control-label">비밀번호</label>
                     <div class="col-sm-10">
-                        <input type="password" class="form-control input-large" id="password" name="password" placeholder="변경 시에만 입력하세요" required>
+                        <input type="password" class="form-control input-large" id="password" name="password" placeholder="변경 시에만 입력하세요">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="password" class="col-sm-2 control-label">비밀번호 확인</label>
                     <div class="col-sm-10">
-                        <input type="password" class="form-control input-large" id="passwordCheck" name="passwordCheck" placeholder="Password check" required>
+                        <input type="password" class="form-control input-large" id="passwordCheck" name="passwordCheck" placeholder="Password check">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="col-sm-2 control-label">교구 (목장)</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control input-large" id="belong" name="belong" placeholder="리더의 경우 입력" th:value="*{belong}">
                     </div>
                 </div>
                 <div class="form-group">
@@ -110,6 +124,8 @@
                         </select>
                     </div>
                 </div>
+                <br>
+                &nbsp;&nbsp;
                 <button type="button" th:onclick="securityUpdateFunc('account')" class="btn btn-outline-primary">수정</button>
                 <button type="button" th:onclick="securityDeleteFunc('account')" class="btn btn-outline-primary">삭제</button>
                 <a class="btn btn-outline-primary" th:href="@{/admin/security}">목록 </a>

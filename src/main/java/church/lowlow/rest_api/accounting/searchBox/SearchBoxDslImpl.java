@@ -99,18 +99,6 @@ public class SearchBoxDslImpl implements SearchBoxDsl {
                     .fetchResults();
         }
 
-        // 또래 (생년) 검색
-        else
-        if(key.equals("birthYear")){
-            result = jpaQueryFactory.selectFrom(q1)
-                    .where(
-                            q1.member.birthYear.eq((int)val),
-                            q1.offeringDate.between(startDate, endDate)
-                    )
-                    .orderBy(q1.offeringDate.desc())
-                    .fetchResults();
-        }
-
         // 직분 검색
         else
         if(key.equals("churchOfficer")){

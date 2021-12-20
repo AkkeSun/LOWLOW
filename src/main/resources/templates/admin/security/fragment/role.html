@@ -56,6 +56,8 @@
                     <input class="form-control input-large" id="roleDesc" name="roleDesc" type="text" th:field="*{roleDesc}" placeholder="설명"/>
                 </div>
             </div>
+            <br>
+            &nbsp;&nbsp;
             <input type="button" class="btn btn-outline-primary" th:onclick="securityCreateFunc('role')" value="등록"/>
             <a class="btn btn-outline-primary" th:href="@{/admin/security?tab=2}">목록</a>
         </form>
@@ -86,6 +88,8 @@
                     <input class="form-control input-large" id="roleDesc" name="roleDesc" type="text" th:field="*{roleDesc}" placeholder="설명"/>
                 </div>
             </div>
+            <br>
+            &nbsp;&nbsp;
             <input type="button" class="btn btn-outline-primary" th:onclick="securityUpdateFunc('role')" value="수정"/>
             <button type="button" th:onclick="securityDeleteFunc('role')" class="btn btn-outline-primary">삭제</button>
             <a class="btn btn-outline-primary" th:href="@{/admin/security?tab=2}">목록</a>

@@ -11,17 +11,16 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Log4j2
 @RestController
-@RequestMapping("/fileUpload")
+@RequestMapping("/file")
 public class FileController {
 
-    @PostMapping
-    public Files MultipartHttpServletRequestUpload(MultipartHttpServletRequest mRequest, RedirectAttributes attributes) throws JsonProcessingException {
+    @PostMapping("/upload")
+    public Files MultipartHttpServletRequestUpload(MultipartHttpServletRequest mRequest) throws JsonProcessingException {
 
         // properties 에서 받아오기
         String path = "C:/upload/";
@@ -56,5 +55,23 @@ public class FileController {
         }
 
         return files;
+    }
+
+
+    @PostMapping("delete")
+    public void fileDelete(String uploadFileName){
+
+        // properties 에서 받아오기
+        String path = "C:/upload/"+uploadFileName;
+
+        File deleteFile = new File(path);
+
+        if(deleteFile.exists()) {
+            deleteFile.delete();
+            log.info("File Delete Success");
+        } else {
+            log.info("File Delete Fail");
+        }
+
     }
 }

@@ -19,6 +19,8 @@ public class Account {
 
     private boolean block; // 차단 유무
 
+    private String belong; // 교구 : 교구 리더인 경우 입력
+
     @JsonManagedReference // 순환참조 방지 (부모 엔티티에 붙이기)
     @ManyToOne(fetch = FetchType.EAGER, cascade={CascadeType.ALL})
     private Role userRole;

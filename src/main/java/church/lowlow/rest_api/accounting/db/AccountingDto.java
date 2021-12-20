@@ -38,7 +38,7 @@ public class AccountingDto {
     @NotNull(message = "작성자는 비워둘 수 없습니다")
     private Writer writer;
 
-    private int birthYear;
+    private LocalDate birthDay;
 
     private String note;
 

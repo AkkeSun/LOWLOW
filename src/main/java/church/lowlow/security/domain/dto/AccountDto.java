@@ -24,6 +24,8 @@ public class AccountDto {
     @NotNull
     private String passwordCheck;
 
+    private String belong; // 교구 : 교구 리더인 경우 입력
+
     @NotNull
     private String role;
 

@@ -6,7 +6,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
 
-
 @Entity
 @Getter @Setter @ToString(exclude = {"roleSet"}) @EqualsAndHashCode(of = "id")
 @NoArgsConstructor @AllArgsConstructor @Builder

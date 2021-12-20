@@ -73,12 +73,10 @@
                     </select>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="col-sm-offset-1 col-sm-10">
-                    <button type="button" class="btn btn-outline-primary" th:onclick="securityCreateFunc('resource')">등록</button>
-                    <a class="btn btn-outline-primary" th:href="@{/admin/security?tab=3}">목록 </a>
-                </div>
-            </div>
+            <br>
+            &nbsp;&nbsp;
+            <button type="button" class="btn btn-outline-primary" th:onclick="securityCreateFunc('resource')">등록</button>
+            <a class="btn btn-outline-primary" th:href="@{/admin/security?tab=3}">목록 </a>
         </form>
     </div>
 </th:block>
@@ -120,13 +118,11 @@
                     </select>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="col-sm-offset-1 col-sm-10">
-                    <button type="button" class="btn btn-outline-primary" th:onclick="securityUpdateFunc('resource')">수정</button>
-                    <button type="button" th:onclick="securityDeleteFunc('resource')" class="btn btn-outline-primary">삭제</button>
-                    <a class="btn btn-outline-primary" th:href="@{/admin/security?tab=3}">목록 </a>
-                </div>
-            </div>
+            <br>
+            &nbsp;&nbsp;
+            <button type="button" class="btn btn-outline-primary" th:onclick="securityUpdateFunc('resource')">수정</button>
+            <button type="button" th:onclick="securityDeleteFunc('resource')" class="btn btn-outline-primary">삭제</button>
+            <a class="btn btn-outline-primary" th:href="@{/admin/security?tab=3}">목록 </a>
         </form>
     </div>
 </th:block>

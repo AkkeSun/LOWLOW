@@ -27,7 +27,7 @@ public class MemberDto {
 
     private String phoneNumber;
 
-    private int birthYear;
+    private LocalDate birthDay;
 
     private Gender gender;
 
@@ -37,8 +37,8 @@ public class MemberDto {
 
     private LocalDate regiDate;
 
-    private Writer writer;
+    private String originalName;
 
-    private Files image;
+    private String uploadName;
 
 }

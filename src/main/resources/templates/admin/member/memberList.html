@@ -28,7 +28,7 @@
                         <th scope="col">교구</th>
                         <th scope="col">이름</th>
                         <th scope="col">전화번호</th>
-                        <th scope="col">또래(생년)</th>
+                        <th scope="col">생년월일</th>
                         <th scope="col">직분</th>
                         <th scope="col">등록일</th>
                     </tr>
@@ -54,7 +54,7 @@
                     <div class="col-sm-4">
                         <input type="text" class="form-control input-group-sm" id="searchData" placeholder="검색어">
                     </div>
-                    <button class="btn btn-outline-primary" style="margin-right: 10px">검색</button>
+                    <button class="btn btn-outline-primary" style="margin-right: 10px" th:onclick="memberSearch()">검색</button>
                     <a class="btn btn-outline-primary" th:href="@{/admin/members/create}">성도 등록</a>
                 </div>
             </div>

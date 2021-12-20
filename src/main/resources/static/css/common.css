@@ -14,16 +14,17 @@
     grid-row: 2;
 }
 
-
-
-.footer{
-    clear:both;
-}
-
 .sidebarColor{
     color: #252625;
 }
 
 .bgColoe{
     background-color: #dfeae3;
+}
+
+
+
+.profileImg{
+    max-height: 500px;
+    max-width: 300px;
 }

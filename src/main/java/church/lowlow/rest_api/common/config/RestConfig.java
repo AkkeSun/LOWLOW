@@ -35,4 +35,5 @@ public class RestConfig {
                 .baseUrl(BASE_URL)
                 .build();
     }
+
 }
