@@ -7,10 +7,9 @@
 
 <script th:inline="javascript">
     $(document).ready(function(){
-        $("#regiDate").datepicker({format : "yyyy-mm-dd", todayHighlight : true, autoclose : true,  language : "ko"});
-        $("#birthDay").datepicker({format : "yyyy-mm-dd", todayHighlight : true, autoclose : true,  language : "ko"});
-        $("#memberUpdate").hide();
-        $("#uploadImg").hide();
+        $("#startDate").datepicker({format : "yyyy-mm-dd", todayHighlight : true, autoclose : true,  language : "ko"});
+        $("#endDate").datepicker({format : "yyyy-mm-dd", todayHighlight : true, autoclose : true,  language : "ko"});
+        $("#accountingUpdate").hide();
     });
 </script>
 
@@ -20,11 +19,11 @@
     <div class="row flex-nowrap">
         <div th:replace="admin/common/sidebar"></div>
         <div class="col py-3">
-            <th:block th:replace="admin/member/fragment :: memberTitle"/>
+            <th:block th:replace="admin/accounting/fragment :: accountingTitle"/>
 
             <!-- Main Contents -->
             <div class="container">
-                <form class="form-horizontal" id="withFileUploadFrm" th:object="${member}" enctype="multipart/form-data">
+                <form class="form-horizontal" id="withFileUploadFrm" th:object="${accounting}" enctype="multipart/form-data">
                     <input type="hidden" id="id" th:value="*{id}">
                     <div class="form-group">
                         <label for="name" class="col-sm-2 control-label">이름</label>

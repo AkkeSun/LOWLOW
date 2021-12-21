@@ -3,7 +3,7 @@ package church.lowlow.rest_api.accounting.searchBox;
 import lombok.*;
 
 /**
- * 헌금 종류별 금액 분류를 위한 DTO
+ * 헌금 종류별 총액을 구하기 위한 DTO
  */
 @Data
 @Builder

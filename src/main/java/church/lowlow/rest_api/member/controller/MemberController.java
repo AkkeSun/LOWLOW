@@ -3,6 +3,7 @@ package church.lowlow.rest_api.member.controller;
 import church.lowlow.rest_api.common.entity.Files;
 import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
+import church.lowlow.rest_api.common.entity.Writer;
 import church.lowlow.rest_api.member.db.ChurchOfficer;
 import church.lowlow.rest_api.member.db.MemberValidation;
 import church.lowlow.rest_api.member.repository.MemberRepository;
@@ -19,6 +20,7 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,9 +80,10 @@ public class MemberController {
      */
     @GetMapping
     public ResponseEntity getMembers(PagedResourcesAssembler<Member> assembler,
-                                     String searchId, String searchData, int nowPage) {
+                                     SearchDto searchDto, int nowPage) {
 
-        Page<Member> page = searchData(searchId, searchData, nowPage);
+        Page<Member> page = searchData(searchDto, nowPage);
+
         var pagedResources = assembler.toResource(page, e -> new MemberResource(e));
         return ResponseEntity.ok(pagedResources);
     }
@@ -90,7 +93,6 @@ public class MemberController {
         Optional<Member> optional = repository.findById(id);
         Member member = optional.orElseThrow(ArithmeticException::new);
 
-        // 로그인 유무 체크 후 로그인 했으면 update, delete url 넣어주기
         MemberResource resource = new MemberResource(member);
         return ResponseEntity.ok(resource);
     }
@@ -101,19 +103,19 @@ public class MemberController {
      * UPDATE API
      */
     @PutMapping("/{id}")
-    public ResponseEntity updateMembers(@RequestBody @Valid MemberDto dto,
+    public ResponseEntity updateMembers(@RequestBody MemberDto dto,
                                         @PathVariable Integer id,
                                         Errors errors){
 
         // check
-        Optional<Member> optional = repository.findById(id);
-        if(optional.isEmpty())
-            return ResponseEntity.notFound().build();
+        validation.basicValidate(dto, errors);
         if(errors.hasErrors())
             return badRequest().body(new MemberErrorsResource(errors));
 
-        // save
+        // update
         Member member = modelMapper.map(dto, Member.class);
+        member.setWriter( getWriter() );
+        member.setImage(Files.builder().originalName(dto.getOriginalName()).uploadName(dto.getUploadName()).build());
         member.setId(id);
         Member updateMember = repository.save(member);
 
@@ -147,11 +149,16 @@ public class MemberController {
 
 
 
+
+    /*****************************************
+     *              Util Method
+     ******************************************/
     // ============== 페이지 검색 함수 ==============
-    public Page<Member> searchData(String searchId, String searchData, int nowPage){
+    public Page<Member> searchData(SearchDto searchDto, int nowPage){
 
         Pageable pageable = PageRequest.of(nowPage, 10);
-
+        String searchId = searchDto.getSearchId();
+        String searchData = searchDto.getSearchData();
         if(!StringNullCheck(searchData)){
             switch(searchId){
                 case "belong"        : return repository.findAllByBelong(searchData, pageable);

@@ -3,16 +3,19 @@ package church.lowlow.rest_api.accounting.searchBox;
 import church.lowlow.rest_api.accounting.db.Accounting;
 import church.lowlow.rest_api.accounting.db.OfferingKind;
 import church.lowlow.rest_api.accounting.db.QAccounting;
+import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.member.db.ChurchOfficer;
-import church.lowlow.rest_api.member.db.QMember;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+
+import static church.lowlow.rest_api.common.util.StringUtil.StringNullCheck;
 
 public class SearchBoxDslImpl implements SearchBoxDsl {
 
@@ -28,14 +31,14 @@ public class SearchBoxDslImpl implements SearchBoxDsl {
 
 
     @Override
-    public Page<Accounting> searchBox(SearchBox searchBox, Pageable pageable) {
+    public Page<Accounting> searchBox(SearchDto searchDto, int nowPage) {
 
         QueryResults<Accounting> result = null;
 
-        String key = searchBox.getKey();
-        Object val = searchBox.getVal();
-        LocalDate startDate = searchBox.getStartDate();
-        LocalDate endDate = searchBox.getEndDate();
+        String key          = searchDto.getSearchId();
+        String val          = searchDto.getSearchData();
+        LocalDate startDate = searchDto.getStartDate();
+        LocalDate endDate   = searchDto.getEndDate();
         
         // 시작일, 종료일 미입력시 전체 기간 검색
         if(startDate == null)
@@ -44,7 +47,7 @@ public class SearchBoxDslImpl implements SearchBoxDsl {
             endDate   = LocalDate.of(2100,1,1);
 
         // 전체 검색
-        if(key == null){
+        if(StringNullCheck(val)){
             result = jpaQueryFactory.selectFrom(q1)
                     .where(q1.offeringDate.between(startDate, endDate))
                     .orderBy(q1.offeringDate.desc())
@@ -111,6 +114,7 @@ public class SearchBoxDslImpl implements SearchBoxDsl {
                     .fetchResults();
         }
 
+        Pageable pageable = PageRequest.of(nowPage, 10);
         return new PageImpl<>(result.getResults(), pageable, result.getTotal());
     }
 }

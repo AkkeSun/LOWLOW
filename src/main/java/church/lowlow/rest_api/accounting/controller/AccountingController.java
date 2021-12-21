@@ -7,14 +7,14 @@ import church.lowlow.rest_api.accounting.repository.AccountingRepository;
 import church.lowlow.rest_api.accounting.resource.AccountingErrorsResource;
 import church.lowlow.rest_api.accounting.resource.AccountingResource;
 import church.lowlow.rest_api.accounting.searchBox.MoneyBox;
-import church.lowlow.rest_api.accounting.searchBox.SearchBox;
 import church.lowlow.rest_api.accounting.searchBox.SerchBoxValidation;
+import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.member.repository.MemberRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
@@ -28,6 +28,7 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 
+import static church.lowlow.rest_api.common.util.WriterUtil.getWriter;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.http.ResponseEntity.badRequest;
 
@@ -42,7 +43,7 @@ public class AccountingController {
     private MemberRepository memberRepository;
 
     @Autowired
-    AccountingValidation accountingValidation;
+    private AccountingValidation accountingValidation;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -55,20 +56,19 @@ public class AccountingController {
      * CREATE API
      */
     @PostMapping
-    public ResponseEntity createAccounting(@RequestBody @Valid AccountingDto dto,
+    public ResponseEntity createAccounting(@RequestBody AccountingDto dto,
                                            Errors errors){
 
         // check
-        if(errors.hasErrors())
-            return badRequest().body(new AccountingErrorsResource(errors));
         accountingValidation.validate(dto, errors);
         if (errors.hasErrors())
             return badRequest().body(new AccountingErrorsResource(errors));
 
         // save
         Accounting accounting = modelMapper.map(dto, Accounting.class);
-        Member findMember = memberRepository.findByName(dto.getName());
-        accounting.setMember(findMember);
+        accounting.setMember(memberRepository.findById(dto.getMemberId()).get());
+        accounting.setWriter(getWriter());
+
         Accounting newAccounting = accountingRepository.save(accounting);
         URI createdUri = linkTo(AccountingController.class).slash(newAccounting.getId()).toUri();
 
@@ -86,21 +86,20 @@ public class AccountingController {
      * READ API
      */
     @GetMapping
-    public ResponseEntity getAccounting(@RequestBody SearchBox searchBox, Errors errors,
-                                        Pageable pageable,
+    public ResponseEntity getAccounting(SearchDto searchDto, Errors errors,
+                                        int nowPage,
                                         PagedResourcesAssembler<Accounting> assembler) throws ParseException {
 
-        // searchBox 검증
-        if(searchBox != null ){
-            serchBoxValidation.validate(searchBox, errors);
+        // 시작일, 종료일 검색
+        if(searchDto.getStartDate() != null && searchDto.getEndDate() != null ){
+            serchBoxValidation.dateValidate(searchDto, errors);
             if(errors.hasErrors()) return badRequest().body(new AccountingErrorsResource(errors));
         }
 
         // 데이터 로드
-        Page<Accounting> page = accountingRepository.searchBox(searchBox, pageable);
+        Page<Accounting> page = accountingRepository.searchBox(searchDto, nowPage);
         
         // 종류별 금액 출력하는 함수 사용하기
-        // 로그인 유무 체크 후 로그인 했으면 update, delete url 넣어주기
         var pagedResources = assembler.toResource(page, e -> new AccountingResource(e));
         return ResponseEntity.ok(pagedResources);
     }
@@ -110,7 +109,6 @@ public class AccountingController {
         Optional<Accounting> optional = accountingRepository.findById(id);
         Accounting accounting = optional.orElseThrow(ArithmeticException::new);
 
-        // 로그인 유무 체크 후 로그인 했으면 update, delete url 넣어주기
         AccountingResource resource = new AccountingResource(accounting);
         return ResponseEntity.ok(resource);
     }
@@ -138,7 +136,9 @@ public class AccountingController {
 
         // update
         Accounting accounting = modelMapper.map(dto, Accounting.class);
-        Member member = memberRepository.findByName(dto.getName());
+
+        // 유효성 검사
+        Member member = memberRepository.findById(dto.getMemberId()).get();
         accounting.setMember(member);
         accounting.setId(id);
         Accounting updateAccounting = accountingRepository.save(accounting);

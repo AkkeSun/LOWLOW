@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+<head th:replace="admin/common/head"></head>
+
+<script th:inline="javascript">
+    $(document).ready(function(){
+        $("#offeringDate").datepicker({format : "yyyy-mm-dd", todayHighlight : true, autoclose : true,  language : "ko"});
+        $("#accountingNameUpdate").hide();
+    });
+</script>
+
+<body>
+
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <div th:replace="admin/common/sidebar"></div>
+        <div class="col py-3">
+            <th:block th:replace="admin/accounting/fragment :: accountingTitle"/>
+
+            <!-- Main Contents -->
+            <div class="container">
+                <form class="form-horizontal" id="accountingForm" th:object="${accounting}" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="nameCheck" class="col control-label">이름</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control input-large" id="nameCheck" placeholder="익명의 경우 '익명' 입력">
+                            <button type="button" class="btn btn-outline-primary" id='accountingNameCheck' onclick='nameCheckFunc()'>확인</button>
+                            <button type="button" class="btn btn-outline-primary" id='accountingNameUpdate' onclick='nameUpdateFunc()'>수정</button>
+                        </div>
+                        <input type="hidden" class="form-control input-large" id="memberId" name="memberId">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="money" class="col-sm-2 control-label">금액</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control input-large" id="money" th:field="*{money}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="offeringKind" class="col-sm-2 control-label">종류</label>
+                        <div class="col-sm-10">
+                            <select class="custom-select" th:field="*{offeringKind}" id="offeringKind">
+                                <option th:value="SUNDAY" th:text="주정헌금">
+                                <option th:value="THANKSGIVING" th:text="감사헌금"/>
+                                <option th:value="BUILDING" th:text="건축헌금"/>
+                                <option th:value="ELDER" th:text="특별헌금"/>
+                                <option th:value="SPECIAL" th:text="선교헌금"/>
+                                <option th:value="TITHE" th:text="십일조"/>
+                                <option th:value="UNKNOWN" th:text="기타"/>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="offeringDate" class="col-sm-2 control-label">헌금일</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control input-large" id="offeringDate" placeholder="2000-12-31" th:field="*{offeringDate}">
+                        </div>
+                    </div>
+
+                    <br>
+                    &nbsp;&nbsp;
+                    <button type="button" class="btn btn-outline-primary" onclick="accountingCreateAndUpdateProcess('post')">등록</button>
+                    <a class="btn btn-outline-primary" th:href="@{/admin/accounting}">목록 </a>
+                </form>
+            </div>
+            <br><br><br><br>
+            <!-- Main Contents -->
+
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Member Check Modal -->
+<div class="modal fade" id="memberCheckModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">찾고자 하는 성도를 선택하세요</h5>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">교구</th>
+                        <th scope="col">이름</th>
+                        <th scope="col">전화번호</th>
+                        <th scope="col">생년월일</th>
+                        <th scope="col">선택</th>
+                    </tr>
+                    </thead>
+                    <!-- data append -->
+                    <tbody id="modalAppendPath"></tbody>
+                    <!-- data append -->
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

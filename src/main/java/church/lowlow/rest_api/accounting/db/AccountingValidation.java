@@ -1,6 +1,5 @@
 package church.lowlow.rest_api.accounting.db;
 
-import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -8,9 +7,6 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 
-/**
- * 금액이 음수인지, 헌금한 사람이 유효한지 확인
- */
 @Component
 public class AccountingValidation implements Validator {
 
@@ -30,17 +26,7 @@ public class AccountingValidation implements Validator {
         if(dto.getMoney() < 0)
             errors.rejectValue("money", "wrongMoney", "정확한 금액을 입력하세요");
 
-        if(!dto.getName().equals("익명"))
-            notUnKnowUserValidation(dto, errors);
-    }
-
-
-    public void notUnKnowUserValidation(AccountingDto dto, Errors errors){
-        Member member = memberRepository.findByName(dto.getName());
-
-        if (member == null)
-            errors.rejectValue("name", "wrongName", "존재하지 않은 사람입니다");
-        else if(dto.getBirthDay() != member.getBirthDay())
-            errors.rejectValue("birthDay", "wrongBirthDay", "존재하지 않은 사람입니다");
+        if(dto.getMemberId() == null)
+            errors.rejectValue("memberId", "wrongMemberId", "이름을 입력 후 확인하세요");
     }
 }

@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 
 @Controller
 @RequestMapping("/admin/members")
-public class UserMemberController {
+public class AdminMemberController {
 
     @Autowired
     private WebClient webClient;

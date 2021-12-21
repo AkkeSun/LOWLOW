@@ -32,7 +32,7 @@ import java.util.List;
 @SessionAttributes({"roleList",     "rolePagingData", "roleListSub",
                     "resourceList", "resourcePagingData",
                     "accountList",  "accountPagingData", "nowTab"})
-public class SecurityController {
+public class AdminSecurityController {
 
     @Autowired
     private AccountService accountService;

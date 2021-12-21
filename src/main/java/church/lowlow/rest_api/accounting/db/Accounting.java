@@ -35,6 +35,7 @@ public class Accounting extends BaseTimeEntity {
 
     private int money;
 
+    @Enumerated(EnumType.STRING)
     private OfferingKind offeringKind;
 
     @Convert(converter = LocalDateConverter.class)
