@@ -6,8 +6,8 @@ import church.lowlow.rest_api.accounting.db.AccountingValidation;
 import church.lowlow.rest_api.accounting.repository.AccountingRepository;
 import church.lowlow.rest_api.accounting.resource.AccountingErrorsResource;
 import church.lowlow.rest_api.accounting.resource.AccountingResource;
-import church.lowlow.rest_api.accounting.searchBox.MoneyBox;
-import church.lowlow.rest_api.accounting.searchBox.SerchBoxValidation;
+import church.lowlow.rest_api.accounting.db.MoneyBox;
+import church.lowlow.rest_api.accounting.searchDsl.AccountingSearchValidation;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.member.repository.MemberRepository;
@@ -49,7 +49,7 @@ public class AccountingController {
     private ModelMapper modelMapper;
 
     @Autowired
-    private SerchBoxValidation serchBoxValidation;
+    private AccountingSearchValidation serchBoxValidation;
 
 
     /**
@@ -66,7 +66,10 @@ public class AccountingController {
 
         // save
         Accounting accounting = modelMapper.map(dto, Accounting.class);
-        accounting.setMember(memberRepository.findById(dto.getMemberId()).get());
+        if(dto.getMemberId() == -1)
+            accounting.setMember(null);
+        else
+            accounting.setMember(memberRepository.findById(dto.getMemberId()).get());
         accounting.setWriter(getWriter());
 
         Accounting newAccounting = accountingRepository.save(accounting);
@@ -90,11 +93,11 @@ public class AccountingController {
                                         int nowPage,
                                         PagedResourcesAssembler<Accounting> assembler) throws ParseException {
 
+
         // 시작일, 종료일 검색
-        if(searchDto.getStartDate() != null && searchDto.getEndDate() != null ){
-            serchBoxValidation.dateValidate(searchDto, errors);
-            if(errors.hasErrors()) return badRequest().body(new AccountingErrorsResource(errors));
-        }
+        serchBoxValidation.dateValidate(searchDto, errors);
+        if(errors.hasErrors())
+            return badRequest().body(new AccountingErrorsResource(errors));
 
         // 데이터 로드
         Page<Accounting> page = accountingRepository.searchBox(searchDto, nowPage);

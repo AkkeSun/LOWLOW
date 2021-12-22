@@ -1,4 +1,4 @@
-package church.lowlow.rest_api.accounting.searchBox;
+package church.lowlow.rest_api.accounting.searchDsl;
 
 import church.lowlow.rest_api.accounting.db.Accounting;
 import church.lowlow.rest_api.accounting.db.OfferingKind;
@@ -17,14 +17,14 @@ import java.time.LocalDate;
 
 import static church.lowlow.rest_api.common.util.StringUtil.StringNullCheck;
 
-public class SearchBoxDslImpl implements SearchBoxDsl {
+public class AccountingSearchDslImpl implements AccountingSearchDsl {
 
     @Autowired
     private final JPAQueryFactory jpaQueryFactory;
 
     private QAccounting q1 = new QAccounting("q1");
 
-    public SearchBoxDslImpl(JPAQueryFactory jpaQueryFactory) {
+    public AccountingSearchDslImpl(JPAQueryFactory jpaQueryFactory) {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 

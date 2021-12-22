@@ -1,4 +1,4 @@
-package church.lowlow.rest_api.accounting.searchBox;
+package church.lowlow.rest_api.accounting.db;
 
 import lombok.*;
 

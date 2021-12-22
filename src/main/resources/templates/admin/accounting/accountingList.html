@@ -9,6 +9,9 @@
     $(document).ready(function(){
         accountingListLoad(0);
         accountingPagingProcess();
+        $("#startDate").datepicker({format : "yyyy-mm-dd", todayHighlight : true, autoclose : true,  language : "ko"});
+        $("#endDate").datepicker({format : "yyyy-mm-dd", todayHighlight : true, autoclose : true,  language : "ko"});
+
     });
 </script>
 
@@ -18,10 +21,34 @@
     <div class="row flex-nowrap">
         <div th:replace="admin/common/sidebar"></div>
         <div class="col py-3">
-            <th:block th:replace="admin/member/fragment :: memberTitle"/>
+            <th:block th:replace="admin/accounting/fragment :: accountingTitle"/>
 
             <!-- Main Contents -->
             <div class="container">
+
+                <!-- 검색박스 -->
+                <div class="row" style="justify-content:center;">
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control input-group-sm" id="startDate" placeholder="시작일">
+                    </div>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control input-group-sm" id="endDate" placeholder="종료일">
+                    </div>
+                    <select class="custom-select col-sm-2" id="searchId">
+                        <option th:value="name" th:text= "검색종류"/>
+                        <option th:value="name" th:text= "이름"/>
+                        <option th:value="belong" th:text= "교구"/>
+                        <option th:value="belong" th:text= "직분"/>
+                        <option th:value="offeringKind" th:text= "헌금종류"/>
+                    </select>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control input-group-sm" id="searchData" placeholder="검색어">
+                    </div>
+                    <button class="btn btn-outline-primary" style="margin-right: 10px" th:onclick="accountingSearch()">검색</button>
+                </div>
+               <br>
+
+                <!-- 테이블 -->
                 <table class="table table-hover">
                     <thead>
                     <tr>
@@ -30,7 +57,7 @@
                         <th scope="col">전화번호</th>
                         <th scope="col">금액</th>
                         <th scope="col">종류</th>
-                        <th scope="col">헌금일</th>
+                        <th scope="col">날짜</th>
                         <th scope="col">비고</th>
                     </tr>
                     </thead>
@@ -46,17 +73,9 @@
                     </nav>
                 </div>
                 <br>
-                <div class="row" style="justify-content:center;">
-                    <select class="custom-select col-sm-2" id="searchId">
-                        <option th:value="name" th:text= "이름"/>
-                        <option th:value="belong" th:text= "교구"/>
-                        <option th:value="churchOfficer" th:text= "직분"/>
-                    </select>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control input-group-sm" id="searchData" placeholder="검색어">
-                    </div>
-                    <button class="btn btn-outline-primary" style="margin-right: 10px" th:onclick="memberSearch()">검색</button>
-                    <a class="btn btn-outline-primary" th:href="@{/admin/members/create}">성도 등록</a>
+                <div class="row" style="justify-content:right;">
+                    <button class="btn btn-outline-primary" onclick="accountingExelDown()">엑셀파일 저장</button> &nbsp;&nbsp;
+                    <a class="btn btn-outline-primary" th:href="@{/admin/accounting/create}">신규등록</a>
                 </div>
             </div>
         </div>
