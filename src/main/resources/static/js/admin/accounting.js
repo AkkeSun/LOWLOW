@@ -1,12 +1,18 @@
+let savedSearchId = null;
+let savedSearchData = null;
 
 // ================= List Data Load  ====================
 function accountingListLoad(nowPage){
 
+    // 엑셀 저장을 위해 검색 내용을 변수에 담아서 사용한다
+    savedSearchId = $("#searchId").val();
+    savedSearchData = $("#searchData").val();
+
     // param setting
     let type        = "get";
-    let data        = "searchId="+$("#searchId").val()+"&searchData="+$("#searchData").val()+
+    let data        = "searchId="+savedSearchId+"&searchData="+savedSearchData+
                       "&startDate="+$("#startDate").val()+"&endDate="+$("#endDate").val()+
-                      "&nowPage="+nowPage;
+                      "&nowPage="+nowPage+"&totalPages=10";
     let url         = "/api/accounting";
     let csrfHeader  = $("#_csrf_header").attr('content');
     let csrfToken   = $("#_csrf").attr('content');
@@ -21,9 +27,9 @@ function accountingListLoad(nowPage){
         let appendData = "";
         if( data._embedded ) {
 
-            let list = data._embedded.accountingList;
+            let accountingList = data._embedded.accountingList;
 
-            list.forEach(function (data, index) {
+            accountingList.forEach(function (data, index) {
                 let offeringKind = offeringKindConverter( data.offeringKind );
                 let note = noteConverter( data.note );
 
@@ -320,4 +326,5 @@ function accountingDelete(){
 // ================= 액셀파일 다운로드 ====================
 function accountingExelDown(){
 
+    location.href = `/admin/accounting/excelDown?searchId=${savedSearchId}&searchData=${savedSearchData}`;
 }

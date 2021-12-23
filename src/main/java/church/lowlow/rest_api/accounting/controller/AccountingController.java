@@ -8,6 +8,7 @@ import church.lowlow.rest_api.accounting.resource.AccountingErrorsResource;
 import church.lowlow.rest_api.accounting.resource.AccountingResource;
 import church.lowlow.rest_api.accounting.db.MoneyBox;
 import church.lowlow.rest_api.accounting.searchDsl.AccountingSearchValidation;
+import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.member.repository.MemberRepository;
@@ -89,10 +90,8 @@ public class AccountingController {
      * READ API
      */
     @GetMapping
-    public ResponseEntity getAccounting(SearchDto searchDto, Errors errors,
-                                        int nowPage,
-                                        PagedResourcesAssembler<Accounting> assembler) throws ParseException {
-
+    public ResponseEntity getAccountingPage(SearchDto searchDto, PagingDto pagingDto, Errors errors,
+                                            PagedResourcesAssembler<Accounting> assembler) throws ParseException {
 
         // 시작일, 종료일 검색
         serchBoxValidation.dateValidate(searchDto, errors);
@@ -100,12 +99,14 @@ public class AccountingController {
             return badRequest().body(new AccountingErrorsResource(errors));
 
         // 데이터 로드
-        Page<Accounting> page = accountingRepository.searchBox(searchDto, nowPage);
+        Page<Accounting> page = accountingRepository.getAccountingPage(searchDto, pagingDto);
         
         // 종류별 금액 출력하는 함수 사용하기
         var pagedResources = assembler.toResource(page, e -> new AccountingResource(e));
         return ResponseEntity.ok(pagedResources);
     }
+
+
 
     @GetMapping("{id}")
     public ResponseEntity getAccounting(@PathVariable Integer id){
