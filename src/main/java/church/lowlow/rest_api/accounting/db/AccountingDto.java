@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 /**
- * Accounting 객채 검증을 위한 DTO
+ * Accounting 객채 검증과 금액 카운트를 위한 위한 DTO
  * 익명인 경우 name="익명"
  */
 @Data

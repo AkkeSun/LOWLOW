@@ -68,10 +68,10 @@ public class AdminAccountingController {
     @GetMapping("/excelDown")
     public void download(SearchDto searchDto, HttpServletResponse response) throws IOException {
 
-        // 엑셀에 들어갈 데이터 로드
+        // 엑셀에 들어갈 데이터 로드 ( 없으면 경고 버튼 숨기기  )
         List<Accounting> accountingList = getAccountList(searchDto);
 
-        // 엑셀파일 생성 (파라미터로 데이터 보내주기)
+        // 엑셀파일 생성
         accountingExcelCreate(accountingList);
         /*
 

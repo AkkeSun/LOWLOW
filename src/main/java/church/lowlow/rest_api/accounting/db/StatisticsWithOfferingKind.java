@@ -10,7 +10,7 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class MoneyBox {
+public class StatisticsWithOfferingKind {
 
     private int TOTAL;
     private int SUNDAY;

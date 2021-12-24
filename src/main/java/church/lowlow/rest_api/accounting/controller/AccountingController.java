@@ -1,17 +1,15 @@
 package church.lowlow.rest_api.accounting.controller;
 
-import church.lowlow.rest_api.accounting.db.Accounting;
-import church.lowlow.rest_api.accounting.db.AccountingDto;
-import church.lowlow.rest_api.accounting.db.AccountingValidation;
+import church.lowlow.rest_api.accounting.db.*;
 import church.lowlow.rest_api.accounting.repository.AccountingRepository;
 import church.lowlow.rest_api.accounting.resource.AccountingErrorsResource;
 import church.lowlow.rest_api.accounting.resource.AccountingResource;
-import church.lowlow.rest_api.accounting.db.MoneyBox;
 import church.lowlow.rest_api.accounting.searchDsl.AccountingSearchValidation;
 import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.member.repository.MemberRepository;
+import com.querydsl.core.Tuple;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,8 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.text.ParseException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static church.lowlow.rest_api.common.util.WriterUtil.getWriter;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -93,15 +90,48 @@ public class AccountingController {
     public ResponseEntity getAccountingPage(SearchDto searchDto, PagingDto pagingDto, Errors errors,
                                             PagedResourcesAssembler<Accounting> assembler) throws ParseException {
 
-        // 시작일, 종료일 검색
+        // check
         serchBoxValidation.dateValidate(searchDto, errors);
         if(errors.hasErrors())
             return badRequest().body(new AccountingErrorsResource(errors));
 
-        // 데이터 로드
+
+        // -------------- 헌금 종류별 카운트 함수 ---------------
+        List<Tuple> offeringMoneyCount = accountingRepository.getOfferingMoneyCount(searchDto);
+        List<AccountingDto> list = new ArrayList<>();
+        int allCount = 0;
+
+        for (Tuple tuple : offeringMoneyCount){
+            AccountingDto dto = new AccountingDto();
+
+            Object [] offeringData = tuple.toArray();
+            for(Object data : offeringData){
+
+                if(data instanceof OfferingKind)
+                    dto.setOfferingKind( (OfferingKind) data);
+                else {
+                    allCount += (Integer) data;
+                    dto.setMoney( (Integer) data );
+                }
+            }
+
+            list.add(dto);
+        }
+
+        list.add(AccountingDto.builder().offeringKind(OfferingKind.valueOf("TOTAL")).money(allCount).build());
+        System.out.println(list);
+
+        // -------------- 헌금 종류별 카운트 함수 ---------------
+
+
+
+
+
+        // load
         Page<Accounting> page = accountingRepository.getAccountingPage(searchDto, pagingDto);
-        
-        // 종류별 금액 출력하는 함수 사용하기
+
+
+        // return
         var pagedResources = assembler.toResource(page, e -> new AccountingResource(e));
         return ResponseEntity.ok(pagedResources);
     }
@@ -180,7 +210,7 @@ public class AccountingController {
     /**
      * 헌금 종류별로 금액을 카운트하는 함수
      */
-    public MoneyBox moneyBox(List<Accounting> list){
+    public StatisticsWithOfferingKind getStatisticsWithOfferingKind (List<Accounting> list) {
 
         int TOTAL        = 0;
         int SUNDAY       = 0;
@@ -191,24 +221,39 @@ public class AccountingController {
         int MISSION      = 0;
         int UNKNOWN      = 0;
 
-        for(int i=0; i<list.size(); i++){
+        for(Accounting accounting : list){
 
-            switch (list.get(i).getOfferingKind()) {
-                case SUNDAY      : SUNDAY       += list.get(i).getMoney(); break;
-                case TITHE       : TITHE        += list.get(i).getMoney(); break;
-                case THANKSGIVING: THANKSGIVING += list.get(i).getMoney(); break;
-                case BUILDING    : BUILDING     += list.get(i).getMoney(); break;
-                case SPECIAL     : SPECIAL      += list.get(i).getMoney(); break;
-                case MISSION     : MISSION      += list.get(i).getMoney(); break;
-                case UNKNOWN     : UNKNOWN      += list.get(i).getMoney(); break;
+            switch (accounting.getOfferingKind()) {
+                case SUNDAY      : SUNDAY       += accounting.getMoney(); break;
+                case TITHE       : TITHE        += accounting.getMoney(); break;
+                case THANKSGIVING: THANKSGIVING += accounting.getMoney(); break;
+                case BUILDING    : BUILDING     += accounting.getMoney(); break;
+                case SPECIAL     : SPECIAL      += accounting.getMoney(); break;
+                case MISSION     : MISSION      += accounting.getMoney(); break;
+                case UNKNOWN     : UNKNOWN      += accounting.getMoney(); break;
             }
         }
 
         TOTAL = SUNDAY + TITHE + THANKSGIVING + BUILDING + SPECIAL + MISSION + UNKNOWN;
 
-        return MoneyBox.builder().SUNDAY(SUNDAY).TITHE(TITHE).THANKSGIVING(THANKSGIVING).BUILDING(BUILDING)
+        return StatisticsWithOfferingKind.builder().SUNDAY(SUNDAY).TITHE(TITHE).THANKSGIVING(THANKSGIVING).BUILDING(BUILDING)
                 .SPECIAL(SPECIAL).MISSION(MISSION).UNKNOWN(UNKNOWN).TOTAL(TOTAL).build();
     }
 
+    public List<Map<String, Integer>> getStatisticsWithName (List<Accounting> list) {
+
+        List<Map<String, Integer>> returnList = new ArrayList<>();
+
+        for(Accounting accounting : list){
+
+            Map<String, Integer> nameAndMoney = new HashMap<>();
+            Member member = accounting.getMember();
+
+
+        }
+
+
+        return null;
+    }
 
 }

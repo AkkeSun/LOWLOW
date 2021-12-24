@@ -1,9 +1,11 @@
 package church.lowlow.user_api.common;
 
 import church.lowlow.rest_api.accounting.db.Accounting;
+import church.lowlow.rest_api.accounting.db.OfferingKind;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
 
@@ -11,10 +13,12 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+
+import static church.lowlow.rest_api.common.util.StringUtil.objNullToStr;
 
 public class ExcelUtil {
 
@@ -41,10 +45,11 @@ public class ExcelUtil {
 
 
         /**********************************
-         *       Workbook & Sheet 생성
+         *       Workbook & Sheet  생성
          **********************************/
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("Accounting");
+        XSSFSheet basicSheet = workbook.createSheet("기본 정보");
+        XSSFSheet statisticsSheet = workbook.createSheet("통계");
 
 
 
@@ -80,18 +85,20 @@ public class ExcelUtil {
 
 
         /**********************************
-         *         행 & 열 & 행의 갯수
+         *         행 & 열 + index 변수
          **********************************/
         XSSFRow xssfRow = null;
         XSSFCell xssfCell = null;
         int rowNo = 0;
+        int cellNo = 0;
+
 
 
         /**********************************
-         *         셀 너비 설정
+         *          셀 너비 설정
          **********************************/
         for(int i =0; i<=7; i++)
-            sheet.setColumnWidth(i, 5500);
+            basicSheet.setColumnWidth(i, 5500);
 
 
 
@@ -99,61 +106,107 @@ public class ExcelUtil {
          *        메인 타이틀 만들기
          **********************************/
         // 타이틀을 넣기 위한 셀 병합 (첫행, 마지막행, 첫열, 마지막열)
-        sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 6));
+        basicSheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 6));
 
         // 타이틀 생성
-        xssfRow = sheet.createRow(rowNo++);       // 행 객체 생성 (생성하면 한 줄 쓰는 것)
-        xssfCell = xssfRow.createCell((short) 0); // 열 위치 지정
+        xssfRow = basicSheet.createRow(rowNo++);       // 행 객체 생성 (생성하면 한 줄 쓰는 것)
+        xssfCell = xssfRow.createCell((short) 0); // 열 객채 생성 (param = 열의 위치)
         xssfCell.setCellStyle(mainTitleStyle);    // 셀에 스타일 지정
-        xssfCell.setCellValue("회계 목록");        // 데이터 입력
-        
-        sheet.createRow(rowNo++);
-        xssfRow = sheet.createRow(rowNo++); // 빈행 추가
+        xssfCell.setCellValue(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))+" 회계 데이터" ); // 데이터 입력
+
+        // 빈행 추가
+        basicSheet.createRow(rowNo++);
+        xssfRow = basicSheet.createRow(rowNo++);
 
 
 
         /**********************************
          *       엑셀 데이터 입력하기
          **********************************/
+        List<Object[]> excelDataList = new ArrayList<>();
 
-        Map<int, Object[]> data = new TreeMap<>();
-        int key = 1;
         // table head
-        data.put(key++, new Object[]{"교구", "이름", "전화번호", "금액", "종류", "날짜", "비고"});
+        excelDataList.add( new Object[]{"교구", "이름", "전화번호", "금액", "종류", "날짜", "비고"});
 
         // table data
-        for(Accounting accounting : accountingList){
+        if(accountingList != null) {
 
+            for (Accounting accounting : accountingList) {
 
-        }
-        data.put("2", new Object[]{"1", "cookie", "010-1111-1111", "bvb"});
-        data.put("3", new Object[]{"2", "sickBBang", "010-2222-2222", "asa"});
-        data.put("4", new Object[]{"3", "workingAnt", "010-3333-3333", "asda"});
-        data.put("5", new Object[]{"4", "wow", "010-4444-4444", "asdad"});
+                String belong = "-";
+                String name = "익명";
+                String phoneNum = "-";
+                String offeringKind = offeringKindConverter(accounting.getOfferingKind().toString());
+                String offeringDate = accounting.getOfferingDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                String note = objNullToStr(accounting.getNote(), "-");
+                int money = accounting.getMoney();
 
-        Set<String> keyset = data.keySet();
+                if (accounting.getMember() != null) {
+                    belong = accounting.getMember().getBelong();
+                    name = accounting.getMember().getName();
+                    phoneNum = accounting.getMember().getPhoneNumber();
+                }
+                excelDataList.add(new Object[]{belong, name, phoneNum, money, offeringKind, offeringDate, note});
+            }
 
-        for (String key : keyset) {
-            xssfRow = sheet.createRow(rowNo++);
-            Object[] objArr = data.get(key);
+            // Data append
+            for(Object[] excelData : excelDataList){
 
-            int cellnum = 0;
-            for (Object obj : objArr) {
-                xssfCell = xssfRow.createCell(cellnum++);
-                xssfCell.setCellStyle(tableStyle);
-                if (obj instanceof String)
-                    xssfCell.setCellValue((String)obj);
-                else if (obj instanceof Integer)
-                    xssfCell.setCellValue((Integer)obj);
+                xssfRow = basicSheet.createRow(rowNo++); // 행 추가
+                cellNo = 0; // 열 index 초기화
+
+                for (Object item : excelData) {
+                    xssfCell = xssfRow.createCell(cellNo++);
+                    xssfCell.setCellStyle(tableStyle);
+
+                    if (item instanceof String)
+                        xssfCell.setCellValue((String) item);
+                    else if (item instanceof Integer)
+                        xssfCell.setCellValue((Integer) item);
+                }
             }
         }
 
+        // ================= 통계 엑셀 만들기-=================
+
+
+
+
+
+
+
+
         try {
+            // 생성된 엑셀 파일로 추출
             FileOutputStream out = new FileOutputStream(new File(filePath, fileNm));
             workbook.write(out);
             out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+
+
+
+
+
+
+
+
+    // ================ 헌금 종류 한글 컨버터 =================
+    public static String offeringKindConverter(String offeringKind){
+
+        switch(offeringKind){
+            case "SUNDAY"       : return "주정헌금";
+            case "TITHE"        : return "십일조";
+            case "THANKSGIVING" : return "감사헌금";
+            case "BUILDING"     : return "건축헌금";
+            case "SPECIAL"      : return "특별헌금";
+            case "MISSION"      : return "선교헌금";
+            case "UNKNOWN"      : return "기타헌금";
+        }
+        return "";
     }
 }
