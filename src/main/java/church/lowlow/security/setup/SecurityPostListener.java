@@ -1,6 +1,8 @@
 package church.lowlow.security.setup;
 
 
+import church.lowlow.rest_api.member.db.Member;
+import church.lowlow.rest_api.member.repository.MemberRepository;
 import church.lowlow.security.domain.entity.Account;
 import church.lowlow.security.domain.entity.Resources;
 import church.lowlow.security.domain.entity.Role;
@@ -36,6 +38,10 @@ public class SecurityPostListener implements ApplicationListener<ApplicationStar
     private final String RESOURCE_NAME = "/admin/**";
     private final String RESOURCE_TYPE = "url";
 
+    // MEMBER (익명)
+    private final String MEMBER_NAME = "익명";
+    private final String MEMBER_BELONG = "-";
+    private final String MEMBER_PHONENUM = "-";
 
     //=================================================
 
@@ -52,6 +58,8 @@ public class SecurityPostListener implements ApplicationListener<ApplicationStar
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private MemberRepository memberRepository;
 
     //=================================================
 
@@ -63,6 +71,7 @@ public class SecurityPostListener implements ApplicationListener<ApplicationStar
         createRoleIfNotFound(ROLE_NAME, ROLE_DESC);
         createUserIfNotFound(USER_NAME, PASSWORD, ROLE_NAME);
         createResourceIfNotFound(RESOURCE_NAME, RESOURCE_TYPE, ROLE_NAME);
+        createMemberRepository(MEMBER_NAME);
 
     }
 
@@ -112,6 +121,16 @@ public class SecurityPostListener implements ApplicationListener<ApplicationStar
                     .build();
         }
         return resourcesRepo.save(resources);
+    }
+
+    @Transactional
+    public Member createMemberRepository(String name) {
+        Member member = memberRepository.findByName(name);
+
+        if (member == null)
+            member = Member.builder().name(name).build();
+
+        return memberRepository.save(member);
     }
 
 }

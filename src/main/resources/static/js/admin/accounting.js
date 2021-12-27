@@ -1,17 +1,23 @@
-let savedSearchId = null;
-let savedSearchData = null;
+
+
+let savedSearchId   = null;     // 검색목록
+let savedSearchData = null;     // 검색어
+let startDate       = null;     // 검색 시작일
+let endDate         = null;     // 검색 종료일
+
 
 // ================= List Data Load  ====================
 function accountingListLoad(nowPage){
 
-    // 엑셀 저장을 위해 검색 내용을 변수에 담아서 사용한다
-    savedSearchId = $("#searchId").val();
+    savedSearchId   = $("#searchId").val();
     savedSearchData = $("#searchData").val();
+    startDate       = $("#startDate").val();
+    endDate         = $("#endDate").val();
 
     // param setting
     let type        = "get";
     let data        = "searchId="+savedSearchId+"&searchData="+savedSearchData+
-                      "&startDate="+$("#startDate").val()+"&endDate="+$("#endDate").val()+
+                      "&startDate="+startDate+"&endDate="+endDate+
                       "&nowPage="+nowPage+"&totalPages=10";
     let url         = "/api/accounting";
     let csrfHeader  = $("#_csrf_header").attr('content');
@@ -31,65 +37,50 @@ function accountingListLoad(nowPage){
 
             accountingList.forEach(function (data, index) {
                 let offeringKind = offeringKindConverter( data.offeringKind );
-                let note = noteConverter( data.note );
+                let note         = nullConverter( data.note );
+                let belong       = nullConverter (data.member.belong);
+                let phoneNum     = nullConverter (data.member.phoneNumber);
 
-                // 익명의 경우 
-                if(data.member == null){
-                    appendData += `                              
-                                    <tr id="appendItem">
-                                    <td style="text-align: left;">
-                                        -
-                                    </td>
-                                    <td style="text-align: left;">
-                                        <a href='/admin/members/${data.id}'>
-                                            익명
-                                        </a>
-                                    </td>
-                                    <td style="text-align: left;">
-                                        -
-                                    </td>
-                                  `
-                // 익명이 아닌 경우 
-                } else {
-                    appendData += `
-                               <tr id="appendItem">
-                                    <td style="text-align: left;">
-                                        ${data.member.belong}
-                                    </td>
-                                    <td style="text-align: left;">
-                                        <a href='/admin/members/${data.id}'>
-                                            ${data.member.name}
-                                        </a>
-                                    </td>
-                                    <td style="text-align: left;">
-                                        ${data.member.phoneNumber}
-                                    </td>
-                                   `
-                }
-
-
-                // 공통
                 appendData += `
-                                    <td style="text-align: left;">
-                                        ${data.money}
-                                    </td>
-                                    <td style="text-align: left;">
-                                        ${offeringKind}
-                                    </td>
-                                    <td style="text-align: left;">
-                                        ${data.offeringDate}
-                                    </td>
-                                    <td style="text-align: left;">
-                                        ${note}
-                                    </td>
-                                </tr>
-                                `
+                           <tr id="appendItem">
+                                <td style="text-align: left;">
+                                    ${belong}
+                                </td>
+                                <td style="text-align: left;">
+                                    <a href='/admin/accounting/${data.id}'>
+                                        ${data.member.name}
+                                    </a>
+                                </td>
+                                <td style="text-align: left;">
+                                    ${phoneNum}
+                                </td>
+                                <td style="text-align: left;">
+                                    ${data.money}
+                                </td>
+                                <td style="text-align: left;">
+                                    ${offeringKind}
+                                </td>
+                                <td style="text-align: left;">
+                                    ${data.offeringDate}
+                                </td>
+                                <td style="text-align: left;">
+                                    ${note}
+                                </td>
+                            </tr>
+                            `
             });
         }
 
-        $("#searchData").val("");            // 검색내용 삭제
-        $("tr").remove("#appendItem");       // 기존 데이터 삭제
-        $("#appendPath").append(appendData); // data append
+        // 검색내용 삭제
+        $("#searchData").val("");
+        $("#startDate").val("");
+        $("#endDate").val("");
+
+        // 기존 데이터 삭제
+        $("tr").remove("#appendItem");
+
+        // data append
+        $("#appendPath").append(appendData);
     });
 
 
@@ -102,10 +93,95 @@ function accountingListLoad(nowPage){
 
 };
 
-// ================= 비고가 Null인경우 '-' 리턴 ====================
-function noteConverter(note){
-    if(note == null)
-        return "-";
+
+
+// ================= 분석 데이터 로드 ====================
+function accountingStatisticsDataLoad (){
+
+    if( $("#startDate").val() != null)
+        startDate = $("#startDate").val();
+    if( $("#endDate").val() != null)
+        endDate = $("#endDate").val();
+    if($("#searchData").val() != null) {
+        savedSearchId   = $("#searchId").val();
+        savedSearchData = $("#searchData").val();
+    }
+
+    // param setting
+    let type        = "get";
+    let data        = "searchId="+savedSearchId+"&searchData="+savedSearchData+
+                      "&startDate="+startDate+"&endDate="+endDate;
+    let url         = "/api/accounting/statistics";
+    let csrfHeader  = $("#_csrf_header").attr('content');
+    let csrfToken   = $("#_csrf").attr('content');
+    let async       = false;
+    let callback    = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
+
+    callback.done( (data) => {
+
+        let appendData = "";
+        if( data._embedded ) {
+
+            let accountingList = data._embedded.accountingList;
+
+            accountingList.forEach(function (data, index) {
+                let offeringKind = offeringKindConverter( data.offeringKind );
+
+                appendData += `
+                           <tr id="appendItem">
+                                <td style="text-align: left;">
+                                    ${belong}
+                                </td>
+                                <td style="text-align: left;">
+                                    <a href='/admin/accounting/${data.id}'>
+                                        ${data.member.name}
+                                    </a>
+                                </td>
+                                <td style="text-align: left;">
+                                    ${phoneNum}
+                                </td>
+                                <td style="text-align: left;">
+                                    ${data.money}
+                                </td>
+                                <td style="text-align: left;">
+                                    ${offeringKind}
+                                </td>
+                                <td style="text-align: left;">
+                                    ${data.offeringDate}
+                                </td>
+                                <td style="text-align: left;">
+                                    ${note}
+                                </td>
+                            </tr>
+                            `
+            });
+        }
+
+        // 검색내용 삭제
+        $("#searchData").val("");
+        $("#startDate").val("");
+        $("#endDate").val("");
+
+        // 기존 데이터 삭제
+        $("tr").remove("#appendItem");
+
+        // data append
+        $("#appendPath").append(appendData);
+    });
+
+
+    callback.fail ( (xhr, status, error) => {
+        let errorResource = JSON.parse(xhr.responseText).content[0];
+        console.log("[ERROR STATUS] : " + xhr.status);
+        console.log(errorResource);
+        alert(errorResource.defaultMessage);
+    });
+}
+
+// ================= Null인경우 '-' 리턴 ====================
+function nullConverter(data){
+    if(data == null) return "-";
+    else return data;
 }
 
 
@@ -187,7 +263,7 @@ function accountingCreateAndUpdateProcess(type){
 
 };
 
-// ================= 헌금한 사람 정보가 유효한지 체크 ====================
+// ================= 헌금한 사람 이름 검색 함수 ====================
 function nameCheckFunc(){
 
     // A. 이름을 입력하지 않은 경우
@@ -222,7 +298,7 @@ function nameCheckFunc(){
                 alert("일치하는 성도가 없습니다") ;
                 $("#nameCheck").focus();
 
-                // C-2. 일치하는 성도가 있는경우 모달창 출력하여 선택하도록 유도
+            // C-2. 일치하는 성도가 있는경우 모달창 출력하여 선택하도록 유도
             } else {
 
                 let list = data._embedded.memberList;

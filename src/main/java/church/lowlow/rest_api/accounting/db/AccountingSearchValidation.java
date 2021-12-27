@@ -1,4 +1,4 @@
-package church.lowlow.rest_api.accounting.searchDsl;
+package church.lowlow.rest_api.accounting.db;
 
 import church.lowlow.rest_api.common.entity.SearchDto;
 import org.springframework.stereotype.Component;

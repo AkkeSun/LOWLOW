@@ -47,9 +47,9 @@ public class MemberController {
     @Autowired
     private  ModelMapper modelMapper;
 
-    /**
-     * CREATE API
-     */
+    /**************************
+     *       CREATE API
+     **************************/
     @PostMapping
     public ResponseEntity createMember(@RequestBody MemberDto dto,
                                        Errors errors){
@@ -75,14 +75,15 @@ public class MemberController {
 
 
 
-    /**
-     * READ API
-     */
+    /**************************
+     *       READ API
+     **************************/
     @GetMapping
     public ResponseEntity getMembers(PagedResourcesAssembler<Member> assembler,
-                                     SearchDto searchDto, int nowPage) {
+                                     SearchDto searchDto, PagingDto pagingDto) {
 
-        Page<Member> page = searchData(searchDto, nowPage);
+        Pageable pageable = PageRequest.of(pagingDto.getNowPage(), 10);
+        Page<Member> page = repository.getMemberPage(searchDto, pageable);
 
         var pagedResources = assembler.toResource(page, e -> new MemberResource(e));
         return ResponseEntity.ok(pagedResources);
@@ -98,10 +99,10 @@ public class MemberController {
     }
 
 
-    
-    /**
-     * UPDATE API
-     */
+
+    /**************************
+     *       UPDATE API
+     **************************/
     @PutMapping("/{id}")
     public ResponseEntity updateMembers(@RequestBody MemberDto dto,
                                         @PathVariable Integer id,
@@ -126,11 +127,11 @@ public class MemberController {
         return ResponseEntity.ok(resource);
     }
 
-    
-    
-    /**
-     * DELETE API
-     */
+
+
+    /**************************
+     *       DELETE API
+     **************************/
     @DeleteMapping("/{id}")
     public ResponseEntity deleteMembers(@PathVariable Integer id, Resource resource){
 
@@ -146,47 +147,4 @@ public class MemberController {
         resource.add(linkTo(MemberController.class).withRel("index"));
         return ResponseEntity.ok(resource);
     }
-
-
-
-
-    /*****************************************
-     *              Util Method
-     ******************************************/
-    // ============== 페이지 검색 함수 ==============
-    public Page<Member> searchData(SearchDto searchDto, int nowPage){
-
-        Pageable pageable = PageRequest.of(nowPage, 10);
-        String searchId = searchDto.getSearchId();
-        String searchData = searchDto.getSearchData();
-        if(!StringNullCheck(searchData)){
-            switch(searchId){
-                case "belong"        : return repository.findAllByBelong(searchData, pageable);
-                case "churchOfficer" : return repository.findAllByChurchOfficer(churchOfficerChangeToEng(searchData), pageable);
-                case "name"          : return repository.findAllByName(searchData, pageable);
-            }
-        }
-        else
-            return repository.findAll(pageable);
-        return null;
-    }
-
-    // ================= 직분 영어 변경 함수  ====================
-    public ChurchOfficer churchOfficerChangeToEng(String churchOfficer){
-
-        switch( churchOfficer ){
-            case "평신도"  : return ChurchOfficer.valueOf("LAYMAN");
-            case "집사"    : return ChurchOfficer.valueOf("DEACON");
-            case "안수집사" : return ChurchOfficer.valueOf("ORDAINED_DEACON");
-            case "권사"    : return ChurchOfficer.valueOf("SENIOR_DEACONESS");
-            case "장로"    : return ChurchOfficer.valueOf("ELDER");
-            case "전도사"   : return ChurchOfficer.valueOf("JUNIOR_PASTOR");
-            case "부목사"   : return ChurchOfficer.valueOf("ASSISTANT_PASTOR");
-            case "담임목사"  : return ChurchOfficer.valueOf("SENIOR_PASTOR");
-            case "사모"     : return ChurchOfficer.valueOf("WIFE");
-        };
-        return ChurchOfficer.valueOf("NULL");
-    }
-
-
 }

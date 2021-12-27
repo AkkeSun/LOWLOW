@@ -1,4 +1,4 @@
-package church.lowlow.rest_api.accounting.searchDsl;
+package church.lowlow.rest_api.accounting.queryDsl;
 
 import church.lowlow.rest_api.accounting.db.Accounting;
 import church.lowlow.rest_api.accounting.db.OfferingKind;
@@ -6,11 +6,13 @@ import church.lowlow.rest_api.accounting.db.QAccounting;
 import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.member.db.ChurchOfficer;
+import church.lowlow.rest_api.member.db.Member;
+import church.lowlow.rest_api.member.db.QMember;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -20,19 +22,19 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
-public class AccountingSearchDslImpl implements AccountingSearchDsl {
+public class AccountingDslImpl implements AccountingDsl {
 
-    @Autowired
     private final JPAQueryFactory jpaQueryFactory;
 
-    private QAccounting q1 = new QAccounting("q1");
-
-    public AccountingSearchDslImpl(JPAQueryFactory jpaQueryFactory) {
+    public AccountingDslImpl(JPAQueryFactory jpaQueryFactory) {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
+    private QAccounting q1 = new QAccounting("q1");
+
 
     @Transactional
+    //=================== 검색 및 페이징 처리 ===================
     public Page<Accounting> getAccountingPage(SearchDto searchDto, PagingDto pagingDto) {
 
         QueryResults<Accounting> result = null;
@@ -87,8 +89,10 @@ public class AccountingSearchDslImpl implements AccountingSearchDsl {
         return new PageImpl<>(queryResults.getResults(), pageable, queryResults.getTotal());
     }
 
+
     @Transactional
-    public List<Tuple> getOfferingMoneyCount(SearchDto searchDto) {
+    //=================== 헌금 분석 (이름별 & 헌금종류별) ===================
+    public List<Tuple> getAccountingStatistics (SearchDto searchDto, String countKind) {
 
         QueryResults<Accounting> result = null;
 
@@ -126,13 +130,23 @@ public class AccountingSearchDslImpl implements AccountingSearchDsl {
 
         // 직분 검색
         else if(key.equals("churchOfficer"))
-            builder.and( q1.member.churchOfficer.eq(ChurchOfficer.valueOf((String)val)));
+            builder.and(q1.member.churchOfficer.eq(ChurchOfficer.valueOf((String)val)));
 
-        return jpaQueryFactory.select(q1.offeringKind, q1.money.sum())
-                            .from(q1)
-                            .where(builder)
-                            .groupBy(q1.offeringKind)
-                            .fetch();
+
+        // 카운트 종류에 따른 출력
+        if(countKind.equals("offeringKind")){
+            return jpaQueryFactory.select(q1.offeringKind, q1.money.sum())
+                    .from(q1)
+                    .where(builder)
+                    .groupBy(q1.offeringKind)
+                    .fetch();
+        }
+        else{
+            return jpaQueryFactory.select(q1.member, q1.money.sum())
+                    .from(q1)
+                    .where(builder)
+                    .groupBy(q1.member)
+                    .fetch();
+        }
     }
-
 }

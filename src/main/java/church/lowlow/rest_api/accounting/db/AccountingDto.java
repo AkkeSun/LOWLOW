@@ -27,4 +27,6 @@ public class AccountingDto {
 
     private String note;
 
+    private String name;
+
 }

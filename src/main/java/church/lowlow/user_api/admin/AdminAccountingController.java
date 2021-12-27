@@ -39,6 +39,14 @@ public class AdminAccountingController {
         return "admin/accounting/accountingList";
     }
 
+
+    // ========== Statistics View ==========
+    @GetMapping("/statistics")
+    public String getStatisticsView() {
+        return "admin/accounting/accountingStatistics";
+    }
+
+
     // ========== Create View ==========
     @GetMapping("/create")
     public String getAccountingCreateView(Model model) {
