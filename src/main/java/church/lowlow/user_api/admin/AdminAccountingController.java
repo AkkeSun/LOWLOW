@@ -1,10 +1,12 @@
 package church.lowlow.user_api.admin;
 
 import church.lowlow.rest_api.accounting.db.Accounting;
+import church.lowlow.rest_api.accounting.db.AccountingDto;
 import church.lowlow.rest_api.accounting.db.OfferingKind;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.member.db.ChurchOfficer;
 import church.lowlow.rest_api.member.db.Member;
+import org.apache.commons.io.FileUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,7 +19,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -37,13 +41,6 @@ public class AdminAccountingController {
     @GetMapping
     public String getAccountingListView() {
         return "admin/accounting/accountingList";
-    }
-
-
-    // ========== Statistics View ==========
-    @GetMapping("/statistics")
-    public String getStatisticsView() {
-        return "admin/accounting/accountingStatistics";
     }
 
 
@@ -76,14 +73,14 @@ public class AdminAccountingController {
     @GetMapping("/excelDown")
     public void download(SearchDto searchDto, HttpServletResponse response) throws IOException {
 
-        // 엑셀에 들어갈 데이터 로드 ( 없으면 경고 버튼 숨기기  )
+        // 엑셀에 들어갈 데이터 로드
         List<Accounting> accountingList = getAccountList(searchDto);
+        Map<String, Object> statisticsMap = getStatisticsMap(searchDto);
 
         // 엑셀파일 생성
-        accountingExcelCreate(accountingList);
-        /*
+        accountingExcelCreate(searchDto, accountingList, statisticsMap);
 
-        // 유저 다운로드
+        // 다운로드
         String filePath = "C:/upload/";
         String fileName = "accounting.xlsx";
 
@@ -96,10 +93,6 @@ public class AdminAccountingController {
         response.getOutputStream().write(fileByte);
         response.getOutputStream().flush();
         response.getOutputStream().close();
-
-        // 엑셀파일 삭제
-
-         */
 
     }
 
@@ -152,5 +145,24 @@ public class AdminAccountingController {
 
         return returnList;
     }
+
+
+
+    // ======================== 헌금 내용 분석 출력함수========================
+    public Map<String, Object> getStatisticsMap(SearchDto searchDto){
+
+        String searchId = searchDto.getSearchId();
+        String searchData = searchDto.getSearchData();
+
+        // Data Load
+        Mono<Map> mono = webClient
+                .get()
+                .uri("/accounting/statistics?searchId="+searchId+"&searchData="+searchData)
+                .retrieve()
+                .bodyToMono(Map.class);
+
+        return mono.block();
+    }
+
 
 }

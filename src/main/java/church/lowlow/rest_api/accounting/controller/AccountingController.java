@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.text.ParseException;
 import java.util.*;
 
 import static church.lowlow.rest_api.common.util.WriterUtil.getWriter;
@@ -119,7 +118,7 @@ public class AccountingController {
 
     // ======================== 헌금 내용 분석 ========================
     @GetMapping("/statistics")
-    public ResponseEntity getOfferingMoneyCount(SearchDto searchDto, Errors errors) {
+    public ResponseEntity getStatisticsMap(SearchDto searchDto, Errors errors) {
 
         // check
         accountingSearchValidation.dateValidate(searchDto, errors);

@@ -18,14 +18,14 @@ public class AccountingSearchValidation {
         LocalDate startDate = dto.getStartDate();
         LocalDate endDate   = dto.getEndDate();
 
-        if(startDate == null && endDate != null){
-            System.out.println("에러1");
-            errors.rejectValue("startDate", "wrongStartDate", "시작일을 입력하지 않았습니다.");
-        }
-        if(startDate != null && endDate != null && endDate.isBefore(startDate)){
-            System.out.println("에러2");
-            errors.rejectValue("endDate", "wrongEndDate", "종료일은 시작일보다 빠를 수 없습니다");
+        if(startDate == null && endDate != null)
+            errors.rejectValue(null, "wrongStartDate", "시작일을 입력하지 않았습니다");
 
-        }
+        if(startDate != null &&  LocalDate.now().isBefore(startDate))
+            errors.rejectValue(null, "wrongStartDate", "시작일은 현재시간보다 빠를 수 없습니다");
+
+        if(startDate != null && endDate != null && endDate.isBefore(startDate))
+            errors.rejectValue(null, "wrongEndDate", "종료일은 시작일보다 빠를 수 없습니다");
+
     }
 }

@@ -1,18 +1,42 @@
+/**************************************************************
+ *
+ *                       LIST FUNCTION
+ *
+ * accountingDataLoad(nowPage)         : 리스트 & 통계분석 데이터 통합로드
+ * accountingListLoad(nowPage)         : 리스트 데이터 로드
+ * accountingStatisticsDataLoad()      : 통계분석 데이터 로드
+ * accountingPagingProcess()           : 페이징 함수
+ * accountingSearch()                  : 검색 기능 함수
+ * accountingSearchInitialize()        : 검색 초기화 함수
+ * showStatisticsBtn()                 : 회계분석 Show 함수
+ * showListBtn()                       : 전체 리스트 Show 함수
+ * offeringKindConverter(offeringKind) : 헌금 종류 converter
+ * nullConverter(data)                 : null converter
+ *  accountingExelDown()               : 엑셀파일 다운로드 함수
+ *
+ **************************************************************/
 
+let savedSearchId;    // 검색목록
+let savedSearchData;  // 검색어
+let startDate;        // 검색 시작일
+let endDate;          // 검색 종료일
 
-let savedSearchId   = null;     // 검색목록
-let savedSearchData = null;     // 검색어
-let startDate       = null;     // 검색 시작일
-let endDate         = null;     // 검색 종료일
+// ================= 리스트 & 회계분석 데이터 로드 ====================
+function accountingDataLoad(nowPage){
+
+    savedSearchId = $("#searchId").val();
+    savedSearchData = $("#searchData").val();
+    startDate = $("#startDate").val();
+    endDate = $("#endDate").val();
+
+    accountingListLoad(nowPage);
+    accountingStatisticsDataLoad();
+}
+
 
 
 // ================= List Data Load  ====================
 function accountingListLoad(nowPage){
-
-    savedSearchId   = $("#searchId").val();
-    savedSearchData = $("#searchData").val();
-    startDate       = $("#startDate").val();
-    endDate         = $("#endDate").val();
 
     // param setting
     let type        = "get";
@@ -71,18 +95,12 @@ function accountingListLoad(nowPage){
             });
         }
 
-        // 검색내용 삭제
-        $("#searchData").val("");
-        $("#startDate").val("");
-        $("#endDate").val("");
-
         // 기존 데이터 삭제
         $("tr").remove("#appendItem");
 
         // data append
         $("#appendPath").append(appendData);
     });
-
 
     callback.fail ( (xhr, status, error) => {
         let errorResource = JSON.parse(xhr.responseText).content[0];
@@ -95,17 +113,8 @@ function accountingListLoad(nowPage){
 
 
 
-// ================= 분석 데이터 로드 ====================
-function accountingStatisticsDataLoad (){
-
-    if( $("#startDate").val() != null)
-        startDate = $("#startDate").val();
-    if( $("#endDate").val() != null)
-        endDate = $("#endDate").val();
-    if($("#searchData").val() != null) {
-        savedSearchId   = $("#searchId").val();
-        savedSearchData = $("#searchData").val();
-    }
+// ================= 통계 분석 데이터 로드 ====================
+function accountingStatisticsDataLoad(){
 
     // param setting
     let type        = "get";
@@ -119,85 +128,63 @@ function accountingStatisticsDataLoad (){
 
     callback.done( (data) => {
 
-        let appendData = "";
-        if( data._embedded ) {
+        let nameAppendData = "";
+        let offeringKindAppendData = "";
 
-            let accountingList = data._embedded.accountingList;
-
-            accountingList.forEach(function (data, index) {
-                let offeringKind = offeringKindConverter( data.offeringKind );
-
-                appendData += `
-                           <tr id="appendItem">
-                                <td style="text-align: left;">
-                                    ${belong}
-                                </td>
-                                <td style="text-align: left;">
-                                    <a href='/admin/accounting/${data.id}'>
-                                        ${data.member.name}
-                                    </a>
-                                </td>
-                                <td style="text-align: left;">
-                                    ${phoneNum}
-                                </td>
-                                <td style="text-align: left;">
-                                    ${data.money}
-                                </td>
-                                <td style="text-align: left;">
-                                    ${offeringKind}
-                                </td>
-                                <td style="text-align: left;">
-                                    ${data.offeringDate}
-                                </td>
-                                <td style="text-align: left;">
-                                    ${note}
-                                </td>
-                            </tr>
-                            `
+        // 이름별 통계 데이터 
+        if( data.member ) {
+            let memberList = data.member;
+            memberList.forEach(function (data, index) {
+                nameAppendData += `
+                                   <tr id="memberAppendItem">
+                                        <td style="text-align: left;">
+                                            ${data.name}
+                                        </td>
+                                        <td style="text-align: left;">
+                                                ${data.money}
+                                        </td>
+                                    </tr>
+                                    `
             });
         }
 
-        // 검색내용 삭제
-        $("#searchData").val("");
-        $("#startDate").val("");
-        $("#endDate").val("");
+        // 헌금 종류별 통계 데이터
+        if( data.offeringKind) {
+            let offeringKindList = data.offeringKind;
+            offeringKindList.forEach(function (data, index) {
+
+                let offeringKind = offeringKindConverter( data.offeringKind );
+                offeringKindAppendData += `
+                                       <tr id="offeringKindAppendItem">
+                                            <td style="text-align: left;">
+                                                ${offeringKind}
+                                            </td>
+                                            <td style="text-align: left;">
+                                                 ${data.money}
+                                            </td>
+                                        </tr>
+                                        `
+            });
+        }
 
         // 기존 데이터 삭제
-        $("tr").remove("#appendItem");
+        $("tr").remove("#memberAppendItem");
+        $("tr").remove("#offeringKindAppendItem");
 
         // data append
-        $("#appendPath").append(appendData);
+        $("#nameAppendPath").append(nameAppendData);
+        $("#offeringKindAppendPath").append(offeringKindAppendData);
     });
-
 
     callback.fail ( (xhr, status, error) => {
         let errorResource = JSON.parse(xhr.responseText).content[0];
         console.log("[ERROR STATUS] : " + xhr.status);
         console.log(errorResource);
-        alert(errorResource.defaultMessage);
     });
 }
 
-// ================= Null인경우 '-' 리턴 ====================
-function nullConverter(data){
-    if(data == null) return "-";
-    else return data;
-}
 
 
-// ================= 헌금종류 한글로 변경 ====================
-function offeringKindConverter(offeringKind){
-
-    switch(offeringKind){
-        case "SUNDAY"       : return "주정헌금";
-        case "TITHE"        : return "십일조";
-        case "THANKSGIVING" : return "감사헌금";
-        case "BUILDING"     : return "건축헌금";
-        case "SPECIAL"      : return "특별헌금";
-        case "MISSION"      : return "선교헌금";
-        case "UNKNOWN"      : return "기타헌금";
-    }
-}
 
 // ================= paging process ====================
 function accountingPagingProcess(){
@@ -222,16 +209,78 @@ function accountingPagingProcess(){
 }
 
 
-
-// ================ List Search ================
+// ================ 검색 기능 ================
 function accountingSearch(){
-    accountingListLoad(0);
+    accountingDataLoad(0);
     accountingPagingProcess();
+}
+
+// ================ 검색 초기화 ================
+function accountingSearchInitialize() {
+    $("#searchId").val("name");
+    $("#searchData").val("");
+    $("#startDate").val("");
+    $("#endDate").val("");
+    accountingDataLoad(0);
+    accountingPagingProcess();
+}
+
+// ================ 회계분석 클릭 ================
+function showStatisticsBtn(){
+    $("#statisticsData").show();
+    $("#statisticBtn").hide();
+    $("#listBtn").show();
+    $("#listData").hide();
+}
+
+
+// ================ 전체 리스트 버튼 클릭 ================
+function showListBtn(){
+    $("#statisticsData").hide();
+    $("#statisticBtn").show();
+    $("#listBtn").hide();
+    $("#listData").show();
+}
+
+
+// ================= 액셀파일 다운로드 ====================
+function accountingExelDown(){
+    location.href = `/admin/accounting/excelDown?searchId=${savedSearchId}&searchData=${savedSearchData}&startDate=${startDate}&endDate=${endDate}`;
+}
+
+
+// ================= Null 인경우 '-' 리턴 ====================
+function nullConverter(data){
+    if(data == null) return "-";
+    else return data;
+}
+
+
+// ================= 헌금종류 converter ====================
+function offeringKindConverter(offeringKind){
+
+    switch(offeringKind){
+        case "SUNDAY"       : return "주정헌금";
+        case "TITHE"        : return "십일조";
+        case "THANKSGIVING" : return "감사헌금";
+        case "BUILDING"     : return "건축헌금";
+        case "SPECIAL"      : return "특별헌금";
+        case "MISSION"      : return "선교헌금";
+        case "UNKNOWN"      : return "기타헌금";
+        case "TOTAL"        : return "TOTAL"  ;
+    }
 }
 
 
 
 
+
+
+/**************************************************************
+ *
+ *                  CREATE & UPDATE FUNCTION
+ *
+ **************************************************************/
 // ================= Create & Update process  ====================
 function accountingCreateAndUpdateProcess(type){
 
@@ -398,9 +447,3 @@ function accountingDelete(){
 
 }
 
-
-// ================= 액셀파일 다운로드 ====================
-function accountingExelDown(){
-
-    location.href = `/admin/accounting/excelDown?searchId=${savedSearchId}&searchData=${savedSearchData}`;
-}

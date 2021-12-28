@@ -12,7 +12,6 @@ package church.lowlow.rest_api.member.db;
  * ASSISTANT_PASTOR 부목사
  * SENIOR_PASTOR 담임목사
  * WIFE 사모
- * NULL 없음 (검색내용 없는경우 사용)
  */
 public enum ChurchOfficer {
     LAYMAN, DEACON, ORDAINED_DEACON, SENIOR_DEACONESS, ELDER,

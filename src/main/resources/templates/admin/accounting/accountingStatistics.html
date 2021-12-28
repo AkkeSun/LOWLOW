@@ -7,10 +7,9 @@
 
 <script th:inline="javascript">
     $(document).ready(function(){
-    //    accountingStatisticsDataLoad();
         $("#startDate").datepicker({format : "yyyy-mm-dd", todayHighlight : true, autoclose : true,  language : "ko"});
         $("#endDate").datepicker({format : "yyyy-mm-dd", todayHighlight : true, autoclose : true,  language : "ko"});
-
+        accountingStatisticsDataLoad();
     });
 </script>
 
@@ -43,7 +42,7 @@
                     <div class="col-sm-3">
                         <input type="text" class="form-control input-group-sm" id="searchData" placeholder="검색어">
                     </div>
-                    <button class="btn btn-outline-primary" style="margin-right: 10px" th:onclick="accountingStatisticsSearch()">검색</button>
+                    <button class="btn btn-outline-primary" style="margin-right: 10px" th:onclick="accountingStatisticsDataLoad()">검색</button>
                 </div>
                 <br>
 
@@ -81,20 +80,14 @@
                 </table>
 
 
-
-
-                <div class="container">
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination" id="basicPagination" style="justify-content:center;"></ul>
-                    </nav>
-                </div>
                 <br>
                 <div class="row" style="justify-content:right;">
-                    <button class="btn btn-outline-primary"  th:href="@{/admin/accounting}">전체 리스트</button> &nbsp;&nbsp;
+                    <a class="btn btn-outline-primary"  th:href="@{/admin/accounting}">전체 리스트</a> &nbsp;&nbsp;
                     <button class="btn btn-outline-primary" onclick="accountingExelDown()">엑셀파일 저장</button> &nbsp;&nbsp;
                     <a class="btn btn-outline-primary" th:href="@{/admin/accounting/create}">신규등록</a>
                 </div>
             </div>
+            <br><br>
         </div>
     </div>
 </div>
