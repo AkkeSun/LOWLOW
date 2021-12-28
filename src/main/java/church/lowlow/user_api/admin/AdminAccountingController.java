@@ -6,6 +6,7 @@ import church.lowlow.rest_api.accounting.db.OfferingKind;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.member.db.ChurchOfficer;
 import church.lowlow.rest_api.member.db.Member;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ import static church.lowlow.user_api.common.ExcelUtil.accountingExcelCreate;
 
 @Controller
 @RequestMapping("/admin/accounting")
+@Log4j2
 public class AdminAccountingController {
 
     @Autowired
@@ -54,17 +56,18 @@ public class AdminAccountingController {
 
     // ========== Detail (Update) View ==========
     @GetMapping("/{id}")
-    public String getAccuntingCreateView(@PathVariable Long id, Model model) {
+    public String getAccountingDetailView(@PathVariable Long id, Model model) {
 
-        Mono<Member> memberMono = webClient
-                .get()
-                .uri("/members/{id}", id)
-                .retrieve()
-                .bodyToMono(Member.class);
+        Mono<Accounting> accountingMono = webClient
+                            .get()
+                            .uri("/accounting/{id}", id)
+                            .retrieve()
+                            .bodyToMono(Accounting.class);
 
-        Member member = memberMono.block();
-        model.addAttribute("member", member);
-        return "admin/member/memberDetail";
+        Accounting accounting = accountingMono.block();
+        model.addAttribute("accounting", accounting);
+
+        return "admin/accounting/accountingDetail";
 
     }
 

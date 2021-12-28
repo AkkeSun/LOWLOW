@@ -137,16 +137,11 @@ public class AccountingController {
      *                UPDATE API
      ********************************************/
     @PutMapping("/{id}")
-    public ResponseEntity updateAccounting(@RequestBody @Valid AccountingDto dto,
+    public ResponseEntity updateAccounting(@RequestBody AccountingDto dto,
                                            @PathVariable Integer id,
                                            Errors errors){
 
         // check
-        Optional<Accounting> optional = accountingRepository.findById(id);
-        if(optional.isEmpty())
-            return ResponseEntity.notFound().build();
-        if(errors.hasErrors())
-            return badRequest().body(new AccountingErrorsResource(errors));
         accountingValidation.validate(dto, errors);
         if(errors.hasErrors())
             return badRequest().body(new AccountingErrorsResource(errors));

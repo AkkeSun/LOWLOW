@@ -7,9 +7,10 @@
 
 <script th:inline="javascript">
     $(document).ready(function(){
-        $("#startDate").datepicker({format : "yyyy-mm-dd", todayHighlight : true, autoclose : true,  language : "ko"});
-        $("#endDate").datepicker({format : "yyyy-mm-dd", todayHighlight : true, autoclose : true,  language : "ko"});
-        $("#accountingUpdate").hide();
+        $("#offeringDate").datepicker({format : "yyyy-mm-dd", todayHighlight : true, autoclose : true,  language : "ko"});
+        $("#accountingNameCheck").hide();
+        $("#accountingNameUpdate").hide();
+        $("#updateProcessBtn").hide();
     });
 </script>
 
@@ -23,79 +24,51 @@
 
             <!-- Main Contents -->
             <div class="container">
-                <form class="form-horizontal" id="withFileUploadFrm" th:object="${accounting}" enctype="multipart/form-data">
-                    <input type="hidden" id="id" th:value="*{id}">
+                <form class="form-horizontal" id="accountingForm" th:object="${accounting}" enctype="multipart/form-data">
+                    <input type="hidden" class="form-control input-large" th:field="*{id}">
                     <div class="form-group">
-                        <label for="name" class="col-sm-2 control-label">이름</label>
+                        <label for="nameCheck" class="col control-label">이름</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control input-large" id="name" name="name" placeholder="이름"  th:value="*{name}" disabled="disabled">
+                            <input type="text" class="form-control input-large" id="nameCheck" placeholder="익명의 경우 '익명' 입력" disabled="disabled" th:value="*{member.name}">
+                            <input type="hidden" class="form-control input-large" id="memberId" name="memberId" th:value="*{member.id}">
+                            <button type="button" class="btn btn-outline-primary" id='accountingNameCheck' onclick='nameCheckFunc()'>확인</button>
+                            <button type="button" class="btn btn-outline-primary" id='accountingNameUpdate' onclick='nameUpdateFunc()'>수정</button>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="phoneNumber" class="col-sm-2 control-label">전화번호</label>
+                        <label for="money" class="col-sm-2 control-label">금액</label>
                         <div class="col-sm-10">
-                            <input type="text" maxlength="13" class="form-control input-large" id="phoneNumber" name="phoneNumber" placeholder="000-0000-0000"  th:value="*{phoneNumber}" disabled="disabled">
+                            <input type="text" class="form-control input-large" id="money" th:field="*{money}" disabled="disabled">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="gender" class="col-sm-2 control-label">성별</label>
+                        <label for="offeringKind" class="col-sm-2 control-label">종류</label>
                         <div class="col-sm-10">
-                            <select class="custom-select" name="gender" id="gender"  th:value="*{gender}" disabled="disabled">
-                                <option th:value="MALE" th:text= "남자"/>
-                                <option th:value="FEMALE" th:text= "여자"/>
+                            <select class="custom-select" th:field="*{offeringKind}" id="offeringKind" disabled="disabled">
+                                <option th:value="SUNDAY" th:text="주정헌금">
+                                <option th:value="THANKSGIVING" th:text="감사헌금"/>
+                                <option th:value="BUILDING" th:text="건축헌금"/>
+                                <option th:value="SPECIAL" th:text="특별헌금"/>
+                                <option th:value="MISSION" th:text="선교헌금"/>
+                                <option th:value="TITHE" th:text="십일조"/>
+                                <option th:value="UNKNOWN" th:text="기타"/>
                             </select>
                         </div>
                     </div>
+
                     <div class="form-group">
-                        <label for="birthDay" class="col-sm-2 control-label">생년월일</label>
+                        <label for="offeringDate" class="col-sm-2 control-label">헌금일</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control input-large" id="birthDay" name="birthDay" th:value="*{birthDay}" disabled="disabled">
+                            <input type="text" class="form-control input-large" id="offeringDate" name="offeringDate" th:value="*{offeringDate}" disabled="disabled">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="belong" class="col-sm-2 control-label">교구(목장)</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control input-large" id="belong" name="belong" placeholder="교구(목장)" th:value="*{belong}" disabled="disabled">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="gender" class="col-sm-2 control-label">직분</label>
-                        <div class="col-sm-10">
-                            <select class="custom-select" name="churchOfficer" id="churchOfficer" th:value="*{churchOfficer}" disabled="disabled">
-                                <option th:value="LAYMAN" th:text="평신도">
-                                <option th:value="DEACON" th:text="집사"/>
-                                <option th:value="ORDAINED_DEACON" th:text="안수집사"/>
-                                <option th:value="SENIOR_DEACONESS" th:text="권사"/>
-                                <option th:value="ELDER" th:text="장로"/>
-                                <option th:value="JUNIOR_PASTOR" th:text="전도사"/>
-                                <option th:value="ASSISTANT_PASTOR" th:text="부목사"/>
-                                <option th:value="SENIOR_PASTOR" th:text="담임목사"/>
-                                <option th:value="WIFE" th:text="사모"/>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="regiDate" class="col-sm-2 control-label">등록일</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control input-large" id="regiDate" name="regiDate" th:value="*{regiDate}" disabled="disabled">
-                        </div>
-                    </div>
-                    <div class="form-group" id="uploadImg">
-                        <label for="image" class="col-sm-2 control-label">이미지</label> <br>
-                        <div class="col-sm-10">
-                            <input type="file" class="form-control-file input-large" multiple="multiple" id="image" name="image" accept=".gif, .jpg, .png">
-                        </div>
-                    </div>
-                    <div class="form-group"  id="showImg"  th:if="${member.image} != null">
-                        <label for="image" class="col-sm-2 control-label">이미지</label> <br>
-                        <img th:src="@{/upload/} + ${member.image.uploadName}" class="profileImg">
-                    </div>
+
                     <br>
                     &nbsp;&nbsp;
-                    <button type="button" class="btn btn-outline-primary" id="memberUpdateView" onclick='memberUpdateViewSetting()'>수정</button>
-                    <button type="button" class="btn btn-outline-primary" id="memberUpdate" onclick="memberCreateAndUpdateProcess('put')">수정완료</button>
-                    <button type="button" class="btn btn-outline-primary" id="memberDelete" onclick='memberDelete()'>삭제</button>
-                    <a class="btn btn-outline-primary" th:href="@{/admin/members}">목록 </a>
+                    <button type="button" class="btn btn-outline-primary" onclick="accountingUpdateViewSetting()" id="updateViewBtn">수정</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="accountingDelete()" id="deleteBtn">삭제</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="accountingCreateAndUpdateProcess('put')" id="updateProcessBtn">수정완료</button>
+                    <a class="btn btn-outline-primary" th:href="@{/admin/accounting}">목록 </a>
                 </form>
             </div>
             <br><br><br><br>
@@ -104,6 +77,39 @@
         </div>
     </div>
 </div>
+
+
+
+<!-- Member Check Modal -->
+<div class="modal fade" id="memberCheckModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">찾고자 하는 성도를 선택하세요</h5>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">교구</th>
+                        <th scope="col">이름</th>
+                        <th scope="col">전화번호</th>
+                        <th scope="col">생년월일</th>
+                        <th scope="col">선택</th>
+                    </tr>
+                    </thead>
+                    <!-- data append -->
+                    <tbody id="modalAppendPath"></tbody>
+                    <!-- data append -->
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 </body>
 </html>

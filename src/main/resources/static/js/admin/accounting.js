@@ -279,6 +279,12 @@ function offeringKindConverter(offeringKind){
 /**************************************************************
  *
  *                  CREATE & UPDATE FUNCTION
+ *                  
+ * accountingCreateAndUpdateProcess(type) : 회원정보 등록 및 수정 프로세스
+ * nameCheckFunc()                        : 헌금하는 사람 확인
+ * memberIdSetting(id)                    : 헌금하는 사람 최종 셋팅
+ * accountingUpdateViewSetting()          : 수정 View 셋팅
+ *
  *
  **************************************************************/
 // ================= Create & Update process  ====================
@@ -295,7 +301,7 @@ function accountingCreateAndUpdateProcess(type){
 
     // update url 변경
     if(type == 'put')
-        url = "/api/members/"+$("#id").val();
+        url = "/api/accounting/"+$("#id").val();
 
     // ajax process
     let callback = ajaxComm(type, JSON.stringify(data), url, async, csrfHeader, csrfToken);
@@ -312,7 +318,7 @@ function accountingCreateAndUpdateProcess(type){
 
 };
 
-// ================= 헌금한 사람 이름 검색 함수 ====================
+// ================= 헌금하는 사람 확인 함수 ====================
 function nameCheckFunc(){
 
     // A. 이름을 입력하지 않은 경우
@@ -381,7 +387,7 @@ function nameCheckFunc(){
 }
 
 
-// ================= 헌금한 사람 최종 셋팅 ====================
+// ================= 헌금하는 사람 최종 셋팅 ====================
 function memberIdSetting(id){
 
     $("#memberId").val(id);
@@ -394,34 +400,26 @@ function memberIdSetting(id){
 
 // ================= 헌금한 사람 수정 버튼 ====================
 function nameUpdateFunc(){
+    $("#memberId").val("");
     $("#accountingNameUpdate").hide();
     $("#accountingNameCheck").show();
     $("#nameCheck").removeAttr("disabled");
 }
 
 
-
-
 // ================= Update View Setting ====================
 function accountingUpdateViewSetting() {
-    $("#name").removeAttr("disabled");
-    $("#phoneNumber").removeAttr("disabled");
-    $("#gender").removeAttr("disabled");
-    $("#birthDay").removeAttr("disabled");
-    $("#belong").removeAttr("disabled");
-    $("#name").removeAttr("disabled");
-    $("#regiDate").removeAttr("disabled");
-    $("#churchOfficer").removeAttr("disabled");
-    $("#datePicker").removeAttr("disabled");
 
-    $("#showImg").hide();
-    $("#memberUpdateView").hide();
-    $("#memberDelete").hide();
-    $("#memberUpdate").show();
-    $("#uploadImg").show();
+    $("#money").removeAttr("disabled");
+    $("#offeringKind").removeAttr("disabled");
+    $("#offeringDate").removeAttr("disabled");
+
+    $("#accountingNameUpdate").show();
+    $("#updateProcessBtn").show();
+    $("#updateViewBtn").hide();
+    $("#deleteBtn").hide();
+
 };
-
-
 
 
 // ================= Delete Process ====================
@@ -434,8 +432,8 @@ function accountingDelete(){
         let csrfHeader  = $("#_csrf_header").attr('content');
         let csrfToken   = $("#_csrf").attr('content');
         let type        = "delete";
-        let url         = "/api/members/"+$("#id").val();
-        let redirectUrl = "/admin/members";
+        let url         = "/api/accounting/"+$("#id").val();
+        let redirectUrl = "/admin/accounting";
         let async       = true;
         let isSecurity  = false;
         let data        = "";
