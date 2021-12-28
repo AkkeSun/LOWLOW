@@ -18,5 +18,4 @@ public class WebConfig implements WebMvcConfigurer{
                 .setCacheControl(CacheControl.maxAge(10, TimeUnit.MINUTES));
 
     }
-
 }

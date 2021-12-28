@@ -1,10 +1,10 @@
-package church.lowlow.rest_api.gallary.controller;
+package church.lowlow.rest_api.gallery.controller;
 
-import church.lowlow.rest_api.gallary.db.Gallery;
-import church.lowlow.rest_api.gallary.db.GalleryDto;
-import church.lowlow.rest_api.gallary.repository.GalleryRepository;
-import church.lowlow.rest_api.gallary.resource.GalleryErrorsResource;
-import church.lowlow.rest_api.gallary.resource.GalleryResource;
+import church.lowlow.rest_api.gallery.db.Gallery;
+import church.lowlow.rest_api.gallery.db.GalleryDto;
+import church.lowlow.rest_api.gallery.repository.GalleryRepository;
+import church.lowlow.rest_api.gallery.resource.GalleryErrorsResource;
+import church.lowlow.rest_api.gallery.resource.GalleryResource;
 import church.lowlow.rest_api.weekly.db.WeeklyDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

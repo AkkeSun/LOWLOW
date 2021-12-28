@@ -1,4 +1,4 @@
-package church.lowlow.rest_api.gallary.db;
+package church.lowlow.rest_api.gallery.db;
 
 import church.lowlow.rest_api.common.entity.BaseTimeEntity;
 import church.lowlow.rest_api.common.entity.Files;

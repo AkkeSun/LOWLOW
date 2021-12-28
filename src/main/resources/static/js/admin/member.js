@@ -166,12 +166,11 @@ function memberUpdateViewSetting() {
     $("#regiDate").removeAttr("disabled");
     $("#churchOfficer").removeAttr("disabled");
     $("#datePicker").removeAttr("disabled");
+    $("#image").removeAttr("disabled");
 
-    $("#showImg").hide();
     $("#memberUpdateView").hide();
     $("#memberDelete").hide();
     $("#memberUpdate").show();
-    $("#uploadImg").show();
 };
 
 
@@ -198,4 +197,26 @@ function memberDelete(){
         callback.done(data => ajaxCallbackProcess(isSecurity, data, type, redirectUrl));
     }
 
+}
+
+
+
+// ================= 업로드 이미지 미리보기 함수 ====================
+function memberHandleImgFileSelect(e) {
+
+    let files = e.target.files;
+    let filesArr = Array.prototype.slice.call(files);
+    filesArr.forEach(function(f) {
+        if(!f.type.match("image.*")) {
+            alert("이미지만 업로드 가능합니다.");
+            return;
+        }
+        sel_file = f;
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            $("#imageView").attr("src", e.target.result);
+            $("#imageView").css("width", '150px');
+        }
+        reader.readAsDataURL(f);
+    });
 }

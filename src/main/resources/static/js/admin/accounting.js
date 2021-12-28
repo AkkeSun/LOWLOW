@@ -280,11 +280,11 @@ function offeringKindConverter(offeringKind){
  *
  *                  CREATE & UPDATE FUNCTION
  *                  
- * accountingCreateAndUpdateProcess(type) : 회원정보 등록 및 수정 프로세스
+ * accountingCreateAndUpdateProcess(type) : 헌금내역 등록 및 수정 프로세스
  * nameCheckFunc()                        : 헌금하는 사람 확인
  * memberIdSetting(id)                    : 헌금하는 사람 최종 셋팅
  * accountingUpdateViewSetting()          : 수정 View 셋팅
- *
+ * accountingDelete()                     : 헌금내역 삭제 프로세스
  *
  **************************************************************/
 // ================= Create & Update process  ====================

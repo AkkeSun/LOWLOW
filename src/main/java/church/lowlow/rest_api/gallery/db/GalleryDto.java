@@ -1,4 +1,4 @@
-package church.lowlow.rest_api.gallary.db;
+package church.lowlow.rest_api.gallery.db;
 
 import church.lowlow.rest_api.common.entity.Files;
 import church.lowlow.rest_api.common.entity.Writer;
@@ -19,9 +19,6 @@ public class GalleryDto {
 
     @NotBlank(message = "제목은 비워둘 수 없습니다")
     private String title;
-
-    @NotNull(message = "작성자는 비워둘 수 없습니다")
-    private Writer writer;
 
     private Files image1;
     private Files image2;

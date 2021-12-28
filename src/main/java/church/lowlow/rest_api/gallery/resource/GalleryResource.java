@@ -1,7 +1,7 @@
-package church.lowlow.rest_api.gallary.resource;
+package church.lowlow.rest_api.gallery.resource;
 
-import church.lowlow.rest_api.gallary.controller.GalleryController;
-import church.lowlow.rest_api.gallary.db.Gallery;
+import church.lowlow.rest_api.gallery.controller.GalleryController;
+import church.lowlow.rest_api.gallery.db.Gallery;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 

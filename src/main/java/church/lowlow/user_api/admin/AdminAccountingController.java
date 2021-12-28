@@ -4,11 +4,9 @@ import church.lowlow.rest_api.accounting.db.Accounting;
 import church.lowlow.rest_api.accounting.db.AccountingDto;
 import church.lowlow.rest_api.accounting.db.OfferingKind;
 import church.lowlow.rest_api.common.entity.SearchDto;
-import church.lowlow.rest_api.member.db.ChurchOfficer;
 import church.lowlow.rest_api.member.db.Member;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
@@ -36,8 +34,6 @@ public class AdminAccountingController {
     @Autowired
     private WebClient webClient;
 
-    @Autowired
-    private ModelMapper modelMapper;
 
     // ========== List View ==========
     @GetMapping
