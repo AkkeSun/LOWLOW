@@ -1,21 +1,15 @@
 package church.lowlow.user_api.common;
 
-import church.lowlow.rest_api.common.entity.Files;
+import church.lowlow.rest_api.common.entity.FileDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.io.FileUtils;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,13 +20,13 @@ public class FileController {
 
     // =================== 파일 업로드 =====================
     @PostMapping("/upload")
-    public Files MultipartHttpServletRequestUpload(MultipartHttpServletRequest mRequest) throws JsonProcessingException {
+    public FileDto MultipartHttpServletRequestUpload(MultipartHttpServletRequest mRequest) throws JsonProcessingException {
 
         // properties 에서 받아오기
         String path = "C:/upload/";
 
         List<MultipartFile> fileList = mRequest.getFiles("image");
-        Files files = new Files();
+        FileDto fileDto = new FileDto();
 
         for(MultipartFile mf : fileList) {
 
@@ -40,8 +34,9 @@ public class FileController {
             String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
             String uploadFileName = UUID.randomUUID().toString().replaceAll("-", "") + fileExtension;
 
+
             // 파일명 저장
-            files = Files.builder()
+            fileDto = FileDto.builder()
                     .uploadName(uploadFileName)
                     .originalName(originalFilename)
                     .build();
@@ -56,7 +51,7 @@ public class FileController {
                 log.info("[ERROR MSG] " + e.getMessage());
             }
         }
-        return files;
+        return fileDto;
     }
 
 

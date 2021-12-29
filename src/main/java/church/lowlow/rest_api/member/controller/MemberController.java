@@ -1,10 +1,8 @@
 package church.lowlow.rest_api.member.controller;
 
-import church.lowlow.rest_api.common.entity.Files;
+import church.lowlow.rest_api.common.entity.FileDto;
 import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
-import church.lowlow.rest_api.common.entity.Writer;
-import church.lowlow.rest_api.member.db.ChurchOfficer;
 import church.lowlow.rest_api.member.db.MemberValidation;
 import church.lowlow.rest_api.member.repository.MemberRepository;
 import church.lowlow.rest_api.member.resource.MemberErrorsResource;
@@ -20,16 +18,12 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.net.URI;
-import java.text.ParseException;
 import java.util.Optional;
 
-import static church.lowlow.rest_api.common.util.StringUtil.StringNullCheck;
 import static church.lowlow.rest_api.common.util.WriterUtil.getWriter;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.http.ResponseEntity.badRequest;
@@ -61,7 +55,7 @@ public class MemberController {
         // save
         Member member = modelMapper.map(dto, Member.class);
         member.setWriter( getWriter() );
-        member.setImage(Files.builder().originalName(dto.getOriginalName()).uploadName(dto.getUploadName()).build());
+        member.setImage(FileDto.builder().originalName(dto.getOriginalName()).uploadName(dto.getUploadName()).build());
         Member newMember = repository.save(member);
         URI createdUri = linkTo(MemberController.class).slash(newMember.getId()).toUri();
 
@@ -116,7 +110,7 @@ public class MemberController {
         // update
         Member member = modelMapper.map(dto, Member.class);
         member.setWriter( getWriter() );
-        member.setImage(Files.builder().originalName(dto.getOriginalName()).uploadName(dto.getUploadName()).build());
+        member.setImage(FileDto.builder().originalName(dto.getOriginalName()).uploadName(dto.getUploadName()).build());
         member.setId(id);
         Member updateMember = repository.save(member);
 
@@ -133,18 +127,20 @@ public class MemberController {
      *       DELETE API
      **************************/
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteMembers(@PathVariable Integer id, Resource resource){
+    public ResponseEntity deleteMembers(@PathVariable Integer id){
 
         // check
         Optional<Member> optional = repository.findById(id);
         if(optional.isEmpty())
             return ResponseEntity.notFound().build();
 
-        // delete
-        repository.deleteById(id);
+        // delete (block update)
+        Member member = optional.get();
+        member.setBlock(true);
+        Member deleteMember = repository.save(member);
 
         // return
-        resource.add(linkTo(MemberController.class).withRel("index"));
+        MemberResource resource = new MemberResource(deleteMember);
         return ResponseEntity.ok(resource);
     }
 }

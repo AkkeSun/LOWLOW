@@ -90,13 +90,13 @@
             <div class="form-group">
                 <label for="resourceName" class="col-sm-2 control-label">리소스명</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control input-large" name="resourceName" id="resourceName" placeholder="리소스명" th:value="*{resourceName}">
+                    <input type="text" class="form-control input-large" id="resourceName" placeholder="리소스명" th:field="*{resourceName}">
                 </div>
             </div>
             <div class="form-group">
                 <label for="resourceType" class="col-sm-2 control-label">리소스타입</label>
                 <div class="col-sm-10">
-                    <select class="custom-select" name="resourceType" id="resourceType">
+                    <select class="custom-select" id="resourceType" th:field="*{resourceType}">
                         <option value="url">URL</option>
                         <option value="method">method</option>
                     </select>
@@ -105,13 +105,13 @@
             <div class="form-group">
                 <label for="orderNum" class="col-sm-2 control-label">순서</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control input-large" name="orderNum" id="orderNum" placeholder="순서" th:value="*{orderNum}">
+                    <input type="text" class="form-control input-large" id="orderNum" placeholder="순서" th:field="*{orderNum}">
                 </div>
             </div>
             <div class="form-group">
                 <label for="roleName" class="col-sm-2 control-label">권한</label>
                 <div class="col-sm-10">
-                    <select class="custom-select" name="role" id="roleName">
+                    <select class="custom-select" id="roleName" name="role">
                         <option th:each="role: ${roleListSub}"
                                 th:value="${role.roleName}"
                                 th:text="${role.roleName}"/>

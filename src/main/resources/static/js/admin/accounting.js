@@ -51,12 +51,11 @@ function accountingListLoad(nowPage){
 
     callback.done( (data) => {
 
-        // global param setting
-        totalPages = data.page.totalPages; // for paging
+        totalPages = 1;
 
         let appendData = "";
         if( data._embedded ) {
-
+            totalPages = data.page.totalPages;
             let accountingList = data._embedded.accountingList;
 
             accountingList.forEach(function (data, index) {

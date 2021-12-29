@@ -26,6 +26,7 @@
             <div class="container">
                 <form class="form-horizontal" id="withFileUploadFrm" th:object="${member}" enctype="multipart/form-data">
                     <input type="hidden" id="id" th:value="*{id}">
+                    <input type="hidden" id="createdDate" th:value="*{createdDate}">
                     <div class="form-group">
                         <label for="name" class="col-sm-2 control-label">이름</label>
                         <div class="col-sm-10">
@@ -41,7 +42,7 @@
                     <div class="form-group">
                         <label for="gender" class="col-sm-2 control-label">성별</label>
                         <div class="col-sm-10">
-                            <select class="custom-select" name="gender" id="gender"  th:value="*{gender}" disabled="disabled">
+                            <select class="custom-select" id="gender" th:field="*{gender}" disabled="disabled">
                                 <option th:value="MALE" th:text= "남자"/>
                                 <option th:value="FEMALE" th:text= "여자"/>
                             </select>
@@ -56,13 +57,13 @@
                     <div class="form-group">
                         <label for="belong" class="col-sm-2 control-label">교구(목장)</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control input-large" id="belong" name="belong" placeholder="교구(목장)" th:value="*{belong}" disabled="disabled">
+                            <input type="text" class="form-control input-large" id="belong" placeholder="교구(목장)" th:field="*{belong}" disabled="disabled">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="gender" class="col-sm-2 control-label">직분</label>
                         <div class="col-sm-10">
-                            <select class="custom-select" name="churchOfficer" id="churchOfficer" th:value="*{churchOfficer}" disabled="disabled">
+                            <select class="custom-select" id="churchOfficer" th:field="*{churchOfficer}" disabled="disabled">
                                 <option th:value="LAYMAN" th:text="평신도">
                                 <option th:value="DEACON" th:text="집사"/>
                                 <option th:value="ORDAINED_DEACON" th:text="안수집사"/>
@@ -86,22 +87,27 @@
                         <label for="image" class="col-sm-2 control-label">이미지</label>
                         <input type="file" class="form-control-file input-large" multiple="multiple" id="image" name="image" style="display: none" disabled="disabled">
                         <br>
-                        &nbsp;
-                        <label for="image">
-                            <div th:if="${member.image} != null">
-                                <img class="imgSample" id="imageView" th:src="@{/upload/} + ${member.image.uploadName}">
-                            </div>
-                            <div th:if="${member.image} == null">
-                                <img class="imgSample" id="imageView" src="/image/uploadSample.png">
-                            </div>
-                        </label>
+
+                        <div th:if="${member.image} != null">
+                            <input type="hidden" id="savedOriginalName" th:value="${member.image.originalName}">
+                            <input type="hidden" id="savedUploadName" th:value="${member.image.uploadName}">
+                            <label for="image">
+                                &nbsp;&nbsp;<img class="imgSample" id="imageView" th:src="@{/upload/} + ${member.image.uploadName}">
+                            </label>
+                        </div>
+                        <div th:if="${member.image} == null">
+                            <label for="image">
+                                &nbsp;&nbsp;<img class="imgSample" id="imageView" src="/image/uploadSample.png">
+                            </label>
+                        </div>
+
                     </div>
 
                     <br>
                     &nbsp;&nbsp;
                     <button type="button" class="btn btn-outline-primary" id="memberUpdateView" onclick='memberUpdateViewSetting()'>수정</button>
                     <button type="button" class="btn btn-outline-primary" id="memberUpdate" onclick="memberCreateAndUpdateProcess('put')">수정완료</button>
-                    <button type="button" class="btn btn-outline-primary" id="memberDelete" onclick='memberDelete()'>삭제</button>
+                    <button type="button" class="btn btn-outline-primary" id="memberDelete" onclick="memberDeleteProcess()">삭제</button>
                     <a class="btn btn-outline-primary" th:href="@{/admin/members}">목록 </a>
                 </form>
             </div>

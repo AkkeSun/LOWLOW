@@ -24,28 +24,6 @@ import javax.transaction.Transactional;
 @Component
 public class SecurityPostListener implements ApplicationListener<ApplicationStartedEvent> {
 
-    //================= 데이터 입력 =================
-
-    // ROLE
-    private final String ROLE_NAME = "ROLE_DEV";
-    private final String ROLE_DESC = "개발자";
-
-    // USER
-    private final String USER_NAME = "lowlow";
-    private final String PASSWORD = "1111";
-
-    // RESOURCE
-    private final String RESOURCE_NAME = "/admin/**";
-    private final String RESOURCE_TYPE = "url";
-
-    // MEMBER (익명)
-    private final String MEMBER_NAME = "익명";
-    private final String MEMBER_BELONG = "-";
-    private final String MEMBER_PHONENUM = "-";
-
-    //=================================================
-
-
     @Autowired
     private ResourcesRepo resourcesRepo;
 
@@ -68,22 +46,42 @@ public class SecurityPostListener implements ApplicationListener<ApplicationStar
     @Transactional
     public void onApplicationEvent(ApplicationStartedEvent applicationStartedEvent) {
 
-        createRoleIfNotFound(ROLE_NAME, ROLE_DESC);
-        createUserIfNotFound(USER_NAME, PASSWORD, ROLE_NAME);
-        createResourceIfNotFound(RESOURCE_NAME, RESOURCE_TYPE, ROLE_NAME);
-        createMemberRepository(MEMBER_NAME);
+        // SECURITY ROLE
+        createRoleIfNotFound("ROLE_DEV", "개발자", 0);
+        createRoleIfNotFound("ROLE_MST", "마스터", 1);
+        createRoleIfNotFound("ROLE_GAF", "총무", 2);
+        createRoleIfNotFound("ROLE_ULD", "업로더", 3);
+        createRoleIfNotFound("ROLE_LDR", "리더", 4);
+
+        // SECURITY USER
+        createUserIfNotFound("lowlow", "1111", "ROLE_DEV");
+
+        // SECURITY RESOURCE
+        createResourceIfNotFound("/admin/security/**", "url", "ROLE_DEV", 0);
+        createResourceIfNotFound("/admin/basicInfo/**", "url", "ROLE_DEV", 1);
+        createResourceIfNotFound("/admin/members/**", "url", "ROLE_LDR", 2);
+        createResourceIfNotFound("/admin/accounting/**", "url", "ROLE_GAF", 3);
+        createResourceIfNotFound("/admin/gallery/**", "url", "ROLE_ULD", 4);
+        createResourceIfNotFound("/admin/calendar/**", "url", "ROLE_ULD", 5);
+        createResourceIfNotFound("/admin/notice/**", "url", "ROLE_ULD", 6);
+        createResourceIfNotFound("/admin/weekly/**", "url", "ROLE_ULD", 7);
+        createResourceIfNotFound("/admin/worshipVideo/**", "url", "ROLE_ULD", 8);
+        createResourceIfNotFound("/admin/**", "url", "ROLE_LDR", 9);
+
+        // MEMBER
+        createMemberIfNotFound("익명");
 
     }
 
     @Transactional
-    public Role createRoleIfNotFound(String roleName, String roleDesc) {
+    public Role createRoleIfNotFound(String roleName, String roleDesc, int ruleNum) {
         Role role = roleRepo.findByRoleName(roleName);
 
         if (role == null) {
             role = Role.builder()
                     .roleName(roleName)
                     .roleDesc(roleDesc)
-                    .roleNum(0)
+                    .roleNum(ruleNum)
                     .build();
         }
         return roleRepo.save(role);
@@ -107,7 +105,7 @@ public class SecurityPostListener implements ApplicationListener<ApplicationStar
     }
 
     @Transactional
-    public Resources createResourceIfNotFound(String resourceName, String resourceType, String roleName) {
+    public Resources createResourceIfNotFound(String resourceName, String resourceType, String roleName, int orderNum) {
         Resources resources = resourcesRepo.findByResourceName(resourceName);
 
         if (resources == null) {
@@ -117,14 +115,14 @@ public class SecurityPostListener implements ApplicationListener<ApplicationStar
                     .resourceName(resourceName)
                     .resourceRole(role)
                     .resourceType(resourceType)
-                    .orderNum(0)
+                    .orderNum(orderNum)
                     .build();
         }
         return resourcesRepo.save(resources);
     }
 
     @Transactional
-    public Member createMemberRepository(String name) {
+    public Member createMemberIfNotFound(String name) {
         Member member = memberRepository.findByName(name);
 
         if (member == null)

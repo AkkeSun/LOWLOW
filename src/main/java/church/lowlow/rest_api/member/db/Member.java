@@ -2,7 +2,7 @@ package church.lowlow.rest_api.member.db;
 
 import church.lowlow.rest_api.common.converter.LocalDateConverter;
 import church.lowlow.rest_api.common.entity.BaseTimeEntity;
-import church.lowlow.rest_api.common.entity.Files;
+import church.lowlow.rest_api.common.entity.FileDto;
 import church.lowlow.rest_api.common.entity.Writer;
 import lombok.*;
 
@@ -19,6 +19,7 @@ import java.time.LocalDate;
  * address 주소
  * belong 교구
  * birthDay 생일
+ * block 차단유무
  * regiDate 가입일
  * gender 성별
  * churchOfficer 직분
@@ -41,6 +42,8 @@ public class Member extends BaseTimeEntity{
 
     private LocalDate birthDay;
 
+    private boolean block; // 차단 유무
+
     @Convert(converter = LocalDateConverter.class)
     private LocalDate regiDate;
 
@@ -51,9 +54,10 @@ public class Member extends BaseTimeEntity{
     private ChurchOfficer churchOfficer;
 
     @Embedded
-    private Files image;
+    private FileDto image;
 
     @Embedded
     private Writer writer;
+
 
 }

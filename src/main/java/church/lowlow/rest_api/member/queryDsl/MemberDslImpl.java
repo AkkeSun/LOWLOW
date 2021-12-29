@@ -33,7 +33,7 @@ public class MemberDslImpl implements MemberDsl {
 
         BooleanBuilder builder = new BooleanBuilder();
         builder.and((q1.name.ne("익명")));
-
+        builder.and(q1.block.eq(false));
 
         // 이름 검색
         if(key.equals("name") && !val.equals(""))

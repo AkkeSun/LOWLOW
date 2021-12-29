@@ -30,11 +30,11 @@ function memberListLoad(nowPage){
 
     callback.done( (data) => {
 
-        // total page setting (global parameter)
-        totalPages = data.page.totalPages;
+        totalPages = 1;
 
         let appendData = "";
         if( data._embedded ) {
+            totalPages = data.page.totalPages;
 
             let list = data._embedded.memberList;
             list.forEach(function (data, index) {
@@ -100,13 +100,20 @@ function memberPagingProcess(){
 
 
 
-// ================ Member List Search ================
+// ================ 검색기능 ================
 function memberSearch(){
     memberListLoad(0);
     memberPagingProcess();
 }
 
 
+// ================ 검색기능 초기화================
+function memberSearchInitialize() {
+    $("#searchId").val("name");
+    $("#searchData").val("");;
+    memberListLoad(0);
+    memberPagingProcess();
+}
 
 
 // ================= Member Create & Update process  ====================
@@ -121,9 +128,7 @@ function memberCreateAndUpdateProcess(type){
     let isSecurity  = false;
     let data        = objToJson($('#withFileUploadFrm').serializeArray());
 
-    // update url 변경
-    if(type == 'put')
-        url = "/api/members/"+$("#id").val();
+    alert(JSON.stringify(data));
 
     // 이미지 업로드
     if($("#image").val()){
@@ -133,6 +138,18 @@ function memberCreateAndUpdateProcess(type){
             data.originalName = uploadData.originalName;
         });
     }
+
+
+    // 업데이트 시 기존 이미지를 사용하는 경우
+    if($("#savedOriginalName").val()){
+        data.uploadName   = $("#savedUploadName").val();
+        data.originalName = $("#savedOriginalName").val();
+    }
+
+
+    // update url 변경
+    if(type == 'put')
+        url = "/api/members/"+$("#id").val();
 
     // ajax process
     let callback = ajaxComm(type, JSON.stringify(data), url, async, csrfHeader, csrfToken);
@@ -177,7 +194,7 @@ function memberUpdateViewSetting() {
 
 
 // ================= Member Delete Process ====================
-function memberDelete(){
+function memberDeleteProcess(){
 
     let check = confirm('정말 삭제하시겠습니까');
     if(check) {

@@ -149,7 +149,7 @@ public class AccountingController {
         // update
         Accounting accounting = modelMapper.map(dto, Accounting.class);
 
-        // 유효성 검사
+        // update
         Member member = memberRepository.findById(dto.getMemberId()).get();
         accounting.setMember(member);
         accounting.setId(id);

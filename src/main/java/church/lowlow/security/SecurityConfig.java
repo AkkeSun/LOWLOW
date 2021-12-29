@@ -67,13 +67,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class)
                 .exceptionHandling()
                 .accessDeniedHandler(deniedHandler)
-
-        /*
-        .and()
-                .csrf().disable();
-
-
-         */
         ;
 
         //=========== 인증 처리 ===============
@@ -112,7 +105,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // ========================== Role 계층권한 적용 ===========================
     @Bean
     public RoleHierarchyImpl roleHierarchy() {
-        return  new RoleHierarchyImpl();
+        return new RoleHierarchyImpl();
     }
     @Bean
     public AccessDecisionVoter<? extends Object> roleVoter() {

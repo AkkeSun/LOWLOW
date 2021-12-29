@@ -1,6 +1,6 @@
 package church.lowlow.rest_api.basicInfo.db;
 
-import church.lowlow.rest_api.common.entity.Files;
+import church.lowlow.rest_api.common.entity.FileDto;
 import church.lowlow.rest_api.common.entity.Writer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,20 +37,20 @@ public class BasicInfoDto {
 
     private String kakaoPage;
     private String liveWorshipURL;
-    private Files infoImage1;
-    private Files infoImage2;
-    private Files infoImage3;
-    private Files infoImage4;
-    private Files infoImage5;
-    private Files infoImage6;
-    private Files carouselImg1;
-    private Files carouselImg2;
-    private Files carouselImg3;
-    private Files carouselImg4;
-    private Files carouselImg5;
-    private Files carouselImg6;
-    private Files organizationChart1;
-    private Files organizationChart2;
-    private Files organizationChart3;
+    private FileDto infoImage1;
+    private FileDto infoImage2;
+    private FileDto infoImage3;
+    private FileDto infoImage4;
+    private FileDto infoImage5;
+    private FileDto infoImage6;
+    private FileDto carouselImg1;
+    private FileDto carouselImg2;
+    private FileDto carouselImg3;
+    private FileDto carouselImg4;
+    private FileDto carouselImg5;
+    private FileDto carouselImg6;
+    private FileDto organizationChart1;
+    private FileDto organizationChart2;
+    private FileDto organizationChart3;
 
 }
