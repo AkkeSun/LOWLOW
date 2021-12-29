@@ -2,6 +2,7 @@ package church.lowlow.rest_api.gallery.controller;
 
 import church.lowlow.rest_api.gallery.db.Gallery;
 import church.lowlow.rest_api.gallery.db.GalleryDto;
+import church.lowlow.rest_api.gallery.db.GalleryValidation;
 import church.lowlow.rest_api.gallery.repository.GalleryRepository;
 import church.lowlow.rest_api.gallery.resource.GalleryErrorsResource;
 import church.lowlow.rest_api.gallery.resource.GalleryResource;
@@ -21,6 +22,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 
+import static church.lowlow.rest_api.common.util.WriterUtil.getWriter;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.http.ResponseEntity.badRequest;
 
@@ -34,25 +36,30 @@ public class GalleryController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private GalleryValidation galleryValidation;
+
     /**
      * CREATE API
      */
     @PostMapping
-    public ResponseEntity createWorshipVideo(@RequestBody @Valid GalleryDto dto,
-                                              Errors errors){
+    public ResponseEntity createWorshipVideo(@RequestBody GalleryDto dto, Errors errors){
+
         // check
+        galleryValidation.validate(dto, errors);
         if(errors.hasErrors())
             return badRequest().body(new GalleryErrorsResource(errors));
 
         // save
-        Gallery worshipVideo = modelMapper.map(dto, Gallery.class);
-        Gallery newWorshipVideo = repository.save(worshipVideo);
-        URI createdUri = linkTo(GalleryController.class).slash(newWorshipVideo.getId()).toUri();
+        Gallery gallery = modelMapper.map(dto, Gallery.class);
+        gallery.setWriter(getWriter());
+        Gallery savedData = repository.save(gallery);
+        URI createdUri = linkTo(GalleryController.class).slash(savedData.getId()).toUri();
 
         // return
-        GalleryResource resource = new GalleryResource(newWorshipVideo);
-        resource.add(linkTo(GalleryController.class).slash(newWorshipVideo.getId()).withRel("update-worshipVideo"));
-        resource.add(linkTo(GalleryController.class).slash(newWorshipVideo.getId()).withRel("delete-worshipVideo"));
+        GalleryResource resource = new GalleryResource(savedData);
+        resource.add(linkTo(GalleryController.class).slash(savedData.getId()).withRel("update-worshipVideo"));
+        resource.add(linkTo(GalleryController.class).slash(savedData.getId()).withRel("delete-worshipVideo"));
 
         return ResponseEntity.created(createdUri).body(resource);
     }
@@ -63,20 +70,21 @@ public class GalleryController {
      * READ API
      */
     @GetMapping
-    public ResponseEntity getWorshipVideo(Pageable pageable,
-                                          PagedResourcesAssembler<Gallery> assembler){
+    public ResponseEntity getGalleries(Pageable pageable,
+                                       PagedResourcesAssembler<Gallery> assembler){
+
+
         Page<Gallery> page = repository.findAll(pageable);
         var pagedResources = assembler.toResource(page, e -> new GalleryResource(e));
         return ResponseEntity.ok(pagedResources);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity geWorshipVideo(@PathVariable Integer id){
+    public ResponseEntity getGallery(@PathVariable Integer id){
         Optional<Gallery> optional = repository.findById(id);
-        Gallery worshipVideo = optional.orElseThrow(ArithmeticException::new);
+        Gallery gallery = optional.orElseThrow(ArithmeticException::new);
 
-        // 로그인 유무 체크 후 로그인 했으면 update, delete url 넣어주기
-        GalleryResource resource = new GalleryResource(worshipVideo);
+        GalleryResource resource = new GalleryResource(gallery);
         return ResponseEntity.ok(resource);
     }
 

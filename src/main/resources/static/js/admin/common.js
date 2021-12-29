@@ -2,7 +2,6 @@
 let totalPages = "";
 
 
-
 // ================= Ajax 처리 함수 ====================
 function ajaxComm(type, data, url, async, csrfHeader, csrfToken) {
     let callback =
@@ -67,7 +66,7 @@ function objToJson(formData){
 
 
 // ================= 파일 업로드 처리함수 ====================
-function ajaxFileUpload (csrfHeader, csrfToken){
+function ajaxFileUpload (csrfHeader, csrfToken, data){
 
     let callback =
         $.ajax({
@@ -77,7 +76,7 @@ function ajaxFileUpload (csrfHeader, csrfToken){
             async      : false,
             processData: false,
             contentType: false,
-            data       : new FormData($("#withFileUploadFrm")[0]),
+            data       : data,
             beforeSend : xhr  => { xhr.setRequestHeader(csrfHeader, csrfToken) }
         });
     return callback;
@@ -97,3 +96,53 @@ function ajaxFileDelete (csrfHeader, csrfToken, uploadFileName){
         });
     return callback;
 };
+
+
+
+
+
+// ================= 서머노트 사용함수 ====================
+function useSummernote() {
+    $('#contents').summernote({
+        placeholder: '내용을 입력하세요',
+        height: 500,
+        minHeight: null,
+        maxHeight: null,
+        lang: "ko-KR",
+        // 안쓰는 메뉴 주석처리
+        toolbar: [
+            ['fontname', ['fontname']],
+            ['fontsize', ['fontsize']],
+            ['style', ['bold', 'italic', 'underline','strikethrough', 'clear']],
+            ['color', ['foreclose','color']],
+            //   ['table', ['table']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['height', ['height']],
+            ['insert',['picture', /* 'link','video' */]],
+            //  ['view', ['fullscreen', 'help']]
+        ],
+        fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
+        fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72'],
+        callbacks: {
+            onImageUpload: function (files) {
+                for (var i = files.length - 1; i >= 0; i--) {
+                    uploadSummernoteImageFile(files[i], this);
+                }
+            }
+        }
+    });
+}
+
+
+// ================= 서머노트 파일 업로드 함수 ====================
+function uploadSummernoteImageFile(file, el) {
+    data = new FormData();
+    data.append("image", file);
+    let csrfHeader  = $("#_csrf_header").attr('content');
+    let csrfToken   = $("#_csrf").attr('content');
+    let callback = ajaxFileUpload(csrfHeader,csrfToken, data);
+
+    callback.done(data => {
+        $('#contents').summernote("insertImage", "/upload/"+data.uploadName);
+    })
+}

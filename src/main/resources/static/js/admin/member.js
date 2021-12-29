@@ -66,7 +66,6 @@ function memberListLoad(nowPage){
             });
         }
 
-        $("#searchData").val("");            // 검색내용 삭제
         $("tr").remove("#appendItem");       // 기존 데이터 삭제
         $("#appendPath").append(appendData); // data append
 
@@ -128,11 +127,10 @@ function memberCreateAndUpdateProcess(type){
     let isSecurity  = false;
     let data        = objToJson($('#withFileUploadFrm').serializeArray());
 
-    alert(JSON.stringify(data));
 
     // 이미지 업로드
     if($("#image").val()){
-        let fileUploadCallback = ajaxFileUpload(csrfHeader, csrfToken);
+        let fileUploadCallback = ajaxFileUpload(csrfHeader, csrfToken, new FormData($("#withFileUploadFrm")[0]));
         fileUploadCallback.done( uploadData => {
             data.uploadName   = uploadData.uploadName;
             data.originalName = uploadData.originalName;

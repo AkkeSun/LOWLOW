@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -20,37 +21,31 @@ public class FileController {
 
     // =================== 파일 업로드 =====================
     @PostMapping("/upload")
-    public FileDto MultipartHttpServletRequestUpload(MultipartHttpServletRequest mRequest) throws JsonProcessingException {
+    public FileDto MultipartHttpServletRequestUpload(MultipartFile image) {
 
         // properties 에서 받아오기
         String path = "C:/upload/";
 
-        List<MultipartFile> fileList = mRequest.getFiles("image");
-        FileDto fileDto = new FileDto();
+        String originalFilename = image.getOriginalFilename();
+        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String uploadFileName = UUID.randomUUID().toString().replaceAll("-", "") + fileExtension;
 
-        for(MultipartFile mf : fileList) {
+        // 파일명 저장
+        FileDto fileDto = FileDto.builder()
+                        .uploadName(uploadFileName)
+                        .originalName(originalFilename)
+                        .build();
 
-            String originalFilename = mf.getOriginalFilename();
-            String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
-            String uploadFileName = UUID.randomUUID().toString().replaceAll("-", "") + fileExtension;
+        // 파일 생성
+        File uploadFile = new File(path + uploadFileName);
 
-
-            // 파일명 저장
-            fileDto = FileDto.builder()
-                    .uploadName(uploadFileName)
-                    .originalName(originalFilename)
-                    .build();
-
-            // 파일 생성
-            File file = new File(path + uploadFileName);
-
-            try{
-                mf.transferTo(file);
-            } catch (Exception e) {
-                log.info("[File Upload Fail]");
-                log.info("[ERROR MSG] " + e.getMessage());
-            }
+        try{
+            image.transferTo(uploadFile);
+        } catch (Exception e) {
+            log.info("[File Upload Fail]");
+            log.info("[ERROR MSG] " + e.getMessage());
         }
+
         return fileDto;
     }
 
@@ -71,5 +66,9 @@ public class FileController {
             log.info("File Delete Fail");
         }
     }
+
+
+
+
 
 }

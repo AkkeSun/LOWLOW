@@ -85,7 +85,7 @@ public class AccountingDslImpl implements AccountingDsl {
                                                 .orderBy(q1.offeringDate.desc())
                                                 .fetchResults();;
 
-        Pageable pageable = PageRequest.of(nowPage, totalPages);
+        Pageable pageable = PageRequest.of(nowPage, 10);
         return new PageImpl<>(queryResults.getResults(), pageable, queryResults.getTotal());
     }
 

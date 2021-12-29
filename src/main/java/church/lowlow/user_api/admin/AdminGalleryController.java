@@ -13,7 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Controller
-@RequestMapping("/admin/gallery")
+@RequestMapping("/admin/galleries")
 @Log4j2
 public class AdminGalleryController {
 

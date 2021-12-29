@@ -61,7 +61,7 @@ public class SecurityPostListener implements ApplicationListener<ApplicationStar
         createResourceIfNotFound("/admin/basicInfo/**", "url", "ROLE_DEV", 1);
         createResourceIfNotFound("/admin/members/**", "url", "ROLE_LDR", 2);
         createResourceIfNotFound("/admin/accounting/**", "url", "ROLE_GAF", 3);
-        createResourceIfNotFound("/admin/gallery/**", "url", "ROLE_ULD", 4);
+        createResourceIfNotFound("/admin/galleries/**", "url", "ROLE_ULD", 4);
         createResourceIfNotFound("/admin/calendar/**", "url", "ROLE_ULD", 5);
         createResourceIfNotFound("/admin/notice/**", "url", "ROLE_ULD", 6);
         createResourceIfNotFound("/admin/weekly/**", "url", "ROLE_ULD", 7);
