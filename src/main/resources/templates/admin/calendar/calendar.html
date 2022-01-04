@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+<head th:replace="admin/common/head"></head>
+
+
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+
+    //================ basic setting ===============
+    let calendarEl = document.getElementById('calendar');
+    let calendar = new FullCalendar.Calendar(calendarEl, {
+
+      // 툴바 설정
+      headerToolbar: {
+        left: "prev,next,today",
+        center: "title",
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+      },
+
+      initialDate : new Date(),  // 처음 실행 시 기준되는 날짜 ('YYYY-mm-DD')
+      locale : 'ko',             // 언어 설정
+      navLinks : true,           // 오른쪽 링크 사용유무 이동
+      editable: true,            // 수정 가능유무
+      nowIndicator: true,        // 현재시간 마크
+      eventAdd: function(obj) {  // 이벤트가 추가되면 발생하는 이벤트
+        console.log(obj);
+      },
+      eventChange: function(obj) { // 이벤트가 수정되면 발생하는 이벤트
+        console.log(obj);
+      },
+      eventRemove: function(obj){ // 이벤트가 삭제되면 발생하는 이벤트
+        console.log(obj);
+      },
+
+      // data append
+      events:[
+        {
+          title: '제목1',
+          start: '2022-01-03',
+          end: '2022-01-04',
+          constraint: '내용',
+          extendedProps: {              // 임의의 변수 셋팅
+            seq: "123"
+          },
+        },
+        {
+          title: '제목2',
+          start: '2022-01-10 16:33:00',
+          end: '2022-01-11 16:33:00',
+          constraint: '내용',
+        }
+      ]
+    });
+
+
+
+    // rendering
+    calendar.render();
+
+
+
+    //================ event setting ===============
+
+    // 날짜 칸을 누르면 일정 추가할 수 있도록 이벤트 주기 (create modal show)
+    calendar.on("dateClick", function(info) {
+      alert(info.dateStr); //날짜 가져오기
+    })
+
+    // 일정을 누르면 해당 데이터를 볼 수 있도록 하는 설정 (update modal show)
+    calendar.on("eventClick", function(info){
+      alert(info.event.title);
+      alert(info.event.constraint);
+      alert(info.event.extendedProps.seq);
+    })
+
+    // 일정추가 (ajax) -> create modal 처리 후 사용
+    calendar.addEvent(
+            { title: '제목',
+              start: '2022-01-15 16:33:00',
+              end: '2022-01-16 16:33:00',
+              constraint: '내용'}
+    )
+  });
+
+</script>
+
+
+<style>
+  <!--사이즈 조절 -->
+  #calendar{
+    max-width: 800px;
+    margin: 0 auto
+  }
+</style>
+
+<body>
+
+<div class="container-fluid">
+  <div class="row flex-nowrap">
+    <div th:replace="admin/common/sidebar"></div>
+    <div class="col py-3">
+      <th:block th:replace="admin/calendar/fragment :: calendarTitle"/>
+
+      <!-- Main Contents -->
+      <div class="container">
+
+        <div id="calendar"></div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
