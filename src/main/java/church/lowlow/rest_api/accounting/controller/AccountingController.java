@@ -147,11 +147,10 @@ public class AccountingController {
 
         // update
         Accounting accounting = modelMapper.map(dto, Accounting.class);
-
-        // update
         Member member = memberRepository.findById(dto.getMemberId()).get();
         accounting.setMember(member);
         accounting.setId(id);
+        accounting.setWriter(getWriter());
         Accounting updateAccounting = accountingRepository.save(accounting);
 
 

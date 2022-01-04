@@ -4,6 +4,7 @@ import church.lowlow.rest_api.common.entity.BaseTimeEntity;
 import church.lowlow.rest_api.common.entity.FileDto;
 import church.lowlow.rest_api.common.entity.Writer;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
@@ -17,6 +18,7 @@ import javax.persistence.*;
  * writer 작성자
  */
 @Entity
+@DynamicUpdate
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 @ToString @EqualsAndHashCode(of = "id")
 public class Gallery extends BaseTimeEntity {

@@ -20,6 +20,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 
+import static church.lowlow.rest_api.common.util.WriterUtil.getWriter;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.http.ResponseEntity.badRequest;
 
@@ -45,6 +46,7 @@ public class NoticeController {
 
         // save
         Notice notice = modelMapper.map(dto, Notice.class);
+        notice.setWriter(getWriter());
         Notice newNotice = repository.save(notice);
         URI createdUri = linkTo(NoticeController.class).slash(newNotice.getId()).toUri();
 
@@ -98,6 +100,7 @@ public class NoticeController {
 
         // save
         Notice notice = modelMapper.map(dto, Notice.class);
+        notice.setWriter(getWriter());
         notice.setId(id);
         Notice updateWorshipVideo = repository.save(notice);
 

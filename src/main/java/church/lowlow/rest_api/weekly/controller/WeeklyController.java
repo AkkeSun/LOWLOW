@@ -20,6 +20,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 
+import static church.lowlow.rest_api.common.util.WriterUtil.getWriter;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.http.ResponseEntity.badRequest;
 
@@ -45,6 +46,7 @@ public class WeeklyController {
 
         // save
         Weekly weekly = modelMapper.map(dto, Weekly.class);
+        weekly.setWriter(getWriter());
         Weekly newWeekly = repository.save(weekly);
         URI createdUri = linkTo(WeeklyController.class).slash(newWeekly.getId()).toUri();
 
@@ -98,6 +100,7 @@ public class WeeklyController {
 
         // save
         Weekly weekly = modelMapper.map(dto, Weekly.class);
+        weekly.setWriter(getWriter());
         weekly.setId(id);
         Weekly updateWeekly = repository.save(weekly);
 

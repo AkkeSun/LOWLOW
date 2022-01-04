@@ -53,3 +53,9 @@ function galleryListLoad(nowPage){
 
 
 
+// ================= gallery Update View Setting  ====================
+function galleryUpdateViewSetting() {
+    $("#preView").hide();
+    $("#editView").show();
+}
+

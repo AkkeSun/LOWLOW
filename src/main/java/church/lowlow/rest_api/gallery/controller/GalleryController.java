@@ -94,25 +94,22 @@ public class GalleryController {
      * UPDATE API
      */
     @PutMapping("/{id}")
-    public ResponseEntity updateWorshipVideo(@RequestBody @Valid WeeklyDto dto,
-                                             @PathVariable Integer id,
-                                             Errors errors){
+    public ResponseEntity updateWorshipVideo(@RequestBody GalleryDto dto, @PathVariable Integer id, Errors errors){
 
         // check
-        Optional<Gallery> optional = repository.findById(id);
-        if(optional.isEmpty())
-            return ResponseEntity.notFound().build();
+        galleryValidation.validate(dto, errors);
         if(errors.hasErrors())
             return badRequest().body(new GalleryErrorsResource(errors));
 
-        // save
-        Gallery worshipVideo = modelMapper.map(dto, Gallery.class);
-        worshipVideo.setId(id);
-        Gallery updateWorshipVideo = repository.save(worshipVideo);
+        // update
+        Gallery gallery = modelMapper.map(dto, Gallery.class);
+        gallery.setId(id);
+        gallery.setWriter(getWriter());
+        Gallery updateGallery = repository.save(gallery);
 
         // return
-        GalleryResource resource = new GalleryResource(updateWorshipVideo);
-        resource.add(linkTo(GalleryController.class).slash(updateWorshipVideo.getId()).withRel("delete-worshipVideo"));
+        GalleryResource resource = new GalleryResource(updateGallery);
+        resource.add(linkTo(GalleryController.class).slash(updateGallery.getId()).withRel("delete-worshipVideo"));
 
         return ResponseEntity.ok(resource);
     }

@@ -107,7 +107,6 @@ function commonUpdateViewSetting(pageName){
 // ================= 공용 CREATE & UPDATE 처리 ====================
 function commonCreateAndUpdate(pageName, type){
 
-
     // param setting
     let csrfHeader  = $("#_csrf_header").attr('content');
     let csrfToken   = $("#_csrf").attr('content');
@@ -138,6 +137,7 @@ function commonCreateAndUpdate(pageName, type){
             data.originalName = uploadData.originalName;
         });
     }
+
 
     // 업데이트 시 기존 이미지를 사용하는 경우
     if($("#savedOriginalName").val()){
@@ -209,6 +209,7 @@ function commonDelete(pageName){
 
 // ================= 공용 리스트 로드 ====================
 function commonListLoad(pageName, nowPage){
+
     switch(pageName){
         case 'members' : memberListLoad(nowPage); break;
         case 'accounting' : accountingListLoad(nowPage); break;
