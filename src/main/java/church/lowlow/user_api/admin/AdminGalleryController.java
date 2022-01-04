@@ -1,6 +1,5 @@
 package church.lowlow.user_api.admin;
 
-import church.lowlow.rest_api.accounting.db.Accounting;
 import church.lowlow.rest_api.gallery.db.Gallery;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,16 +38,16 @@ public class AdminGalleryController {
     @GetMapping("/{id}")
     public String getAccountingDetailView(@PathVariable Long id, Model model) {
 
-        Mono<Accounting> accountingMono = webClient
+        Mono<Gallery> galleryMono = webClient
                 .get()
-                .uri("/accounting/{id}", id)
+                .uri("/galleries/{id}", id)
                 .retrieve()
-                .bodyToMono(Accounting.class);
+                .bodyToMono(Gallery.class);
 
-        Accounting accounting = accountingMono.block();
-        model.addAttribute("accounting", accounting);
+        Gallery gallery = galleryMono.block();
+        model.addAttribute("gallery", gallery);
 
-        return "admin/accounting/accountingDetail";
+        return "admin/gallery/galleryDetail";
 
     }
 

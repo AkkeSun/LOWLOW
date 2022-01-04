@@ -65,6 +65,214 @@ function objToJson(formData){
 
 
 
+// ================= 공용 페이징처리 ====================
+function commonPagingProcess(pageName){
+
+    let nowPage = 1;
+
+    $("#basicPagination").twbsPagination('destroy');
+    $("#basicPagination").twbsPagination({
+        startPage:  nowPage,
+        totalPages: totalPages,
+        visiblePages: 5,
+        prev:"Prev",
+        next:"Next",
+        first:'<span sria-hidden="true">«</span>',
+        last:'<span sria-hidden="true">»</span>',
+        initiateStartPageClick:false,
+        onPageClick:function(event, page){
+            nowPage = page;
+            commonListLoad(pageName,nowPage-1);
+        }
+    });
+}
+
+
+// ================= 공용 UPDATE VIEW 셋업 ====================
+function commonUpdateViewSetting(pageName){
+
+    $("#updateProcessBtn").show();
+    $("#updateViewBtn").hide();
+    $("#deleteBtn").hide();
+
+    switch(pageName){
+        case 'members'    : memberUpdateViewSetting();     break;
+        case 'accounting' : accountingUpdateViewSetting(); break;
+        case 'galleries'  : galleryUpdateViewSetting();  break;
+    }
+}
+
+
+
+// ================= 공용 CREATE & UPDATE 처리 ====================
+function commonCreateAndUpdate(pageName, type){
+
+
+    // param setting
+    let csrfHeader  = $("#_csrf_header").attr('content');
+    let csrfToken   = $("#_csrf").attr('content');
+    let url         = `/api/${pageName}`;
+    let redirectUrl = `/admin/${pageName}`;
+    let async       = true;
+    let isSecurity  = false;
+    let data        = "";
+
+    switch(pageName){
+        case "members" :
+            data = objToJson($('#withFileUploadFrm').serializeArray());
+            break;
+        case "accounting" :
+            data = objToJson($('#accountingForm').serializeArray());
+            break;
+        case "galleries" :
+            data = objToJson($('#galleryFrm').serializeArray());
+            break;
+    }
+
+
+    // 이미지 업로드
+    if($("#image").val()){
+        let fileUploadCallback = ajaxFileUpload(csrfHeader, csrfToken, new FormData($("#withFileUploadFrm")[0]));
+        fileUploadCallback.done( uploadData => {
+            data.uploadName   = uploadData.uploadName;
+            data.originalName = uploadData.originalName;
+        });
+    }
+
+    // 업데이트 시 기존 이미지를 사용하는 경우
+    if($("#savedOriginalName").val()){
+        data.uploadName   = $("#savedUploadName").val();
+        data.originalName = $("#savedOriginalName").val();
+    }
+
+
+
+    // update url 변경
+    if(type == 'put')
+        url = `/api/${pageName}/${$("#id").val()}`;
+
+
+    // ajax
+    let callback = ajaxComm(type, JSON.stringify(data), url, async, csrfHeader, csrfToken);
+
+    callback.done( data => ajaxCallbackProcess(isSecurity, data, type, redirectUrl) );
+
+    callback.fail ( (xhr, status, error) => {
+
+        // 업로드 파일 삭제
+        if(data.uploadName)
+            ajaxFileDelete(csrfHeader, csrfToken, data.uploadName);
+
+        let errorResource = JSON.parse(xhr.responseText).content[0];
+        console.log("[ERROR STATUS] : " + xhr.status);
+        console.log(errorResource);
+        alert(errorResource.defaultMessage);
+    });
+
+}
+
+
+
+
+
+
+// ================= 공용 DELETE 처리 ====================
+function commonDelete(pageName){
+
+    let check = confirm('정말 삭제하시겠습니까');
+    if(check) {
+
+        // param setting
+        let csrfHeader  = $("#_csrf_header").attr('content');
+        let csrfToken   = $("#_csrf").attr('content');
+        let type        = "delete";
+        let url         = `/api/${pageName}/${$("#id").val()}`;
+        let redirectUrl = `/admin/${pageName}`;
+        let async       = true;
+        let isSecurity  = false;
+        let data        = "";
+
+        // ajax process
+        let callback = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
+        callback.done(data => ajaxCallbackProcess(isSecurity, data, type, redirectUrl));
+    }
+
+
+}
+
+
+
+
+
+
+
+
+// ================= 공용 리스트 로드 ====================
+function commonListLoad(pageName, nowPage){
+    switch(pageName){
+        case 'members' : memberListLoad(nowPage); break;
+        case 'accounting' : accountingListLoad(nowPage); break;
+        case 'galleries' : galleryListLoad(nowPage); break;
+    }
+}
+
+
+
+
+// ================ 공용 검색기능 ================
+function commonSearch(pageName){
+    switch(pageName){
+        case 'members' :
+            memberListLoad(0);
+            commonPagingProcess('members');
+            break;
+        case 'accounting' :
+            commonPagingProcess('accounting');
+            accountingDataLoad(0);
+            break;
+        case 'galleries' :
+            commonPagingProcess('gallery');
+            galleryListLoad(0);
+            break;
+    }
+}
+
+
+
+
+
+// ================ 공용 검색기능 초기화================
+function commonSearchInitialize(pageName){
+    switch(pageName){
+        case 'members' :
+            $("#searchId").val("name");
+            $("#searchData").val("");
+            memberListLoad(0);
+            commonPagingProcess('member');
+            break;
+        case 'accounting' :
+            $("#searchId").val("name");
+            $("#searchData").val("");
+            $("#startDate").val(null);
+            $("#endDate").val(null);
+            accountingDataLoad(0);
+            commonPagingProcess('accounting');
+            break;
+        case 'galleries' :
+            $("#searchId").val("title");
+            $("#searchData").val("");
+            galleryListLoad(0);
+            commonPagingProcess('gallery');
+            break;
+    }
+}
+
+
+
+
+
+
+
 // ================= 파일 업로드 처리함수 ====================
 function ajaxFileUpload (csrfHeader, csrfToken, data){
 
@@ -119,7 +327,7 @@ function useSummernote() {
             ['para', ['ul', 'ol', 'paragraph']],
             ['height', ['height']],
             ['insert',['picture', /* 'link','video' */]],
-            //  ['view', ['fullscreen', 'help']]
+            ['view', ['codeview',/*'fullscreen', 'help'*/]]
         ],
         fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
         fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72'],
@@ -146,3 +354,12 @@ function uploadSummernoteImageFile(file, el) {
         $('#contents').summernote("insertImage", "/upload/"+data.uploadName);
     })
 }
+
+
+
+// ================= Null 인경우 '-' 리턴 ====================
+function nullConverter(data){
+    if(data == null) return "-";
+    else return data;
+}
+

@@ -7,10 +7,9 @@
 
 <script th:inline="javascript">
     $(document).ready(function(){
-        $("#regiDate").datepicker({format : "yyyy-mm-dd", todayHighlight : true, autoclose : true,  language : "ko"});
-        $("#birthDay").datepicker({format : "yyyy-mm-dd", todayHighlight : true, autoclose : true,  language : "ko"});
-        $("#memberUpdate").hide();
-        $("#uploadImg").hide();
+        useSummernote();
+        $('#contents').summernote('code', [[${gallery.contents}]]);
+        $("#galleryUpdate").hide();
     });
 </script>
 
@@ -20,83 +19,38 @@
     <div class="row flex-nowrap">
         <div th:replace="admin/common/sidebar"></div>
         <div class="col py-3">
-            <th:block th:replace="admin/member/fragment :: memberTitle"/>
+            <th:block th:replace="admin/gallery/fragment :: galleryTitle"/>
 
             <!-- Main Contents -->
             <div class="container">
-                <form class="form-horizontal" id="withFileUploadFrm" th:object="${member}" enctype="multipart/form-data">
-                    <input type="hidden" id="id" th:value="*{id}">
-                    <div class="form-group">
-                        <label for="name" class="col-sm-2 control-label">이름</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control input-large" id="name" name="name" placeholder="이름"  th:value="*{name}" disabled="disabled">
-                        </div>
+                <form class="form-horizontal" id="galleryFrm" th:object="${gallery}" enctype="multipart/form-data">
+
+                    <!--========== preView ============-->
+                    <div id="preView">
+                        <hr>
+                        <h2 th:text="*{title}"></h2>
+                        <div th:utext="*{contents}"></div>
                     </div>
-                    <div class="form-group">
-                        <label for="phoneNumber" class="col-sm-2 control-label">전화번호</label>
-                        <div class="col-sm-10">
-                            <input type="text" maxlength="13" class="form-control input-large" id="phoneNumber" name="phoneNumber" placeholder="000-0000-0000"  th:value="*{phoneNumber}" disabled="disabled">
+
+                    <!-- ========== editView ============ -->
+                    <div id="editView">
+                        <input type="hidden" id="id" th:value="*{id}">
+                        <div class="form-group">
+                            <label for="title" class="col-sm-2 control-label">제목</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control input-large" id="title" name="title" placeholder="제목"  th:value="*{title}">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="gender" class="col-sm-2 control-label">성별</label>
-                        <div class="col-sm-10">
-                            <select class="custom-select" name="gender" id="gender"  th:value="*{gender}" disabled="disabled">
-                                <option th:value="MALE" th:text= "남자"/>
-                                <option th:value="FEMALE" th:text= "여자"/>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="birthDay" class="col-sm-2 control-label">생년월일</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control input-large" id="birthDay" name="birthDay" th:value="*{birthDay}" disabled="disabled">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="belong" class="col-sm-2 control-label">교구(목장)</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control input-large" id="belong" name="belong" placeholder="교구(목장)" th:value="*{belong}" disabled="disabled">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="gender" class="col-sm-2 control-label">직분</label>
-                        <div class="col-sm-10">
-                            <select class="custom-select" name="churchOfficer" id="churchOfficer" th:value="*{churchOfficer}" disabled="disabled">
-                                <option th:value="LAYMAN" th:text="평신도">
-                                <option th:value="DEACON" th:text="집사"/>
-                                <option th:value="ORDAINED_DEACON" th:text="안수집사"/>
-                                <option th:value="SENIOR_DEACONESS" th:text="권사"/>
-                                <option th:value="ELDER" th:text="장로"/>
-                                <option th:value="JUNIOR_PASTOR" th:text="전도사"/>
-                                <option th:value="ASSISTANT_PASTOR" th:text="부목사"/>
-                                <option th:value="SENIOR_PASTOR" th:text="담임목사"/>
-                                <option th:value="WIFE" th:text="사모"/>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="regiDate" class="col-sm-2 control-label">등록일</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control input-large" id="regiDate" name="regiDate" th:value="*{regiDate}" disabled="disabled">
-                        </div>
-                    </div>
-                    <div class="form-group" id="uploadImg">
-                        <label for="image" class="col-sm-2 control-label">이미지</label> <br>
-                        <div class="col-sm-10">
-                            <input type="file" class="form-control-file input-large" multiple="multiple" id="image" name="image" accept=".gif, .jpg, .png">
-                        </div>
-                    </div>
-                    <div class="form-group"  id="showImg"  th:if="${member.image} != null">
-                        <label for="image" class="col-sm-2 control-label">이미지</label> <br>
-                        <img th:src="@{/upload/} + ${member.image.uploadName}" class="profileImg">
+                        <textarea maxlength="13" class="form-control input-large" id="contents" name="contents"></textarea>
                     </div>
                     <br>
                     &nbsp;&nbsp;
-                    <button type="button" class="btn btn-outline-primary" id="memberUpdateView" onclick='memberUpdateViewSetting()'>수정</button>
-                    <button type="button" class="btn btn-outline-primary" id="memberUpdate" onclick="memberCreateAndUpdateProcess('put')">수정완료</button>
-                    <button type="button" class="btn btn-outline-primary" id="memberDelete" onclick='memberDelete()'>삭제</button>
-                    <a class="btn btn-outline-primary" th:href="@{/admin/members}">목록 </a>
+
+                    <!-- ========== button ============ -->
+                    <button type="button" class="btn btn-outline-primary" id="updateViewBtn" onclick="commonUpdateViewSetting('galleries')">수정</button>
+                    <button type="button" class="btn btn-outline-primary" id="updateProcessBtn" onclick="commonCreateAndUpdate('gallery', 'put')">수정완료</button>
+                    <button type="button" class="btn btn-outline-primary" id="deleteBtn" onclick="commonDelete('galleries')">삭제</button>
+                    <a class="btn btn-outline-primary" th:href="@{/admin/galleries}">목록 </a>
                 </form>
             </div>
             <br><br><br><br>

@@ -1,7 +1,5 @@
 package church.lowlow.rest_api.gallery.queryDsl;
 
-import church.lowlow.rest_api.accounting.db.Accounting;
-import church.lowlow.rest_api.accounting.db.OfferingKind;
 import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.gallery.db.Gallery;
@@ -33,10 +31,10 @@ public class GalleryDslImpl implements GalleryDsl{
 
         String key          = searchDto.getSearchId();
         String val          = searchDto.getSearchData();
+        int nowPage         = pagingDto.getNowPage();
+
         log.info("[검색 데이터] id : " + key + " || data : " + val);
 
-        int nowPage = pagingDto.getNowPage();
-        int totalPages = pagingDto.getTotalPages();
 
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -48,12 +46,16 @@ public class GalleryDslImpl implements GalleryDsl{
         else if(key.equals("writer"))
             builder.and(q1.writer.writer.eq(((String)val)));
 
+
+        Pageable pageable = PageRequest.of(nowPage, 10);
+
         QueryResults<Gallery> queryResults = jpaQueryFactory.selectFrom(q1)
                 .where(builder)
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
                 .orderBy(q1.createdDate.desc())
                 .fetchResults();;
 
-        Pageable pageable = PageRequest.of(nowPage, 10);
         return new PageImpl<>(queryResults.getResults(), pageable, queryResults.getTotal());
     }
 }

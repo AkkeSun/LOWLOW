@@ -76,8 +76,7 @@ public class MemberController {
     public ResponseEntity getMembers(PagedResourcesAssembler<Member> assembler,
                                      SearchDto searchDto, PagingDto pagingDto) {
 
-        Pageable pageable = PageRequest.of(pagingDto.getNowPage(), 10);
-        Page<Member> page = repository.getMemberPage(searchDto, pageable);
+        Page<Member> page = repository.getMemberPage(searchDto, pagingDto);
 
         var pagedResources = assembler.toResource(page, e -> new MemberResource(e));
         return ResponseEntity.ok(pagedResources);

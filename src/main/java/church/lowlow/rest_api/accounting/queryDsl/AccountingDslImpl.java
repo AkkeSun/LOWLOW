@@ -46,11 +46,10 @@ public class AccountingDslImpl implements AccountingDsl {
         String val          = searchDto.getSearchData();
         LocalDate startDate = searchDto.getStartDate();
         LocalDate endDate   = searchDto.getEndDate();
+        int nowPage         = pagingDto.getNowPage();
 
         log.info("[검색 데이터] id : " + key + " || data : " + val + " || StartDate : " + startDate + " || EndDate : " + endDate);
 
-        int nowPage = pagingDto.getNowPage();
-        int totalPages = pagingDto.getTotalPages();
 
         // 시작일, 종료일 미입력시 전체 기간 검색
         if(startDate == null)
@@ -79,13 +78,15 @@ public class AccountingDslImpl implements AccountingDsl {
         else if(key.equals("churchOfficer"))
             builder.and(q1.member.churchOfficer.eq(ChurchOfficer.valueOf(churchOfficerConverter((String)val))));
 
+        Pageable pageable = PageRequest.of(nowPage, 10);
 
         QueryResults<Accounting> queryResults = jpaQueryFactory.selectFrom(q1)
                                                 .where(builder)
+                                                .limit(pageable.getPageSize())
+                                                .offset(pageable.getOffset())
                                                 .orderBy(q1.offeringDate.desc())
                                                 .fetchResults();;
 
-        Pageable pageable = PageRequest.of(nowPage, 10);
         return new PageImpl<>(queryResults.getResults(), pageable, queryResults.getTotal());
     }
 

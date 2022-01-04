@@ -27,12 +27,15 @@ function galleryListLoad(nowPage){
                 appendData += `
                                <tr id="appendItem">
                                     <td style="text-align: left;">
-                                        ${data.title}
+                                        ${index+1}
                                     </td>
                                     <td style="text-align: left;">
-                                        <a href='/admin/members/${data.id}'>
-                                            ${data.writer.writer}
+                                        <a href='/admin/galleries/${data.id}'>
+                                            ${data.title}
                                         </a>
+                                    </td>
+                                    <td style="text-align: left;">
+                                        ${data.writer.writer}
                                     </td>
                                     <td style="text-align: left;">
                                         ${createdDate}
@@ -48,80 +51,5 @@ function galleryListLoad(nowPage){
     });
 };
 
-
-
-
-// ================= gallery paging process ====================
-function galleryPagingProcess(){
-
-    let nowPage = 1;
-
-    $("#basicPagination").twbsPagination('destroy');
-    $("#basicPagination").twbsPagination({
-        startPage:  nowPage,
-        totalPages: totalPages,
-        visiblePages: 5,
-        prev:"Prev",
-        next:"Next",
-        first:'<span sria-hidden="true">«</span>',
-        last:'<span sria-hidden="true">»</span>',
-        initiateStartPageClick:false,
-        onPageClick:function(event, page){
-            nowPage = page;
-            memberListLoad(nowPage-1);
-        }
-    });
-}
-
-
-
-// ================ 검색기능 ================
-function gallerySearch(){
-    galleryListLoad(0);
-    galleryPagingProcess();
-}
-
-
-// ================ 검색기능 초기화================
-function gallerySearchInitialize() {
-    $("#searchId").val("title");
-    $("#searchData").val("");;
-    galleryListLoad(0);
-    galleryPagingProcess();
-}
-
-
-
-
-// ================= Gallery Create & Update process  ====================
-function galleryCreateAndUpdateProcess(type){
-
-    // param setting
-    let csrfHeader  = $("#_csrf_header").attr('content');
-    let csrfToken   = $("#_csrf").attr('content');
-    let url         = "/api/galleries";
-    let redirectUrl = "/admin/galleries";
-    let async       = true;
-    let isSecurity  = false;
-    let data        = objToJson($('#galleryFrm').serializeArray());
-
-    // update url 변경
-    if(type == 'put')
-        url = "/api/galleries/"+$("#id").val();
-
-    // ajax process
-    let callback = ajaxComm(type, JSON.stringify(data), url, async, csrfHeader, csrfToken);
-
-    callback.done( data => ajaxCallbackProcess(isSecurity, data, type, redirectUrl) );
-
-    callback.fail ( (xhr, status, error) => {
-
-        let errorResource = JSON.parse(xhr.responseText).content[0];
-        console.log("[ERROR STATUS] : " + xhr.status);
-        console.log(errorResource);
-        alert(errorResource.defaultMessage);
-    });
-
-};
 
 

@@ -10,7 +10,7 @@
         $("#startDate").datepicker({format : "yyyy-mm-dd", todayHighlight : true, autoclose : true,  language : "ko"});
         $("#endDate").datepicker({format : "yyyy-mm-dd", todayHighlight : true, autoclose : true,  language : "ko"});
         accountingDataLoad(0);
-        accountingPagingProcess();
+        commonPagingProcess('accounting');
 
         $("#statisticsData").hide();
         $("#listBtn").hide();
@@ -48,8 +48,8 @@
                         <input type="text" class="form-control input-group-sm" id="searchData" placeholder="검색어">
                     </div>
                     &nbsp;&nbsp;
-                    <button class="btn btn-outline-primary" style="margin-right: 10px" th:onclick="accountingSearch()">검색</button>
-                    <button class="btn btn-outline-primary" style="margin-right: 10px" th:onclick="accountingSearchInitialize()">초기화</button>
+                    <button class="btn btn-outline-primary" style="margin-right: 10px" th:onclick="commonSearch('accounting')">검색</button>
+                    <button class="btn btn-outline-primary" style="margin-right: 10px" th:onclick="commonSearchInitialize('accounting')">초기화</button>
                 </div>
                <br>
 
@@ -58,6 +58,7 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
+                            <th scope="col">NO</th>
                             <th scope="col">교구</th>
                             <th scope="col">이름</th>
                             <th scope="col">전화번호</th>
@@ -88,6 +89,7 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
+                            <th scope="col">NO</th>
                             <th scope="col">이름</th>
                             <th scope="col">금액</th>
                         </tr>
@@ -105,6 +107,7 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
+                            <th scope="col">NO</th>
                             <th scope="col">종류</th>
                             <th scope="col">금액</th>
                         </tr>

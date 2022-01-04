@@ -5,14 +5,10 @@
  * accountingDataLoad(nowPage)         : 리스트 & 통계분석 데이터 통합로드
  * accountingListLoad(nowPage)         : 리스트 데이터 로드
  * accountingStatisticsDataLoad()      : 통계분석 데이터 로드
- * accountingPagingProcess()           : 페이징 함수
- * accountingSearch()                  : 검색 기능 함수
- * accountingSearchInitialize()        : 검색 초기화 함수
  * showStatisticsBtn()                 : 회계분석 Show 함수
  * showListBtn()                       : 전체 리스트 Show 함수
  * offeringKindConverter(offeringKind) : 헌금 종류 converter
- * nullConverter(data)                 : null converter
- *  accountingExelDown()               : 엑셀파일 다운로드 함수
+ * accountingExelDown()                : 엑셀파일 다운로드 함수
  *
  **************************************************************/
 
@@ -66,6 +62,9 @@ function accountingListLoad(nowPage){
 
                 appendData += `
                            <tr id="appendItem">
+                                <td style="text-align: left;">
+                                    ${index+1}
+                                </td>
                                 <td style="text-align: left;">
                                     ${belong}
                                 </td>
@@ -137,6 +136,9 @@ function accountingStatisticsDataLoad(){
                 nameAppendData += `
                                    <tr id="memberAppendItem">
                                         <td style="text-align: left;">
+                                            ${index+1}
+                                        </td>
+                                        <td style="text-align: left;">
                                             ${data.name}
                                         </td>
                                         <td style="text-align: left;">
@@ -155,6 +157,9 @@ function accountingStatisticsDataLoad(){
                 let offeringKind = offeringKindConverter( data.offeringKind );
                 offeringKindAppendData += `
                                        <tr id="offeringKindAppendItem">
+                                           <td style="text-align: left;">
+                                                ${index+1}
+                                            </td>
                                             <td style="text-align: left;">
                                                 ${offeringKind}
                                             </td>
@@ -185,45 +190,6 @@ function accountingStatisticsDataLoad(){
 
 
 
-// ================= paging process ====================
-function accountingPagingProcess(){
-
-    let nowPage = 1;
-
-    $("#basicPagination").twbsPagination('destroy');
-    $("#basicPagination").twbsPagination({
-        startPage:  nowPage,
-        totalPages: totalPages,
-        visiblePages: 5,
-        prev:"Prev",
-        next:"Next",
-        first:'<span sria-hidden="true">«</span>',
-        last:'<span sria-hidden="true">»</span>',
-        initiateStartPageClick:false,
-        onPageClick:function(event, page){
-            nowPage = page;
-            accountingListLoad(nowPage-1);
-        }
-    });
-}
-
-
-// ================ 검색 기능 ================
-function accountingSearch(){
-    accountingDataLoad(0);
-    accountingPagingProcess();
-}
-
-// ================ 검색 초기화 ================
-function accountingSearchInitialize() {
-    $("#searchId").val("name");
-    $("#searchData").val("");
-    $("#startDate").val("");
-    $("#endDate").val("");
-    accountingDataLoad(0);
-    accountingPagingProcess();
-}
-
 // ================ 회계분석 클릭 ================
 function showStatisticsBtn(){
     $("#statisticsData").show();
@@ -247,12 +213,6 @@ function accountingExelDown(){
     location.href = `/admin/accounting/excelDown?searchId=${savedSearchId}&searchData=${savedSearchData}&startDate=${startDate}&endDate=${endDate}`;
 }
 
-
-// ================= Null 인경우 '-' 리턴 ====================
-function nullConverter(data){
-    if(data == null) return "-";
-    else return data;
-}
 
 
 // ================= 헌금종류 converter ====================
@@ -279,44 +239,12 @@ function offeringKindConverter(offeringKind){
  *
  *                  CREATE & UPDATE FUNCTION
  *                  
- * accountingCreateAndUpdateProcess(type) : 헌금내역 등록 및 수정 프로세스
  * nameCheckFunc()                        : 헌금하는 사람 확인
  * memberIdSetting(id)                    : 헌금하는 사람 최종 셋팅
+ * nameUpdateFunc()                       : 헌금한 사람 수정 버튼
  * accountingUpdateViewSetting()          : 수정 View 셋팅
- * accountingDelete()                     : 헌금내역 삭제 프로세스
  *
  **************************************************************/
-// ================= Create & Update process  ====================
-function accountingCreateAndUpdateProcess(type){
-
-    // param setting
-    let csrfHeader  = $("#_csrf_header").attr('content');
-    let csrfToken   = $("#_csrf").attr('content');
-    let url         = "/api/accounting";
-    let redirectUrl = "/admin/accounting";
-    let async       = true;
-    let isSecurity  = false;
-    let data        = objToJson($('#accountingForm').serializeArray());
-
-    // update url 변경
-    if(type == 'put')
-        url = "/api/accounting/"+$("#id").val();
-
-    // ajax process
-    let callback = ajaxComm(type, JSON.stringify(data), url, async, csrfHeader, csrfToken);
-
-    callback.done( data => ajaxCallbackProcess(isSecurity, data, type, redirectUrl) );
-
-    callback.fail ( (xhr, status, error) => {
-
-        let errorResource = JSON.parse(xhr.responseText).content[0];
-        console.log("[ERROR STATUS] : " + xhr.status);
-        console.log(errorResource);
-        alert(errorResource.defaultMessage);
-    });
-
-};
-
 // ================= 헌금하는 사람 확인 함수 ====================
 function nameCheckFunc(){
 
@@ -412,35 +340,9 @@ function accountingUpdateViewSetting() {
     $("#money").removeAttr("disabled");
     $("#offeringKind").removeAttr("disabled");
     $("#offeringDate").removeAttr("disabled");
-
     $("#accountingNameUpdate").show();
-    $("#updateProcessBtn").show();
-    $("#updateViewBtn").hide();
-    $("#deleteBtn").hide();
 
 };
 
 
-// ================= Delete Process ====================
-function accountingDelete(){
-
-    let check = confirm('정말 삭제하시겠습니까');
-    if(check) {
-
-        // param setting
-        let csrfHeader  = $("#_csrf_header").attr('content');
-        let csrfToken   = $("#_csrf").attr('content');
-        let type        = "delete";
-        let url         = "/api/accounting/"+$("#id").val();
-        let redirectUrl = "/admin/accounting";
-        let async       = true;
-        let isSecurity  = false;
-        let data        = "";
-
-        // ajax process
-        let callback = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
-        callback.done(data => ajaxCallbackProcess(isSecurity, data, type, redirectUrl));
-    }
-
-}
 

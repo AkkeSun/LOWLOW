@@ -1,5 +1,6 @@
 package church.lowlow.rest_api.member.queryDsl;
 
+import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.member.db.ChurchOfficer;
 import church.lowlow.rest_api.member.db.Member;
@@ -9,6 +10,7 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import javax.transaction.Transactional;
@@ -24,12 +26,13 @@ public class MemberDslImpl implements MemberDsl {
     private QMember q1 = new QMember("q1");
 
     @Transactional
-    public Page<Member> getMemberPage(SearchDto searchDto, Pageable pageable){
+    public Page<Member> getMemberPage(SearchDto searchDto, PagingDto pagingDto){
 
         QueryResults<Member> result = null;
 
         String key          = searchDto.getSearchId();
         String val          = searchDto.getSearchData();
+        int nowPage         = pagingDto.getNowPage();
 
         BooleanBuilder builder = new BooleanBuilder();
         builder.and((q1.name.ne("익명")));
@@ -47,9 +50,16 @@ public class MemberDslImpl implements MemberDsl {
         else if(key.equals("belong"))
             builder.and(q1.belong.eq((String)val));
 
+
+        Pageable pageable = PageRequest.of(nowPage, 10);
+
+
         QueryResults<Member> queryResults = jpaQueryFactory.selectFrom(q1)
+                .limit(pageable.getPageSize()) // 출력할 데이터 수
+                .offset(pageable.getOffset())  // 출력할 페이지 인덱스
                 .where(builder)
                 .fetchResults();
+
         return new PageImpl<>(queryResults.getResults(), pageable, queryResults.getTotal());
 
     }

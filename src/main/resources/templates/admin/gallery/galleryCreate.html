@@ -7,7 +7,7 @@
 
 <script th:inline="javascript">
 $(document).ready(function() {
-    useSummernote()
+    useSummernote();
 });
 </script>
 
@@ -29,13 +29,11 @@ $(document).ready(function() {
                         </div>
                     </div>
 
-                    <form method="post">
-                        <textarea id="contents" name="contents"></textarea>
-                    </form>
+                    <textarea id="contents" name="contents"></textarea>
                     <br>
                     &nbsp;&nbsp;
-                    <button type="button" class="btn btn-outline-primary" onclick="galleryCreateAndUpdateProcess('post')">등록</button>
-                    <a class="btn btn-outline-primary" th:href="@{/admin/gap}">목록 </a>
+                    <button type="button" class="btn btn-outline-primary" onclick="commonCreateAndUpdate('galleries', 'post')">등록</button>
+                    <a class="btn btn-outline-primary" th:href="@{/admin/gallerties}">목록 </a>
                 </form>
             </div>
             <br><br><br><br>

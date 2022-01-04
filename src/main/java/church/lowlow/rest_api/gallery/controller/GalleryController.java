@@ -1,5 +1,7 @@
 package church.lowlow.rest_api.gallery.controller;
 
+import church.lowlow.rest_api.common.entity.PagingDto;
+import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.gallery.db.Gallery;
 import church.lowlow.rest_api.gallery.db.GalleryDto;
 import church.lowlow.rest_api.gallery.db.GalleryValidation;
@@ -70,11 +72,9 @@ public class GalleryController {
      * READ API
      */
     @GetMapping
-    public ResponseEntity getGalleries(Pageable pageable,
-                                       PagedResourcesAssembler<Gallery> assembler){
+    public ResponseEntity getGalleries(PagedResourcesAssembler<Gallery> assembler, SearchDto searchDto, PagingDto pagingDto){
 
-
-        Page<Gallery> page = repository.findAll(pageable);
+        Page<Gallery> page = repository.getGalleryPage(searchDto, pagingDto);
         var pagedResources = assembler.toResource(page, e -> new GalleryResource(e));
         return ResponseEntity.ok(pagedResources);
     }
