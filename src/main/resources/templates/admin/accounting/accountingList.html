@@ -5,10 +5,15 @@
 <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
 <head th:replace="admin/common/head"></head>
 
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css" /> </head>
+
 <script th:inline="javascript">
     $(document).ready(function(){
-        $("#startDate").datepicker({format : "yyyy-mm-dd", todayHighlight : true, autoclose : true,  language : "ko"});
-        $("#endDate").datepicker({format : "yyyy-mm-dd", todayHighlight : true, autoclose : true,  language : "ko"});
+
+        datePickerSet($("startDate"), $("endDate"));
         accountingDataLoad(0);
         commonPagingProcess('accounting');
 
@@ -29,11 +34,13 @@
 
                 <!--======================= 검색박스 ======================-->
                 <div class="row" style="justify-content:left;">
-                    <div class="col-sm-2">
+                    <div class="col-sm-2 input-group-append">
                         <input type="text" class="form-control input-group-sm" id="startDate" placeholder="시작일">
+                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-2 input-group-append">
                         <input type="text" class="form-control input-group-sm" id="endDate" placeholder="종료일">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
                     &nbsp;&nbsp;
                     <select class="custom-select col-sm-2" id="searchId">

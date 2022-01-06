@@ -7,7 +7,7 @@
 
 <script th:inline="javascript">
     $(document).ready(function(){
-        $("#offeringDate").datepicker({format : "yyyy-mm-dd", todayHighlight : true, autoclose : true,  language : "ko"});
+        datePickerSet($("#offeringDate"));
         $("#accountingNameCheck").hide();
         $("#accountingNameUpdate").hide();
         $("#updateProcessBtn").hide();

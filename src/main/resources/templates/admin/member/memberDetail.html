@@ -7,8 +7,8 @@
 
 <script th:inline="javascript">
     $(document).ready(function(){
-        $("#regiDate").datepicker({format : "yyyy-mm-dd", todayHighlight : true, autoclose : true,  language : "ko"});
-        $("#birthDay").datepicker({format : "yyyy-mm-dd", todayHighlight : true, autoclose : true,  language : "ko"});
+        datePickerSet($("#regiDate"));
+        datePickerSet($("#birthDay"));
         $("#updateProcessBtn").hide();
         $("#image").on("change", memberHandleImgFileSelect);
     });

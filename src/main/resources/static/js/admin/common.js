@@ -91,14 +91,15 @@ function commonPagingProcess(pageName){
 // ================= 공용 UPDATE VIEW 셋업 ====================
 function commonUpdateViewSetting(pageName){
 
-    $("#updateProcessBtn").show();
-    $("#updateViewBtn").hide();
-    $("#deleteBtn").hide();
+    $("#updateProcessBtn").show();     // 수정완료버튼
+    $("#updateViewBtn").hide();        // 수정버튼
+    $("#deleteBtn").hide();            // 삭제버튼
 
     switch(pageName){
         case 'members'    : memberUpdateViewSetting();     break;
         case 'accounting' : accountingUpdateViewSetting(); break;
         case 'galleries'  : galleryUpdateViewSetting();  break;
+        case 'calendars'  : calendarUpdateViewSetting();  break;
     }
 }
 
@@ -125,6 +126,9 @@ function commonCreateAndUpdate(pageName, type){
             break;
         case "galleries" :
             data = objToJson($('#galleryFrm').serializeArray());
+            break;
+        case "calendars" :
+            data = objToJson($('#calendarFrm').serializeArray());
             break;
     }
 
@@ -305,6 +309,41 @@ function ajaxFileDelete (csrfHeader, csrfToken, uploadFileName){
         });
     return callback;
 };
+
+
+
+
+
+// ================= DatePicker 셋팅 함수 ====================
+function datePickerSet(sDate, eDate) {
+    sDate.datepicker({
+        format : "yyyy-mm-dd",
+        todayHighlight : true,
+        autoclose : true,
+        language : "ko"
+    });
+    eDate.datepicker({
+        format : "yyyy-mm-dd",
+        todayHighlight : true,
+        autoclose : true,
+        language : "ko",
+    });
+}
+function datePickerSet(date) {
+
+    date.datepicker({
+        format : "yyyy-mm-dd",
+        todayHighlight : true,
+        autoclose : true,
+        language : "ko"
+    });
+}
+
+
+
+
+
+
 
 
 

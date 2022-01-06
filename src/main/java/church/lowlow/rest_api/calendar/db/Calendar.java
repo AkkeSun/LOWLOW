@@ -14,9 +14,9 @@ import java.util.Date;
  *
  * @Column
  * id 고유 식별자
- * content 내용
- * startDate 시작일
- * endDate 종료일
+ * title 내용
+ * start 시작일
+ * end 종료일
  */
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
@@ -29,12 +29,12 @@ public class Calendar extends BaseTimeEntity {
     @Embedded
     private Writer writer;
 
-    private String content;
+    private String title;
 
     @Convert(converter = LocalDateConverter.class)
-    private LocalDate startDate;
+    private LocalDate start;
 
     @Convert(converter = LocalDateConverter.class)
-    private LocalDate endDate;
+    private LocalDate end;
 
 }
