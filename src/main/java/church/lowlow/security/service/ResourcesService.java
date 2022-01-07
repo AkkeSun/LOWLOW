@@ -1,5 +1,5 @@
 package church.lowlow.security.service;
-import church.lowlow.security.UrlMetadataSource;
+import church.lowlow.security.metadata.UrlMetadataSource;
 import church.lowlow.security.domain.dto.ResourcesDto;
 import church.lowlow.security.domain.entity.Resources;
 import church.lowlow.security.repository.ResourcesRepo;

@@ -4,11 +4,13 @@ import church.lowlow.security.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.stereotype.Component;
 
 
 @Component
+@Order(0)
 public class SecurityInitializer implements ApplicationRunner {
 
     @Autowired

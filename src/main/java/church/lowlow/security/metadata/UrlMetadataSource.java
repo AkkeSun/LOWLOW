@@ -1,4 +1,4 @@
-package church.lowlow.security;
+package church.lowlow.security.metadata;
 
 import church.lowlow.security.service.SecurityResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,6 @@ import org.springframework.security.web.access.intercept.FilterInvocationSecurit
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
 import java.util.*;
 
 /**

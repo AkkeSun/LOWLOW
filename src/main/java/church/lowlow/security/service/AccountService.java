@@ -76,7 +76,7 @@ public class AccountService implements UserDetailsService {
 
         // password setting
         if(dto.getPassword().equals(""))
-            dto.setPassword(dto.getPassword());
+            dto.setPassword(accountRepo.findById(id).get().getPassword());
         else
             dto.setPassword(passwordEncoder.encode(dto.getPassword()));
 

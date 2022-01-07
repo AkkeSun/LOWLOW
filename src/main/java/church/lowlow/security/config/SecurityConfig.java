@@ -1,6 +1,9 @@
-package church.lowlow.security;
+package church.lowlow.security.config;
 
-import church.lowlow.security.factory.MethodResourcesMapFactoryBean;
+import church.lowlow.security.metadata.UrlMetadataSource;
+import church.lowlow.security.LoginFilter;
+import church.lowlow.security.LoginProvider;
+import church.lowlow.security.PermitAllFilter;
 import church.lowlow.security.factory.UrlResourcesMapFactoryBean;
 import church.lowlow.security.handler.CustomAccessDeniedHandler;
 import church.lowlow.security.handler.CustomAuthenticationFailureHandler;
@@ -13,7 +16,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
-import org.springframework.security.access.method.MapBasedMethodSecurityMetadataSource;
 import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.access.vote.RoleHierarchyVoter;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -127,21 +129,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new UrlResourcesMapFactoryBean(securityResourceService);
     }
 
-    @Bean
-    public MethodResourcesMapFactoryBean methodResourcesMapFactoryBean(){
-        return new MethodResourcesMapFactoryBean(securityResourceService);
-    }
-
     // =========================== MetaData Source ===============================
     @Bean
     public UrlMetadataSource urlMetadataSource() {
         return new UrlMetadataSource(urlResourcesMapFactoryBean().getObject());
     }
 
-    @Bean // 스프링 기본제공
-    public MapBasedMethodSecurityMetadataSource mapBasedMethodSecurityMetadataSource(){
-        return new MapBasedMethodSecurityMetadataSource(methodResourcesMapFactoryBean().getObject());
-    }
 
     // ================== DB 인가처리 Filter ================
     private String[] permitAllResources = {"/", "/adminLogin", "/adminLogin*", "/adminLogout"};

@@ -1,5 +1,6 @@
 package church.lowlow.user_api.admin;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Controller
 @RequestMapping
+@Log4j2
 public class AdminController {
     
     @GetMapping("/admin")
@@ -52,6 +54,7 @@ public class AdminController {
     @ResponseBody
     @GetMapping("/denied")
     public String denied(){
+        log.info("[DENIED] 접근권한 없음");
         return "<script> alert('접근 권한이 없습니다'); location.href='/admin'; </script>";
     }
 

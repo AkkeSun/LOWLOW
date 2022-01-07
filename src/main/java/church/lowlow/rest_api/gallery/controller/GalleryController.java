@@ -45,7 +45,7 @@ public class GalleryController {
      * CREATE API
      */
     @PostMapping
-    public ResponseEntity createWorshipVideo(@RequestBody GalleryDto dto, Errors errors){
+    public ResponseEntity createGallery(@RequestBody GalleryDto dto, Errors errors){
 
         // check
         galleryValidation.validate(dto, errors);
@@ -94,7 +94,7 @@ public class GalleryController {
      * UPDATE API
      */
     @PutMapping("/{id}")
-    public ResponseEntity updateWorshipVideo(@RequestBody GalleryDto dto, @PathVariable Integer id, Errors errors){
+    public ResponseEntity updateGallery(@RequestBody GalleryDto dto, @PathVariable Integer id, Errors errors){
 
         // check
         galleryValidation.validate(dto, errors);
@@ -120,7 +120,7 @@ public class GalleryController {
      * DELETE API
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteWorshipVideo(@PathVariable Integer id, Resource resource){
+    public ResponseEntity deleteGallery(@PathVariable Integer id, Resource resource){
 
         // check
         Optional<Gallery> optional = repository.findById(id);
