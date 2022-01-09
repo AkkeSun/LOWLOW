@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+<head th:replace="admin/common/head"></head>
+
+<script th:inline="javascript">
+$(document).ready(function() {
+    useSummernote();
+});
+</script>
+
+<body>
+
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <div th:replace="admin/common/sidebar"></div>
+        <div class="col py-3">
+            <th:block th:replace="admin/gallery/fragment :: galleryTitle"/>
+
+            <!-- Main Contents -->
+            <div class="container">
+                <form class="form-horizontal" id="galleryFrm"  enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="title" class="col-sm-2 control-label">제목</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control input-large" placeholder="제목" id="title" name="title">
+                        </div>
+                    </div>
+
+                    <textarea id="contents" name="contents"></textarea>
+                    <br>
+                    &nbsp;&nbsp;
+                    <button type="button" class="btn btn-outline-primary" onclick="commonCreateAndUpdate('galleries', 'post')">등록</button>
+                    <a class="btn btn-outline-primary" th:href="@{/admin/gallerties}">목록 </a>
+                </form>
+            </div>
+            <br><br><br><br>
+            <!-- Main Contents -->
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

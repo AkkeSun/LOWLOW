@@ -1,6 +1,6 @@
 package church.lowlow.rest_api.notice.db;
 
-import church.lowlow.rest_api.common.entity.Image;
+import church.lowlow.rest_api.common.entity.FileDto;
 import church.lowlow.rest_api.common.entity.Writer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,10 +24,10 @@ public class NoticeDto {
     private Writer writer;
 
     private String content;
-    private Image image1;
-    private Image image2;
-    private Image image3;
-    private Image image4;
-    private Image image5;
-    private Image image6;
+    private FileDto image1;
+    private FileDto image2;
+    private FileDto image3;
+    private FileDto image4;
+    private FileDto image5;
+    private FileDto image6;
 }

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+<head th:replace="admin/common/head"></head>
+
+<body>
+<div class="container-fluid">
+   <div class="row flex-nowrap">
+      <div th:replace="admin/common/sidebar"></div>
+      <div class="col py-3">
+         <h1>Main</h1>
+      </div>
+   </div>
+</div>
+
+</body>
+</html>

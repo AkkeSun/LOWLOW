@@ -1,6 +1,6 @@
 package church.lowlow.rest_api.weekly.db;
 
-import church.lowlow.rest_api.common.entity.Image;
+import church.lowlow.rest_api.common.entity.FileDto;
 import church.lowlow.rest_api.common.entity.Writer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,8 +23,8 @@ public class WeeklyDto {
     @NotNull(message = "작성자는 비워둘 수 없습니다")
     private Writer writer;
 
-    private Image img1;
-    private Image img2;
-    private Image img3;
-    private Image img4;
+    private FileDto img1;
+    private FileDto img2;
+    private FileDto img3;
+    private FileDto img4;
 }

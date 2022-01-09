@@ -5,6 +5,7 @@ import church.lowlow.rest_api.common.entity.BaseTimeEntity;
 import church.lowlow.rest_api.common.entity.Writer;
 import church.lowlow.rest_api.member.db.Member;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -35,6 +36,7 @@ public class Accounting extends BaseTimeEntity {
 
     private int money;
 
+    @Enumerated(EnumType.STRING)
     private OfferingKind offeringKind;
 
     @Convert(converter = LocalDateConverter.class)

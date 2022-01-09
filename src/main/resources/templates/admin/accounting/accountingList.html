@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+<head th:replace="admin/common/head"></head>
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css" /> </head>
+
+<script th:inline="javascript">
+    $(document).ready(function(){
+
+        datePickerSet($("startDate"), $("endDate"));
+        accountingDataLoad(0);
+        commonPagingProcess('accounting');
+
+        $("#statisticsData").hide();
+        $("#listBtn").hide();
+    });
+</script>
+
+<body>
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <div th:replace="admin/common/sidebar"></div>
+        <div class="col py-3">
+            <th:block th:replace="admin/accounting/fragment :: accountingTitle"/>
+
+            <!-- Main Contents -->
+            <div class="container">
+
+                <!--======================= 검색박스 ======================-->
+                <div class="row" style="justify-content:left;">
+                    <div class="col-sm-2 input-group-append">
+                        <input type="text" class="form-control input-group-sm" id="startDate" placeholder="시작일">
+                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+                    <div class="col-sm-2 input-group-append">
+                        <input type="text" class="form-control input-group-sm" id="endDate" placeholder="종료일">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+                    &nbsp;&nbsp;
+                    <select class="custom-select col-sm-2" id="searchId">
+                        <option th:value="name" th:text= "검색종류"/>
+                        <option th:value="name" th:text= "이름"/>
+                        <option th:value="belong" th:text= "교구"/>
+                        <option th:value="churchOfficer" th:text= "직분"/>
+                        <option th:value="offeringKind" th:text= "헌금종류"/>
+                    </select>
+                    &nbsp;&nbsp;
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control input-group-sm" id="searchData" placeholder="검색어">
+                    </div>
+                    &nbsp;&nbsp;
+                    <button class="btn btn-outline-primary" style="margin-right: 10px" th:onclick="commonSearch('accounting')">검색</button>
+                    <button class="btn btn-outline-primary" style="margin-right: 10px" th:onclick="commonSearchInitialize('accounting')">초기화</button>
+                </div>
+               <br>
+
+                <!--======================= 리스트 데이터 ======================-->
+                <div id = 'listData'>
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">NO</th>
+                            <th scope="col">교구</th>
+                            <th scope="col">이름</th>
+                            <th scope="col">전화번호</th>
+                            <th scope="col">금액</th>
+                            <th scope="col">종류</th>
+                            <th scope="col">날짜</th>
+                            <th scope="col">비고</th>
+                        </tr>
+                        </thead>
+
+                        <!-- data append -->
+                        <tbody id="appendPath"></tbody>
+                        <!-- data append -->
+
+                    </table>
+                    <div class="container">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination" id="basicPagination" style="justify-content:center;"></ul>
+                        </nav>
+                    </div>
+                </div>
+
+
+                <!--======================= 회계분석 데이터 ======================-->
+                <br>
+                <div id="statisticsData">
+                    <h3> 이름별 통계 </h3>
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">NO</th>
+                            <th scope="col">이름</th>
+                            <th scope="col">금액</th>
+                        </tr>
+                        </thead>
+
+                        <!-- data append -->
+                        <tbody id="nameAppendPath"></tbody>
+                        <!-- data append -->
+
+                    </table>
+
+                    <br><br><br>
+
+                    <h3> 헌금 종류별 통계 </h3>
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">NO</th>
+                            <th scope="col">종류</th>
+                            <th scope="col">금액</th>
+                        </tr>
+                        </thead>
+
+                        <!-- data append -->
+                        <tbody id="offeringKindAppendPath"></tbody>
+                        <!-- data append -->
+
+                    </table>
+                </div>
+
+                <br>
+
+                <!--======================= 하단 버튼 ======================-->
+                <div class="row" style="justify-content:right;">
+                    <button class="btn btn-outline-primary" onclick="showStatisticsBtn()" id="statisticBtn">회계분석</button>
+                    <button class="btn btn-outline-primary" onclick="showListBtn()" id="listBtn">전체 리스트</button>&nbsp;
+                    <button class="btn btn-outline-primary" onclick="accountingExelDown()">엑셀파일 저장</button>&nbsp;
+                    <a class="btn btn-outline-primary" th:href="@{/admin/accounting/create}">신규등록</a>
+                </div>
+            </div>
+            <br><br>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

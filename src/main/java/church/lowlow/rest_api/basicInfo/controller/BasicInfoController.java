@@ -18,6 +18,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 
+import static church.lowlow.rest_api.common.util.WriterUtil.getWriter;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.http.ResponseEntity.badRequest;
 
@@ -44,6 +45,7 @@ public class BasicInfoController {
 
         // save
         BasicInfo info = modelMapper.map(dto, BasicInfo.class);
+        info.setWriter(getWriter());
         BasicInfo newInfo = repository.save(info);
         URI createdUri = linkTo(BasicInfoController.class).slash(newInfo.getId()).toUri();
 
@@ -90,6 +92,7 @@ public class BasicInfoController {
         // save
         BasicInfo info = modelMapper.map(dto, BasicInfo.class);
         info.setId(id);
+        info.setWriter(getWriter());
         BasicInfo updateInfo = repository.save(info);
 
         // return

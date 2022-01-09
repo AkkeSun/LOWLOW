@@ -1,45 +1,33 @@
 package church.lowlow.rest_api.accounting.db;
 import church.lowlow.rest_api.common.entity.Writer;
-import church.lowlow.rest_api.member.db.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.NumberFormat;
 
-import javax.persistence.Embedded;
-import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
- * Accounting 객채 검증을 위한 DTO
+ * Accounting 객채 검증과 금액 카운트를 위한 위한 DTO
  * 익명인 경우 name="익명"
  */
 @Data
 @Builder @NoArgsConstructor @AllArgsConstructor
 public class AccountingDto {
 
-    @NotBlank(message = "이름을 입력하세요")
-    private String name;
+    private Integer memberId;
 
-    @NotNull(message = "금액은 입력하세요")
     private int money;
 
-    @NotNull(message = "헌금 종류를 선택하세요")
     private OfferingKind offeringKind;
 
-    @NotNull(message = "헌금일을 작성하세요")
     private LocalDate offeringDate;
 
-    @NotNull(message = "작성자는 비워둘 수 없습니다")
     private Writer writer;
 
-    private int birthYear;
-
     private String note;
+
+    private String name;
 
 }

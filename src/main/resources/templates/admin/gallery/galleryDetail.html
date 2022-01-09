@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+<head th:replace="admin/common/head"></head>
+
+<script th:inline="javascript">
+    $(document).ready(function(){
+        useSummernote();
+        $('#contents').summernote('code', [[${gallery.contents}]]);
+        $("#editView").hide();
+        $("#updateProcessBtn").hide();
+    });
+</script>
+
+<body>
+
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <div th:replace="admin/common/sidebar"></div>
+        <div class="col py-3">
+            <th:block th:replace="admin/gallery/fragment :: galleryTitle"/>
+
+            <!-- Main Contents -->
+            <div class="container">
+                <form class="form-horizontal" id="galleryFrm" th:object="${gallery}" enctype="multipart/form-data">
+
+                    <!--========== preView ============-->
+                    <div id="preView">
+                        <hr>
+                        <h2 th:text="*{title}"></h2>
+                        <div th:utext="*{contents}"></div>
+                    </div>
+
+                    <!-- ========== editView ============ -->
+                    <div id="editView">
+                        <input type="hidden" id="id" th:value="*{id}">
+                        <div class="form-group">
+                            <label for="title" class="col-sm-2 control-label">제목</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control input-large" id="title" name="title" placeholder="제목"  th:value="*{title}">
+                            </div>
+                        </div>
+                        <textarea maxlength="13" class="form-control input-large" id="contents" name="contents"></textarea>
+                    </div>
+                    <br>
+                    &nbsp;&nbsp;
+
+                    <!-- ========== button ============ -->
+                    <button type="button" class="btn btn-outline-primary" id="updateViewBtn" onclick="commonUpdateViewSetting('galleries')">수정</button>
+                    <button type="button" class="btn btn-outline-primary" id="updateProcessBtn" onclick="commonCreateAndUpdate('galleries', 'put')">수정완료</button>
+                    <button type="button" class="btn btn-outline-primary" id="deleteBtn" onclick="commonDelete('galleries')">삭제</button>
+                    <a class="btn btn-outline-primary" th:href="@{/admin/galleries}">목록 </a>
+                </form>
+            </div>
+            <br><br><br><br>
+            <!-- Main Contents -->
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

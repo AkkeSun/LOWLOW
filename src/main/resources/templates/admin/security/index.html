@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+<head th:replace="admin/common/head"></head>
+
+<script th:inline="javascript">
+    $(document).ready(function(){
+        securityTabControl([[${nowTab}]]);
+        securityPaging([[${accountPagingData}]],
+                       [[${rolePagingData}]],
+                       [[${resourcePagingData}]]);
+    });
+
+
+</script>
+
+<body>
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <div th:replace="admin/common/sidebar"></div>
+        <div class="col py-3">
+            <th:block th:replace="admin/security/fragment/navTab :: header"/>
+            <div class="tab-content">
+                <th:block th:replace="admin/security/fragment/user     :: ${userFragment}"/>
+                <th:block th:replace="admin/security/fragment/role     :: ${roleFragment}"/>
+                <th:block th:replace="admin/security/fragment/resource :: ${resourceFragment}"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

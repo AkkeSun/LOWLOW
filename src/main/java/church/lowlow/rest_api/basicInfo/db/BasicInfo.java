@@ -1,7 +1,7 @@
 package church.lowlow.rest_api.basicInfo.db;
 
 import church.lowlow.rest_api.common.entity.BaseTimeEntity;
-import church.lowlow.rest_api.common.entity.Image;
+import church.lowlow.rest_api.common.entity.FileDto;
 import church.lowlow.rest_api.common.entity.Writer;
 import lombok.*;
 
@@ -20,7 +20,7 @@ import javax.persistence.*;
  * address 주소
  * callNumber 전화번호
  * kakaoPage 카카오페이지
- * liveWorshipURL 예배 링크
+ * liveWorshipURL 온라인 예배 링크 (Youtube Page, vimeo)
  * infoImage 교회 소개글 이미지 (최대 6개)
  * carouselImg 메인 carousel 이미지 (최대 6개)
  * organizationChart 섬기는 사람들 이미지 (최대 3개)
@@ -56,103 +56,103 @@ public class BasicInfo extends BaseTimeEntity {
             @AttributeOverride(name = "originalName", column = @Column(name = "Info1_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Info1_UploadName")),
     })
-    private Image infoImage1;
+    private FileDto infoImage1;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Info2_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Info2_UploadName")),
     })
-    private Image infoImage2;
+    private FileDto infoImage2;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Info3_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Info3_UploadName")),
     })
-    private Image infoImage3;
+    private FileDto infoImage3;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Info4_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Info4_UploadName")),
     })
-    private Image infoImage4;
+    private FileDto infoImage4;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Info5_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Info5_UploadName")),
     })
-    private Image infoImage5;
+    private FileDto infoImage5;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Info6_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Info6_UploadName")),
     })
-    private Image infoImage6;
+    private FileDto infoImage6;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Car1_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Car1_UploadName")),
     })
-    private Image carouselImg1;
+    private FileDto carouselImg1;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Car2_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Car2_UploadName")),
     })
-    private Image carouselImg2;
+    private FileDto carouselImg2;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Car3_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Car3_UploadName")),
     })
-    private Image carouselImg3;
+    private FileDto carouselImg3;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Car4_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Car4_UploadName")),
     })
-    private Image carouselImg4;
+    private FileDto carouselImg4;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Car5_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Car5_UploadName")),
     })
-    private Image carouselImg5;
+    private FileDto carouselImg5;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Car6_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Car6_UploadName")),
     })
-    private Image carouselImg6;
+    private FileDto carouselImg6;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Chart1_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Chart1_UploadName")),
     })
-    private Image organizationChart1;
+    private FileDto organizationChart1;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Chart2_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Chart2_UploadName")),
     })
-    private Image organizationChart2;
+    private FileDto organizationChart2;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Chart3_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Chart3_UploadName")),
     })
-    private Image organizationChart3;
+    private FileDto organizationChart3;
 }

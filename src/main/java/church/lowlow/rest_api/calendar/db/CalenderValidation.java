@@ -17,7 +17,7 @@ public class CalenderValidation implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         CalendarDto dto = (CalendarDto) target;
-        if(dto.getEndDate().isBefore(dto.getStartDate()))
-            errors.rejectValue("endDate", "wrongEndDate", "종료일은 시작일보다 빠를 수 없습니다");
+        if(dto.getEnd().isBefore(dto.getStart()))
+            errors.rejectValue("end", "wrongEndDate", "종료일은 시작일보다 빠를 수 없습니다");
     }
 }

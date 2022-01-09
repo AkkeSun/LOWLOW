@@ -1,5 +1,8 @@
 package church.lowlow.rest_api.member.controller;
 
+import church.lowlow.rest_api.common.entity.FileDto;
+import church.lowlow.rest_api.common.entity.PagingDto;
+import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.member.db.MemberValidation;
 import church.lowlow.rest_api.member.repository.MemberRepository;
 import church.lowlow.rest_api.member.resource.MemberErrorsResource;
@@ -9,18 +12,16 @@ import church.lowlow.rest_api.member.db.MemberDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.hateoas.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 
+import static church.lowlow.rest_api.common.util.WriterUtil.getWriter;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.http.ResponseEntity.badRequest;
 
@@ -37,21 +38,21 @@ public class MemberController {
     @Autowired
     private  ModelMapper modelMapper;
 
-    /**
-     * CREATE API
-     */
+    /**************************
+     *       CREATE API
+     **************************/
     @PostMapping
-    public ResponseEntity createMember(@RequestBody @Valid MemberDto dto,
+    public ResponseEntity createMember(@RequestBody MemberDto dto,
                                        Errors errors){
         // check
-        if(errors.hasErrors())
-            return badRequest().body(new MemberErrorsResource(errors));
-        validation.validate(dto, errors);
+        validation.createValidate(dto, errors);
         if(errors.hasErrors())
             return badRequest().body(new MemberErrorsResource(errors));
 
         // save
         Member member = modelMapper.map(dto, Member.class);
+        member.setWriter( getWriter() );
+        member.setImage(FileDto.builder().originalName(dto.getOriginalName()).uploadName(dto.getUploadName()).build());
         Member newMember = repository.save(member);
         URI createdUri = linkTo(MemberController.class).slash(newMember.getId()).toUri();
 
@@ -65,13 +66,15 @@ public class MemberController {
 
 
 
-    /**
-     * READ API
-     */
+    /**************************
+     *       READ API
+     **************************/
     @GetMapping
-    public ResponseEntity getMembers(Pageable pageable,
-                                     PagedResourcesAssembler<Member> assembler){
-        Page<Member> page = repository.findAll(pageable);
+    public ResponseEntity getMembers(PagedResourcesAssembler<Member> assembler,
+                                     SearchDto searchDto, PagingDto pagingDto) {
+
+        Page<Member> page = repository.getMemberPage(searchDto, pagingDto);
+
         var pagedResources = assembler.toResource(page, e -> new MemberResource(e));
         return ResponseEntity.ok(pagedResources);
     }
@@ -81,30 +84,29 @@ public class MemberController {
         Optional<Member> optional = repository.findById(id);
         Member member = optional.orElseThrow(ArithmeticException::new);
 
-        // 로그인 유무 체크 후 로그인 했으면 update, delete url 넣어주기
         MemberResource resource = new MemberResource(member);
         return ResponseEntity.ok(resource);
     }
 
 
-    
-    /**
-     * UPDATE API
-     */
+
+    /**************************
+     *       UPDATE API
+     **************************/
     @PutMapping("/{id}")
-    public ResponseEntity updateMembers(@RequestBody @Valid MemberDto dto,
+    public ResponseEntity updateMembers(@RequestBody MemberDto dto,
                                         @PathVariable Integer id,
                                         Errors errors){
 
         // check
-        Optional<Member> optional = repository.findById(id);
-        if(optional.isEmpty())
-            return ResponseEntity.notFound().build();
+        validation.basicValidate(dto, errors);
         if(errors.hasErrors())
             return badRequest().body(new MemberErrorsResource(errors));
 
-        // save
+        // update
         Member member = modelMapper.map(dto, Member.class);
+        member.setWriter( getWriter() );
+        member.setImage(FileDto.builder().originalName(dto.getOriginalName()).uploadName(dto.getUploadName()).build());
         member.setId(id);
         Member updateMember = repository.save(member);
 
@@ -115,24 +117,26 @@ public class MemberController {
         return ResponseEntity.ok(resource);
     }
 
-    
-    
-    /**
-     * DELETE API
-     */
+
+
+    /**************************
+     *       DELETE API
+     **************************/
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteMembers(@PathVariable Integer id, Resource resource){
+    public ResponseEntity deleteMembers(@PathVariable Integer id){
 
         // check
         Optional<Member> optional = repository.findById(id);
         if(optional.isEmpty())
             return ResponseEntity.notFound().build();
 
-        // delete
-        repository.deleteById(id);
+        // delete (block update)
+        Member member = optional.get();
+        member.setBlock(true);
+        Member deleteMember = repository.save(member);
 
         // return
-        resource.add(linkTo(MemberController.class).withRel("index"));
+        MemberResource resource = new MemberResource(deleteMember);
         return ResponseEntity.ok(resource);
     }
 }

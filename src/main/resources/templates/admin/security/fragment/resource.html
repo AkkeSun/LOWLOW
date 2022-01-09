@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!--LIST-->
+<th:block th:fragment="resourceList">
+    <div id="resource" class="container tab-pane fade"><br>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>리소스명</th>
+                <th>리소스타입</th>
+                <th>권한</th>
+                <th>순서</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="link_btn hover" th:each="res : ${resourceList}">
+
+                <td style="text-align: left;">
+                    <a th:href="@{'/admin/security/resource/' + ${res.id}}"><span th:text="${res.resourceName}">회원</span></a>
+                </td>
+                <td style="text-align: left;" th:text="${res.resourceType}"></td>
+                <td style="text-align: left;" th:text="${res.resourceRole.roleName}"></td>
+                <td style="text-align: left;" th:text="${res.orderNum}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="container">
+            <nav aria-label="Page navigation">
+                <ul class="pagination" id="resourcePagination" style="justify-content:center;"></ul>
+            </nav>
+        </div>
+        <div style="text-align:right;">
+            <p><a class="btn btn-outline-primary" th:href="@{/admin/security/resource}">리소드 등록</a></p>
+        </div>
+    </div>
+</th:block>
+
+
+<!--create-->
+<th:block th:fragment="resourceCreate">
+    <div id="resource" class="container tab-pane fade"><br>
+        <form class="form-horizontal" th:action="@{/admin/resources}" method="post" th:object="${res}" id="resourceFrm">
+            <div class="form-group">
+                <label for="resourceName" class="col-sm-2 control-label">리소스명</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control input-large" name="resourceName" id="resourceName" placeholder="리소스명" th:value="*{resourceName}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="resourceType" class="col-sm-2 control-label">리소스타입</label>
+                <div class="col-sm-10">
+                    <select class="custom-select" name="resourceType" id="resourceType">
+                        <option value="url">URL</option>
+                        <option value="method">method</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="orderNum" class="col-sm-2 control-label">순서</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control input-large" name="orderNum" id="orderNum" placeholder="순서" th:value="*{orderNum}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="roleName" class="col-sm-2 control-label">권한</label>
+                <div class="col-sm-10">
+                    <select class="custom-select" name="role" id="roleName">
+                        <option th:each="role: ${roleListSub}"
+                                th:value="${role.roleName}"
+                                th:text="${role.roleName}"/>
+                    </select>
+                </div>
+            </div>
+            <br>
+            &nbsp;&nbsp;
+            <button type="button" class="btn btn-outline-primary" th:onclick="securityCreateFunc('resource')">등록</button>
+            <a class="btn btn-outline-primary" th:href="@{/admin/security?tab=3}">목록 </a>
+        </form>
+    </div>
+</th:block>
+
+
+<!-- DETAIL -->
+<th:block th:fragment="resourceDetail">
+    <div id="resource" class="container tab-pane fade"><br>
+        <form class="form-horizontal" method="post" th:object="${res}" id="resourceFrm">
+            <input type="hidden" id="id" th:value="*{id}">
+            <div class="form-group">
+                <label for="resourceName" class="col-sm-2 control-label">리소스명</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control input-large" id="resourceName" placeholder="리소스명" th:field="*{resourceName}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="resourceType" class="col-sm-2 control-label">리소스타입</label>
+                <div class="col-sm-10">
+                    <select class="custom-select" id="resourceType" th:field="*{resourceType}">
+                        <option value="url">URL</option>
+                        <option value="method">method</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="orderNum" class="col-sm-2 control-label">순서</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control input-large" id="orderNum" placeholder="순서" th:field="*{orderNum}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="roleName" class="col-sm-2 control-label">권한</label>
+                <div class="col-sm-10">
+                    <select class="custom-select" id="roleName" name="role">
+                        <option th:each="role: ${roleListSub}"
+                                th:value="${role.roleName}"
+                                th:text="${role.roleName}"/>
+                    </select>
+                </div>
+            </div>
+            <br>
+            &nbsp;&nbsp;
+            <button type="button" class="btn btn-outline-primary" th:onclick="securityUpdateFunc('resource')">수정</button>
+            <button type="button" th:onclick="securityDeleteFunc('resource')" class="btn btn-outline-primary">삭제</button>
+            <a class="btn btn-outline-primary" th:href="@{/admin/security?tab=3}">목록 </a>
+        </form>
+    </div>
+</th:block>
+
+</body>
+</html>

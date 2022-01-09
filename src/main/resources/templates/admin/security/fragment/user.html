@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!--LIST-->
+<th:block th:fragment="userList">
+    <div id="user" class="container tab-pane active"><br>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">아이디</th>
+                <th scope="col">접근권한</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="hover" th:each="account : ${accountList}">
+                <td style="text-align: left;">
+                    <a th:href="@{'/admin/security/account/' + ${account.id}}"><span th:text="${account.username}"></span></a>
+                </td>
+                <td>
+                    <th:block th:each="role : ${account.userRole}">
+                        <th:block th:text="${role.roleName}"></th:block>
+                    </th:block>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="container">
+            <nav aria-label="Page navigation">
+                <ul class="pagination" id="accountPagination" style="justify-content:center;"></ul>
+            </nav>
+        </div>
+        <div style="text-align:right;">
+            <p><a class="btn btn-outline-primary" th:href="@{/admin/security/account}">사용자 등록</a></p>
+        </div>
+    </div>
+</th:block>
+
+<!--create-->
+<th:block th:fragment="userCreate">
+    <div id="user" class="container tab-pane active"><br>
+        <div class="tbl_wrp">
+            <form class="form-horizontal" th:object="${account}" id="accountFrm">
+                <div class="form-group">
+                    <label for="username" class="col-sm-2 control-label">아이디</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control input-large" id="username" name="username" placeholder="username" th:value="*{username}" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="col-sm-2 control-label">비밀번호</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control input-large" id="password" name="password" placeholder="Password" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="col-sm-2 control-label">비밀번호 확인</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control input-large" id="passwordCheck" name="passwordCheck" placeholder="Password check" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="col-sm-2 control-label">교구 (목장)</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control input-large" id="belong" name="belong" placeholder="리더의 경우 입력" th:value="*{belong}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="roleName" class="col-sm-2 control-label">권한</label>
+                    <div class="col-sm-10">
+                        <select class="custom-select" name="role" id="roleName">
+                            <option th:each="role: ${roleListSub}"
+                                    th:value="${role.roleName}"
+                                    th:text="${role.roleName}"/>
+                        </select>
+                    </div>
+                </div>
+                <br>
+                &nbsp;&nbsp;
+                <button type="button" th:onclick="securityCreateFunc('account')" class="btn btn-outline-primary">등록</button>
+                <a class="btn btn-outline-primary" th:href="@{/admin/security}">목록 </a>
+            </form>
+        </div>
+    </div>
+</th:block>
+
+<!-- DETAIL -->
+<th:block th:fragment="userDetail">
+    <div id="user" class="container tab-pane active"><br>
+        <div class="tbl_wrp">
+            <form class="form-horizontal" th:object="${account}" id="accountFrm">
+                <input type="hidden" th:value="*{id}" id="id" name="id">
+                <div class="form-group">
+                    <label for="username" class="col-sm-2 control-label">아이디</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control input-large" id="username" name="username" placeholder="username" th:value="*{username}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="col-sm-2 control-label">비밀번호</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control input-large" id="password" name="password" placeholder="변경 시에만 입력하세요">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="col-sm-2 control-label">비밀번호 확인</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control input-large" id="passwordCheck" name="passwordCheck" placeholder="Password check">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="col-sm-2 control-label">교구 (목장)</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control input-large" id="belong" name="belong" placeholder="리더의 경우 입력" th:value="*{belong}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="roleName" class="col-sm-2 control-label">권한</label>
+                    <div class="col-sm-10">
+                        <select class="custom-select" name="role" id="roleName">
+                            <option th:each="role: ${roleListSub}"
+                                    th:value="${role.roleName}"
+                                    th:text="${role.roleName}"/>
+                        </select>
+                    </div>
+                </div>
+                <br>
+                &nbsp;&nbsp;
+                <button type="button" th:onclick="securityUpdateFunc('account')" class="btn btn-outline-primary">수정</button>
+                <button type="button" th:onclick="securityDeleteFunc('account')" class="btn btn-outline-primary">삭제</button>
+                <a class="btn btn-outline-primary" th:href="@{/admin/security}">목록 </a>
+            </form>
+        </div>
+    </div>
+</th:block>
+
+</body>
+</html>

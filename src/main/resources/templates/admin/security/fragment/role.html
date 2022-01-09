@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!--LIST-->
+<th:block th:fragment="roleList">
+    <div id="role" class="container tab-pane fade"><br>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>접근권한</th>
+                <th>설명</th>
+                <th>순서</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="role : ${roleList}">
+                <td style="text-align: left;">
+                    <a th:href="@{'/admin/security/role/' + ${role.id}}"><span th:text="${role.roleName}"></span></a>
+                </td>
+                <td style="text-align: left;" th:text="${role.roleDesc}"></td>
+                <td style="text-align: left;" th:text="${role.roleNum}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="container">
+            <nav aria-label="Page navigation">
+                <ul class="pagination" id="rolePagination" style="justify-content:center;"></ul>
+            </nav>
+        </div>
+        <div style="text-align:right;">
+            <p><a class="btn btn-outline-primary"  th:href="@{/admin/security/role}">권한 등록</a></p>
+        </div>
+    </div>
+</th:block>
+
+<!--create-->
+<th:block th:fragment="roleCreate">
+    <div id="role" class="container tab-pane fade"><br>
+        <form class="form-horizontal" th:object="${role}" id="roleFrm">
+            <div class="form-group">
+                <label for="roleName" class="col-sm-2 control-label">권한이름</label>
+                <div class="col-sm-10">
+                    <input class="form-control input-large" id="roleName" name="roleName" type="text" th:field="*{roleName}"  placeholder="ROLE_0000"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="roleNum" class="col-sm-2 control-label">순서</label>
+                <div class="col-sm-10">
+                    <input class="form-control input-large" id="roleNum" name="roleNum" type="text" th:field="*{roleNum}"  placeholder="낮을수록 높은 권한"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="roleDesc" class="col-sm-2 control-label">설명</label>
+                <div class="col-sm-10">
+                    <input class="form-control input-large" id="roleDesc" name="roleDesc" type="text" th:field="*{roleDesc}" placeholder="설명"/>
+                </div>
+            </div>
+            <br>
+            &nbsp;&nbsp;
+            <input type="button" class="btn btn-outline-primary" th:onclick="securityCreateFunc('role')" value="등록"/>
+            <a class="btn btn-outline-primary" th:href="@{/admin/security?tab=2}">목록</a>
+        </form>
+    </div>
+</th:block>
+
+
+<!-- DETAIL -->
+<th:block th:fragment="roleDetail">
+    <div id="role" class="container tab-pane fade"><br>
+        <form class="form-horizontal"  th:object="${role}" id="roleFrm">
+            <input type="hidden" th:field="*{id}">
+            <div class="form-group">
+                <label for="roleName" class="col-sm-2 control-label">권한이름</label>
+                <div class="col-sm-10">
+                    <input class="form-control input-large" id="roleName" name="roleName" type="text" th:field="*{roleName}"  placeholder="ROLE_0000"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="roleName" class="col-sm-2 control-label">순서</label>
+                <div class="col-sm-10">
+                    <input class="form-control input-large" id="roleNum" name="roleNum" type="text" th:field="*{roleNum}"  placeholder="낮을수록 높은 권한"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="roleDesc" class="col-sm-2 control-label">설명</label>
+                <div class="col-sm-10">
+                    <input class="form-control input-large" id="roleDesc" name="roleDesc" type="text" th:field="*{roleDesc}" placeholder="설명"/>
+                </div>
+            </div>
+            <br>
+            &nbsp;&nbsp;
+            <input type="button" class="btn btn-outline-primary" th:onclick="securityUpdateFunc('role')" value="수정"/>
+            <button type="button" th:onclick="securityDeleteFunc('role')" class="btn btn-outline-primary">삭제</button>
+            <a class="btn btn-outline-primary" th:href="@{/admin/security?tab=2}">목록</a>
+        </form>
+    </div>
+</th:block>
+
+</body>
+</html>

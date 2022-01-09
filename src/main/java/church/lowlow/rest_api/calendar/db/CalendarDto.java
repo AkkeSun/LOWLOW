@@ -17,15 +17,11 @@ import java.util.Date;
 @Builder @NoArgsConstructor @AllArgsConstructor
 public class CalendarDto {
 
-    @NotBlank(message = "내용을 입력하세요")
-    private String content;
+    private String title;
 
-    @NotNull(message = "작성자는 비워둘 수 없습니다")
     private Writer writer;
 
-    @NotNull(message = "시작일을 선택하세요")
-    private LocalDate startDate;
+    private LocalDate start;
     
-    @NotNull(message = "종료일을 선택하세요")
-    private LocalDate endDate;
+    private LocalDate end;
 }

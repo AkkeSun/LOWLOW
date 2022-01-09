@@ -1,33 +1,31 @@
 package church.lowlow.rest_api.accounting.controller;
 
-import church.lowlow.rest_api.accounting.db.Accounting;
-import church.lowlow.rest_api.accounting.db.AccountingDto;
-import church.lowlow.rest_api.accounting.db.AccountingValidation;
+import church.lowlow.rest_api.accounting.db.*;
 import church.lowlow.rest_api.accounting.repository.AccountingRepository;
 import church.lowlow.rest_api.accounting.resource.AccountingErrorsResource;
 import church.lowlow.rest_api.accounting.resource.AccountingResource;
-import church.lowlow.rest_api.accounting.searchBox.MoneyBox;
-import church.lowlow.rest_api.accounting.searchBox.SearchBox;
-import church.lowlow.rest_api.accounting.searchBox.SerchBoxValidation;
+import church.lowlow.rest_api.accounting.db.AccountingSearchValidation;
+import church.lowlow.rest_api.common.entity.PagingDto;
+import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.member.repository.MemberRepository;
+import com.querydsl.core.Tuple;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.net.URI;
-import java.text.ParseException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+import static church.lowlow.rest_api.common.util.WriterUtil.getWriter;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.http.ResponseEntity.badRequest;
 
@@ -42,33 +40,34 @@ public class AccountingController {
     private MemberRepository memberRepository;
 
     @Autowired
-    AccountingValidation accountingValidation;
+    private AccountingValidation accountingValidation;
 
     @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
-    private SerchBoxValidation serchBoxValidation;
+    private AccountingSearchValidation accountingSearchValidation;
 
 
-    /**
-     * CREATE API
-     */
+    /*******************************************
+     *                  CREATE API
+     ********************************************/
     @PostMapping
-    public ResponseEntity createAccounting(@RequestBody @Valid AccountingDto dto,
-                                           Errors errors){
+    public ResponseEntity createAccounting(@RequestBody AccountingDto dto, Errors errors){
 
         // check
-        if(errors.hasErrors())
-            return badRequest().body(new AccountingErrorsResource(errors));
         accountingValidation.validate(dto, errors);
         if (errors.hasErrors())
             return badRequest().body(new AccountingErrorsResource(errors));
 
         // save
         Accounting accounting = modelMapper.map(dto, Accounting.class);
-        Member findMember = memberRepository.findByName(dto.getName());
-        accounting.setMember(findMember);
+        if(dto.getMemberId() == -1)
+            accounting.setMember(memberRepository.findByName("익명"));
+        else
+            accounting.setMember(memberRepository.findById(dto.getMemberId()).get());
+        accounting.setWriter(getWriter());
+
         Accounting newAccounting = accountingRepository.save(accounting);
         URI createdUri = linkTo(AccountingController.class).slash(newAccounting.getId()).toUri();
 
@@ -82,65 +81,76 @@ public class AccountingController {
 
 
 
-    /**
-     * READ API
-     */
+    /*******************************************
+     *                  READ API
+     ********************************************/
+    // ======================== paging data ========================
     @GetMapping
-    public ResponseEntity getAccounting(@RequestBody SearchBox searchBox, Errors errors,
-                                        Pageable pageable,
-                                        PagedResourcesAssembler<Accounting> assembler) throws ParseException {
+    public ResponseEntity getAccountingPage(SearchDto searchDto, PagingDto pagingDto, Errors errors,
+                                            PagedResourcesAssembler<Accounting> assembler) {
 
-        // searchBox 검증
-        if(searchBox != null ){
-            serchBoxValidation.validate(searchBox, errors);
-            if(errors.hasErrors()) return badRequest().body(new AccountingErrorsResource(errors));
-        }
+        // check
+        accountingSearchValidation.dateValidate(searchDto, errors);
+        if(errors.hasErrors())
+            return badRequest().body(new AccountingErrorsResource(errors));
 
-        // 데이터 로드
-        Page<Accounting> page = accountingRepository.searchBox(searchBox, pageable);
-        
-        // 종류별 금액 출력하는 함수 사용하기
-        // 로그인 유무 체크 후 로그인 했으면 update, delete url 넣어주기
+        // load
+        Page<Accounting> page = accountingRepository.getAccountingPage(searchDto, pagingDto);
+
+        // return
         var pagedResources = assembler.toResource(page, e -> new AccountingResource(e));
         return ResponseEntity.ok(pagedResources);
     }
 
+
+    // ======================== one data ========================
     @GetMapping("{id}")
     public ResponseEntity getAccounting(@PathVariable Integer id){
         Optional<Accounting> optional = accountingRepository.findById(id);
         Accounting accounting = optional.orElseThrow(ArithmeticException::new);
 
-        // 로그인 유무 체크 후 로그인 했으면 update, delete url 넣어주기
         AccountingResource resource = new AccountingResource(accounting);
         return ResponseEntity.ok(resource);
     }
 
 
 
+    // ======================== 헌금 내용 분석 ========================
+    @GetMapping("/statistics")
+    public ResponseEntity getStatisticsMap(SearchDto searchDto, Errors errors) {
 
-    /**
-     * UPDATE API
-     */
+        // check
+        accountingSearchValidation.dateValidate(searchDto, errors);
+        if(errors.hasErrors())
+            return badRequest().body(new AccountingErrorsResource(errors));
+
+        Map<String, Object> returnMap = getStatisticsMap(searchDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(returnMap);
+    }
+
+
+
+
+    /*******************************************
+     *                UPDATE API
+     ********************************************/
     @PutMapping("/{id}")
-    public ResponseEntity updateAccounting(@RequestBody @Valid AccountingDto dto,
+    public ResponseEntity updateAccounting(@RequestBody AccountingDto dto,
                                            @PathVariable Integer id,
                                            Errors errors){
 
         // check
-        Optional<Accounting> optional = accountingRepository.findById(id);
-        if(optional.isEmpty())
-            return ResponseEntity.notFound().build();
-        if(errors.hasErrors())
-            return badRequest().body(new AccountingErrorsResource(errors));
         accountingValidation.validate(dto, errors);
         if(errors.hasErrors())
             return badRequest().body(new AccountingErrorsResource(errors));
 
         // update
         Accounting accounting = modelMapper.map(dto, Accounting.class);
-        Member member = memberRepository.findByName(dto.getName());
+        Member member = memberRepository.findById(dto.getMemberId()).get();
         accounting.setMember(member);
         accounting.setId(id);
+        accounting.setWriter(getWriter());
         Accounting updateAccounting = accountingRepository.save(accounting);
 
 
@@ -153,9 +163,9 @@ public class AccountingController {
 
 
 
-    /**
-     * DELETE API
-     */
+    /*******************************************
+     *                 DELETE API
+     ********************************************/
     @DeleteMapping("/{id}")
     public ResponseEntity deleteWorshipVideo(@PathVariable Integer id, Resource resource){
 
@@ -173,38 +183,70 @@ public class AccountingController {
     }
 
 
-    /**
-     * 헌금 종류별로 금액을 카운트하는 함수
-     */
-    public MoneyBox moneyBox(List<Accounting> list){
 
-        int TOTAL        = 0;
-        int SUNDAY       = 0;
-        int TITHE        = 0;
-        int THANKSGIVING = 0;
-        int BUILDING     = 0;
-        int SPECIAL      = 0;
-        int MISSION      = 0;
-        int UNKNOWN      = 0;
 
-        for(int i=0; i<list.size(); i++){
+    /*******************************************
+     *    헌금 내용을 분석하여 Map으로 출력하는 함수
+     ********************************************/
+    public Map<String, Object> getStatisticsMap(SearchDto searchDto){
 
-            switch (list.get(i).getOfferingKind()) {
-                case SUNDAY      : SUNDAY       += list.get(i).getMoney(); break;
-                case TITHE       : TITHE        += list.get(i).getMoney(); break;
-                case THANKSGIVING: THANKSGIVING += list.get(i).getMoney(); break;
-                case BUILDING    : BUILDING     += list.get(i).getMoney(); break;
-                case SPECIAL     : SPECIAL      += list.get(i).getMoney(); break;
-                case MISSION     : MISSION      += list.get(i).getMoney(); break;
-                case UNKNOWN     : UNKNOWN      += list.get(i).getMoney(); break;
+        // data load
+        List<Tuple> offeringStatistics = accountingRepository.getAccountingStatistics(searchDto, "offeringKind");
+        List<Tuple> memberStatistics = accountingRepository.getAccountingStatistics(searchDto, "member");
+
+
+        // data List
+        List<AccountingDto> offeringStatisticsList = new ArrayList<>();
+        List<AccountingDto> memberStatisticsList = new ArrayList<>();
+
+
+        // data convert (offeringStatistics)
+        int allMoney = 0;
+        for (Tuple tuple : offeringStatistics){
+            AccountingDto dto = new AccountingDto();
+
+            Object [] offeringData = tuple.toArray();
+            for(Object data : offeringData){
+
+                if(data instanceof OfferingKind)
+                    dto.setOfferingKind( (OfferingKind) data);
+                else {
+                    allMoney += (Integer) data;
+                    dto.setMoney( (Integer) data );
+                }
             }
+            offeringStatisticsList.add(dto);
         }
+        offeringStatisticsList.add(AccountingDto.builder().offeringKind(OfferingKind.valueOf("TOTAL")).money(allMoney).build());
 
-        TOTAL = SUNDAY + TITHE + THANKSGIVING + BUILDING + SPECIAL + MISSION + UNKNOWN;
 
-        return MoneyBox.builder().SUNDAY(SUNDAY).TITHE(TITHE).THANKSGIVING(THANKSGIVING).BUILDING(BUILDING)
-                .SPECIAL(SPECIAL).MISSION(MISSION).UNKNOWN(UNKNOWN).TOTAL(TOTAL).build();
+        // data convert (memberStatistics)
+        allMoney = 0;
+        for (Tuple tuple : memberStatistics){
+            AccountingDto dto = new AccountingDto();
+
+            Object [] memberData = tuple.toArray();
+            for(Object data : memberData){
+
+                if(data instanceof Member)
+                    dto.setName( ((Member) data).getName() );
+                else {
+                    allMoney += (Integer) data;
+                    dto.setMoney( (Integer) data );
+                }
+            }
+            memberStatisticsList.add(dto);
+        }
+        memberStatisticsList.add(AccountingDto.builder().name("TOTAL").money(allMoney).build());
+
+
+
+        // return
+        Map<String, Object> returnMap = new HashMap<>();
+        returnMap.put("offeringKind", offeringStatisticsList);
+        returnMap.put("member", memberStatisticsList);
+        returnMap.put("_self", "/api/accounting/statistics");
+
+        return returnMap;
     }
-
-
 }

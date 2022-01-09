@@ -13,14 +13,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import static church.lowlow.rest_api.common.util.WriterUtil.getWriter;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.http.ResponseEntity.badRequest;
 
@@ -41,17 +46,17 @@ public class CalenderController {
      * CREATE API
      */
     @PostMapping
-    public ResponseEntity createWorshipVideo(@RequestBody @Valid CalendarDto dto,
+    public ResponseEntity createCalendar(@RequestBody CalendarDto dto,
                                               Errors errors){
+
         // check
-        if(errors.hasErrors())
-            return badRequest().body(new CalendarErrorsResource(errors));
         validation.validate(dto, errors);
         if(errors.hasErrors())
             return badRequest().body(new CalendarErrorsResource(errors));
 
         // save
         Calendar calendar = modelMapper.map(dto, Calendar.class);
+        calendar.setWriter(getWriter());
         Calendar newCalendar = repository.save(calendar);
         URI createdUri = linkTo(CalenderController.class).slash(newCalendar.getId()).toUri();
 
@@ -69,15 +74,14 @@ public class CalenderController {
      * READ API
      */
     @GetMapping
-    public ResponseEntity getWorshipVideo(Pageable pageable,
-                                          PagedResourcesAssembler<Calendar> assembler){
-        Page<Calendar> page = repository.findAll(pageable);
-        var pagedResources = assembler.toResource(page, e -> new CalendarResource(e));
-        return ResponseEntity.ok(pagedResources);
+    public ResponseEntity getCalendarList(){
+        List<Calendar> page = repository.findAll();
+        return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
+
     @GetMapping("{id}")
-    public ResponseEntity geWorshipVideo(@PathVariable Integer id){
+    public ResponseEntity getCalendar(@PathVariable Integer id){
         Optional<Calendar> optional = repository.findById(id);
         Calendar notice = optional.orElseThrow(ArithmeticException::new);
 
@@ -92,7 +96,7 @@ public class CalenderController {
      * UPDATE API
      */
     @PutMapping("/{id}")
-    public ResponseEntity updateWorshipVideo(@RequestBody @Valid CalendarDto dto,
+    public ResponseEntity updateCalendar(@RequestBody @Valid CalendarDto dto,
                                              @PathVariable Integer id,
                                              Errors errors){
 
@@ -121,7 +125,7 @@ public class CalenderController {
      * DELETE API
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteWorshipVideo(@PathVariable Integer id, Resource resource){
+    public ResponseEntity deleteCalendar(@PathVariable Integer id, Resource resource){
 
         // check
         Optional<Calendar> optional = repository.findById(id);

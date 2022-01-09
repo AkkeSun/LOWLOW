@@ -25,6 +25,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 
+import static church.lowlow.rest_api.common.util.WriterUtil.getWriter;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.http.ResponseEntity.badRequest;
 
@@ -50,6 +51,7 @@ public class WorshipVideoController {
 
         // save
         WorshipVideo worshipVideo = modelMapper.map(dto, WorshipVideo.class);
+        worshipVideo.setWriter(getWriter());
         WorshipVideo newWorshipVideo = repository.save(worshipVideo);
         URI createdUri = linkTo(WorshipVideoController.class).slash(newWorshipVideo.getId()).toUri();
 
@@ -103,6 +105,7 @@ public class WorshipVideoController {
 
         // save
         WorshipVideo worshipVideo = modelMapper.map(dto, WorshipVideo.class);
+        worshipVideo.setWriter(getWriter());
         worshipVideo.setId(id);
         WorshipVideo updateWorshipVideo = repository.save(worshipVideo);
 
