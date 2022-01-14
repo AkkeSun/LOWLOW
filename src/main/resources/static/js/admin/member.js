@@ -20,23 +20,23 @@ function churchOfficerChangeToKor(churchOfficer){
 function memberListLoad(nowPage){
 
     // param setting
-    let type        = "get";
-    let data        = "searchId="+$("#searchId").val()+"&searchData="+$("#searchData").val()+"&nowPage="+nowPage;
-    let url         = "/api/members";
-    let csrfHeader  = $("#_csrf_header").attr('content');
-    let csrfToken   = $("#_csrf").attr('content');
-    let async       = false;
-    let callback    = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
+    var type        = "get";
+    var data        = "searchId="+$("#searchId").val()+"&searchData="+$("#searchData").val()+"&nowPage="+nowPage;
+    var url         = "/api/members";
+    var csrfHeader  = $("#_csrf_header").attr('content');
+    var csrfToken   = $("#_csrf").attr('content');
+    var async       = false;
+    var callback    = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
 
     callback.done( (data) => {
 
         totalPages = 1;
 
-        let appendData = "";
+        var appendData = "";
         if( data._embedded ) {
             totalPages = data.page.totalPages;
 
-            let list = data._embedded.memberList;
+            var list = data._embedded.memberList;
             list.forEach(function (data, index) {
                 let churchOfficer = churchOfficerChangeToKor(data.churchOfficer);
                 appendData += `
@@ -92,28 +92,3 @@ function memberUpdateViewSetting() {
     $("#datePicker").removeAttr("disabled");
     $("#image").removeAttr("disabled");
 };
-
-
-
-
-
-
-// ================= 업로드 이미지 미리보기 함수 ====================
-function memberHandleImgFileSelect(e) {
-
-    let files = e.target.files;
-    let filesArr = Array.prototype.slice.call(files);
-    filesArr.forEach(function(f) {
-        if(!f.type.match("image.*")) {
-            alert("이미지만 업로드 가능합니다.");
-            return;
-        }
-        sel_file = f;
-        let reader = new FileReader();
-        reader.onload = function(e) {
-            $("#imageView").attr("src", e.target.result);
-            $("#imageView").css("width", '150px');
-        }
-        reader.readAsDataURL(f);
-    });
-}

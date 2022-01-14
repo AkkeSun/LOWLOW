@@ -6,7 +6,8 @@ import javax.persistence.Embeddable;
 /**
  * [ 파일 업로드 정보 ]
  * originalName 원본명
- * uploadName 업로드명
+ * uploadName   업로드명
+ * errMsg       에러 메세지(파일 용량 초과시)
  */
 @Embeddable
 @Data @NoArgsConstructor @AllArgsConstructor @Builder

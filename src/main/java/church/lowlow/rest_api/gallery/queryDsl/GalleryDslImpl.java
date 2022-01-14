@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 
 import javax.transaction.Transactional;
 
+import static church.lowlow.rest_api.common.util.StringUtil.objNullToStr;
+
 @Log4j2
 public class GalleryDslImpl implements GalleryDsl{
 
@@ -29,8 +31,8 @@ public class GalleryDslImpl implements GalleryDsl{
     @Transactional
     public Page<Gallery> getGalleryPage(SearchDto searchDto, PagingDto pagingDto) {
 
-        String key          = searchDto.getSearchId();
-        String val          = searchDto.getSearchData();
+        String key          = objNullToStr(searchDto.getSearchId());
+        String val          = objNullToStr(searchDto.getSearchData());
         int nowPage         = pagingDto.getNowPage();
 
         log.info("[검색 데이터] id : " + key + " || data : " + val);

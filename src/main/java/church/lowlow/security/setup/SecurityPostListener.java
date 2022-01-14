@@ -61,7 +61,7 @@ public class SecurityPostListener implements ApplicationListener<ApplicationStar
         // SECURITY RESOURCE (URL)
         createResourceIfNotFound("/admin/security/**", "url", "ROLE_DEV", 0);
         createResourceIfNotFound("/admin/basicInfo/**", "url", "ROLE_DEV", 1);
-        createResourceIfNotFound("/admin/members/**", "url", "ROLE_LDR", 2);
+        createResourceIfNotFound("/admin/members/**", "url", "ROLE_MST", 2);
         createResourceIfNotFound("/admin/accounting/**", "url", "ROLE_GAF", 3);
         createResourceIfNotFound("/admin/galleries/**", "url", "ROLE_ULD", 4);
         createResourceIfNotFound("/admin/calendar/**", "url", "ROLE_ULD", 5);
@@ -69,23 +69,6 @@ public class SecurityPostListener implements ApplicationListener<ApplicationStar
         createResourceIfNotFound("/admin/weekly/**", "url", "ROLE_ULD", 7);
         createResourceIfNotFound("/admin/worshipVideo/**", "url", "ROLE_ULD", 8);
         createResourceIfNotFound("/admin/**", "url", "ROLE_LDR", 9);
-
-
-        // SECURITY RESOURCE (METHOD)
-        String accountingPath = "church.lowlow.rest_api.accounting.controller.AccountingController.*";
-        String calendarPath = "church.lowlow.rest_api.calendar.controller.CalenderController.";
-        String memberPath = "church.lowlow.rest_api.member.controller.MemberController.";
-        String galleryPath =  "church.lowlow.rest_api.gallery.controller.GalleryController.";
-        createResourceIfNotFound(accountingPath, "method", "ROLE_GAF", 10);
-        createResourceIfNotFound(memberPath + "createMember", "method", "ROLE_MST", 11);
-        createResourceIfNotFound(memberPath + "updateMembers", "method", "ROLE_MST", 12);
-        createResourceIfNotFound(memberPath + "deleteMembers", "method", "ROLE_MST", 13);
-        createResourceIfNotFound(calendarPath+"createCalendar", "method", "ROLE_ULD", 14);
-        createResourceIfNotFound(calendarPath+"updateCalendar", "method", "ROLE_ULD", 15);
-        createResourceIfNotFound(calendarPath+"deleteCalendar", "method", "ROLE_ULD", 16);
-        createResourceIfNotFound(galleryPath + "createGallery", "method", "ROLE_ULD", 17);
-        createResourceIfNotFound(galleryPath + "updateGallery", "method", "ROLE_ULD", 18);
-        createResourceIfNotFound(galleryPath + "deleteGallery", "method", "ROLE_ULD", 19);
 
 
         // MEMBER

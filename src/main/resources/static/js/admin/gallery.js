@@ -3,27 +3,27 @@
 function galleryListLoad(nowPage){
 
     // param setting
-    let type        = "get";
-    let data        = "searchId="+$("#searchId").val()+"&searchData="+$("#searchData").val()+"&nowPage="+nowPage;
-    let url         = "/api/galleries";
-    let csrfHeader  = $("#_csrf_header").attr('content');
-    let csrfToken   = $("#_csrf").attr('content');
-    let async       = false;
-    let callback    = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
+    var type        = "get";
+    var data        = "searchId="+$("#searchId").val()+"&searchData="+$("#searchData").val()+"&nowPage="+nowPage;
+    var url         = "/api/galleries";
+    var csrfHeader  = $("#_csrf_header").attr('content');
+    var csrfToken   = $("#_csrf").attr('content');
+    var async       = false;
+    var callback    = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
 
-    callback.done( (data) => {
+    callback.done( function (data) {
 
         totalPages = 1;
 
-        let appendData = "";
+        var appendData = "";
         if( data._embedded ) {
 
             totalPages = data.page.totalPages;
-            let list = data._embedded.galleryList;
+            var list = data._embedded.galleryList;
 
             list.forEach(function (data, index) {
 
-                let createdDate = (data.createdDate).substring(0, 10);
+                var createdDate = (data.createdDate).substring(0, 10);
                 appendData += `
                                <tr id="appendItem">
                                     <td style="text-align: left;">

@@ -1,19 +1,19 @@
 function calendarSetting(){
 
     // param setting
-    let type        = "get";
-    let data        = "";
-    let url         = "/api/calendars";
-    let csrfHeader  = $("#_csrf_header").attr('content');
-    let csrfToken   = $("#_csrf").attr('content');
-    let async       = false;
-    let callback    = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
+    var type        = "get";
+    var data        = "";
+    var url         = "/api/calendars";
+    var csrfHeader  = $("#_csrf_header").attr('content');
+    var csrfToken   = $("#_csrf").attr('content');
+    var async       = false;
+    var callback    = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
 
-    callback.done(data => {
+    callback.done(function (data) {
 
 
         // =============== append Data Setting =============
-        let event = [];
+        var event = [];
         $.each(data, function (i, entry) {
             event.push({
                 id     : entry.id,
@@ -26,8 +26,8 @@ function calendarSetting(){
 
 
         //================ calendar basic setting ===============
-        let calendarEl = $("#calendar")[0];
-        let calendar = new FullCalendar.Calendar(calendarEl, {
+        var calendarEl = $("#calendar")[0];
+        var calendar = new FullCalendar.Calendar(calendarEl, {
 
             // 툴바 설정
             headerToolbar: {
@@ -55,7 +55,7 @@ function calendarSetting(){
             //날짜를 드래그(클릭)하면 실행되는 이벤트
             select: function (arg) {
 
-                let day = `${arg.startStr} ~ ${dateFormatForCal(arg.end)}`
+                var day = `${arg.startStr} ~ ${dateFormatForCal(arg.end)}`
                 $("#start").val(arg.startStr);
                 $("#end").val(arg.endStr);
                 $("#modalTitle").text(`일정 등록 (${day})`)
@@ -95,7 +95,7 @@ function calendarSetting(){
         //일정을 눌렀을 때 실행되는 이벤트
         calendar.on("eventClick", function (arg) {
 
-            let day = `${arg.event.startStr} ~ ${dateFormatForCal(arg.event.end)}`
+            var day = `${arg.event.startStr} ~ ${dateFormatForCal(arg.event.end)}`
             $('#id').val(arg.event.id);
             $("#end").val(arg.event.endStr);
             $("#start").val(arg.event.startStr);
@@ -128,9 +128,9 @@ function calendarUpdateViewSetting(){
 
 //================ 캘린더 endDate format ===============
 function dateFormatForCal(userDay){
-    const year = userDay.getFullYear();
-    const month = userDay.getMonth() + 1;
-    const date = userDay.getDate() - 1;
+    var year = userDay.getFullYear();
+    var month = userDay.getMonth() + 1;
+    var date = userDay.getDate() - 1;
     return `${year}-${month >= 10 ? month : '0' + month}-${date >= 10 ? date : '0' + date}`;
 }
 

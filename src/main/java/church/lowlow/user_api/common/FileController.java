@@ -38,6 +38,7 @@ public class FileController {
 
         // 파일 생성
         File uploadFile = new File(path + uploadFileName);
+        
 
         try{
             image.transferTo(uploadFile);
@@ -66,9 +67,5 @@ public class FileController {
             log.info("File Delete Fail");
         }
     }
-
-
-
-
 
 }

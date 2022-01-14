@@ -20,6 +20,8 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
+import static church.lowlow.rest_api.common.util.StringUtil.objNullToStr;
+
 @Log4j2
 public class AccountingDslImpl implements AccountingDsl {
 
@@ -38,8 +40,8 @@ public class AccountingDslImpl implements AccountingDsl {
 
         QueryResults<Accounting> result = null;
 
-        String key          = searchDto.getSearchId();
-        String val          = searchDto.getSearchData();
+        String key          = objNullToStr(searchDto.getSearchId());
+        String val          = objNullToStr(searchDto.getSearchData());
         LocalDate startDate = searchDto.getStartDate();
         LocalDate endDate   = searchDto.getEndDate();
         int nowPage         = pagingDto.getNowPage();

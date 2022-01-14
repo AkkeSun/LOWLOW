@@ -21,14 +21,14 @@ public class AdminGalleryController {
 
     // ========== List View ==========
     @GetMapping
-    public String getAccountingListView() {
+    public String getGalleryListView() {
         return "admin/gallery/galleryList";
     }
 
 
     // ========== Create View ==========
     @GetMapping("/create")
-    public String getAccountingCreateView(Model model) {
+    public String getGalleryCreateView(Model model) {
         model.addAttribute("gallery", new Gallery());
         return "admin/gallery/galleryCreate";
     }
@@ -36,7 +36,7 @@ public class AdminGalleryController {
 
     // ========== Detail (Update) View ==========
     @GetMapping("/{id}")
-    public String getAccountingDetailView(@PathVariable Long id, Model model) {
+    public String getGalleryDetailView(@PathVariable Long id, Model model) {
 
         Mono<Gallery> galleryMono = webClient
                 .get()

@@ -102,17 +102,17 @@ function securityRedirectUrlSetting(database){
 // ================= security create  ====================
 function securityCreateFunc(database){
 
-    let type        = "post";
-    let url         = "/admin/security/"+database;
-    let csrfHeader  = $("#_csrf_header").attr('content');
-    let csrfToken   = $("#_csrf").attr('content');
-    let redirectUrl = securityRedirectUrlSetting(database);
-    let data        = securityFormDataSetting(database);
-    let async       = true;
-    let isSecurity  = true;
+    var type        = "post";
+    var url         = "/admin/security/"+database;
+    var csrfHeader  = $("#_csrf_header").attr('content');
+    var csrfToken   = $("#_csrf").attr('content');
+    var redirectUrl = securityRedirectUrlSetting(database);
+    var data        = securityFormDataSetting(database);
+    var async       = true;
+    var isSecurity  = true;
 
-    let callback = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
-    callback.done( data => ajaxCallbackProcess(isSecurity, data, type, redirectUrl) );
+    var callback = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
+    callback.done( function(data) { ajaxCallbackProcess(isSecurity, data, type, redirectUrl) });
 }
 
 
@@ -120,17 +120,17 @@ function securityCreateFunc(database){
 // ================= security update  ====================
 function securityUpdateFunc(database){
 
-    let type        = "put";
-    let url         = "/admin/security/"+ database +"/" + $("#id").val();
-    let csrfHeader  = $("#_csrf_header").attr('content');
-    let csrfToken   = $("#_csrf").attr('content');
-    let redirectUrl = securityRedirectUrlSetting(database);
-    let data        = securityFormDataSetting(database);
-    let async       = true;
-    let isSecurity  = true;
+    var type        = "put";
+    var url         = "/admin/security/"+ database +"/" + $("#id").val();
+    var csrfHeader  = $("#_csrf_header").attr('content');
+    var csrfToken   = $("#_csrf").attr('content');
+    var redirectUrl = securityRedirectUrlSetting(database);
+    var data        = securityFormDataSetting(database);
+    var async       = true;
+    var isSecurity  = true;
 
-    let callback = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
-    callback.done( data => ajaxCallbackProcess(isSecurity, data, type, redirectUrl) );
+    var callback = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
+    callback.done( function(data) { ajaxCallbackProcess(isSecurity, data, type, redirectUrl) });
 }
 
 
@@ -138,18 +138,18 @@ function securityUpdateFunc(database){
 // ================= security delete  ====================
 function securityDeleteFunc(database){
 
-    let check = confirm('정말 삭제하시겠습니까');
+    var check = confirm('정말 삭제하시겠습니까');
     if(check) {
-        let type        = "delete";
-        let url         = "/admin/security/"+ database +"/" + $("#id").val();
-        let csrfHeader  = $("#_csrf_header").attr('content');
-        let csrfToken   = $("#_csrf").attr('content');
-        let redirectUrl = securityRedirectUrlSetting(database);
-        let async       = true;
-        let isSecurity  = true;
+        var type        = "delete";
+        var url         = "/admin/security/"+ database +"/" + $("#id").val();
+        var csrfHeader  = $("#_csrf_header").attr('content');
+        var csrfToken   = $("#_csrf").attr('content');
+        var redirectUrl = securityRedirectUrlSetting(database);
+        var async       = true;
+        var isSecurity  = true;
 
-        let callback = ajaxComm(type, "", url, async, csrfHeader, csrfToken);
-        callback.done( data => ajaxCallbackProcess(isSecurity, data, type, redirectUrl) );
+        var callback = ajaxComm(type, "", url, async, csrfHeader, csrfToken);
+        callback.done( function(data) { ajaxCallbackProcess(isSecurity, data, type, redirectUrl) });
     }
 }
 

@@ -13,7 +13,9 @@
 <script th:inline="javascript">
     $(document).ready(function(){
 
-        datePickerSet($("startDate"), $("endDate"));
+        datePickerSet($("#startDate"));
+        datePickerSet($("#endDate"));
+
         accountingDataLoad(0);
         commonPagingProcess('accounting');
 

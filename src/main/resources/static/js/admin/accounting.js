@@ -12,10 +12,10 @@
  *
  **************************************************************/
 
-let savedSearchId;    // 검색목록
-let savedSearchData;  // 검색어
-let startDate;        // 검색 시작일
-let endDate;          // 검색 종료일
+var savedSearchId;    // 검색목록
+var savedSearchData;  // 검색어
+var startDate;        // 검색 시작일
+var endDate;          // 검색 종료일
 
 // ================= 리스트 & 회계분석 데이터 로드 ====================
 function accountingDataLoad(nowPage){
@@ -35,30 +35,30 @@ function accountingDataLoad(nowPage){
 function accountingListLoad(nowPage){
 
     // param setting
-    let type        = "get";
-    let data        = "searchId="+savedSearchId+"&searchData="+savedSearchData+
+    var type        = "get";
+    var data        = "searchId="+savedSearchId+"&searchData="+savedSearchData+
                       "&startDate="+startDate+"&endDate="+endDate+
                       "&nowPage="+nowPage+"&totalPages=10";
-    let url         = "/api/accounting";
-    let csrfHeader  = $("#_csrf_header").attr('content');
-    let csrfToken   = $("#_csrf").attr('content');
-    let async       = false;
-    let callback    = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
+    var url         = "/api/accounting";
+    var csrfHeader  = $("#_csrf_header").attr('content');
+    var csrfToken   = $("#_csrf").attr('content');
+    var async       = false;
+    var callback    = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
 
     callback.done( (data) => {
 
         totalPages = 1;
 
-        let appendData = "";
+        var appendData = "";
         if( data._embedded ) {
             totalPages = data.page.totalPages;
-            let accountingList = data._embedded.accountingList;
+            var accountingList = data._embedded.accountingList;
 
             accountingList.forEach(function (data, index) {
-                let offeringKind = offeringKindConverter( data.offeringKind );
-                let note         = nullConverter( data.note );
-                let belong       = nullConverter (data.member.belong);
-                let phoneNum     = nullConverter (data.member.phoneNumber);
+                var offeringKind = offeringKindConverter( data.offeringKind );
+                var note         = nullConverter( data.note );
+                var belong       = nullConverter (data.member.belong);
+                var phoneNum     = nullConverter (data.member.phoneNumber);
 
                 appendData += `
                            <tr id="appendItem">
@@ -100,7 +100,7 @@ function accountingListLoad(nowPage){
         $("#appendPath").append(appendData);
     });
 
-    callback.fail ( (xhr, status, error) => {
+    callback.fail ( function (xhr, status, error) {
         let errorResource = JSON.parse(xhr.responseText).content[0];
         console.log("[ERROR STATUS] : " + xhr.status);
         console.log(errorResource);
@@ -115,23 +115,23 @@ function accountingListLoad(nowPage){
 function accountingStatisticsDataLoad(){
 
     // param setting
-    let type        = "get";
-    let data        = "searchId="+savedSearchId+"&searchData="+savedSearchData+
+    var type        = "get";
+    var data        = "searchId="+savedSearchId+"&searchData="+savedSearchData+
                       "&startDate="+startDate+"&endDate="+endDate;
-    let url         = "/api/accounting/statistics";
-    let csrfHeader  = $("#_csrf_header").attr('content');
-    let csrfToken   = $("#_csrf").attr('content');
-    let async       = false;
-    let callback    = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
+    var url         = "/api/accounting/statistics";
+    var csrfHeader  = $("#_csrf_header").attr('content');
+    var csrfToken   = $("#_csrf").attr('content');
+    var async       = false;
+    var callback    = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
 
-    callback.done( (data) => {
+    callback.done( function (data) {
 
-        let nameAppendData = "";
-        let offeringKindAppendData = "";
+        var nameAppendData = "";
+        var offeringKindAppendData = "";
 
         // 이름별 통계 데이터 
         if( data.member ) {
-            let memberList = data.member;
+            var memberList = data.member;
             memberList.forEach(function (data, index) {
                 nameAppendData += `
                                    <tr id="memberAppendItem">
@@ -151,10 +151,10 @@ function accountingStatisticsDataLoad(){
 
         // 헌금 종류별 통계 데이터
         if( data.offeringKind) {
-            let offeringKindList = data.offeringKind;
+            var offeringKindList = data.offeringKind;
             offeringKindList.forEach(function (data, index) {
 
-                let offeringKind = offeringKindConverter( data.offeringKind );
+                var offeringKind = offeringKindConverter( data.offeringKind );
                 offeringKindAppendData += `
                                        <tr id="offeringKindAppendItem">
                                            <td style="text-align: left;">
@@ -180,8 +180,8 @@ function accountingStatisticsDataLoad(){
         $("#offeringKindAppendPath").append(offeringKindAppendData);
     });
 
-    callback.fail ( (xhr, status, error) => {
-        let errorResource = JSON.parse(xhr.responseText).content[0];
+    callback.fail ( function (xhr, status, error) {
+        var errorResource = JSON.parse(xhr.responseText).content[0];
         console.log("[ERROR STATUS] : " + xhr.status);
         console.log(errorResource);
     });
@@ -263,17 +263,17 @@ function nameCheckFunc(){
     // C. 그 외의 이름을 입력한 경우
     }else{
 
-        let type        = "get";
-        let data        = "searchId=name"+"&searchData="+$("#nameCheck").val()+"&nowPage=0";
-        let url         = "/api/members";
-        let csrfHeader  = $("#_csrf_header").attr('content');
-        let csrfToken   = $("#_csrf").attr('content');
-        let async       = false;
-        let callback    = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
+        var type        = "get";
+        var data        = "searchId=name"+"&searchData="+$("#nameCheck").val()+"&nowPage=0";
+        var url         = "/api/members";
+        var csrfHeader  = $("#_csrf_header").attr('content');
+        var csrfToken   = $("#_csrf").attr('content');
+        var async       = false;
+        var callback    = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
 
-        callback.done( (data) => {
+        callback.done( function (data) {
 
-            let appendData = "";
+            var appendData = "";
 
             // C-1. 일치하는 성도가 없는 경우
             if( !data._embedded ) {
@@ -283,7 +283,7 @@ function nameCheckFunc(){
             // C-2. 일치하는 성도가 있는경우 모달창 출력하여 선택하도록 유도
             } else {
 
-                let list = data._embedded.memberList;
+                var list = data._embedded.memberList;
                 list.forEach(function (data, index) {
                     appendData += `
                                <tr id="appendItem">

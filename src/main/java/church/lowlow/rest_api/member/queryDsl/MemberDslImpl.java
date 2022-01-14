@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 
 import javax.transaction.Transactional;
 
+import static church.lowlow.rest_api.common.util.StringUtil.objNullToStr;
+
 public class MemberDslImpl implements MemberDsl {
 
     private final JPAQueryFactory jpaQueryFactory;
@@ -30,8 +32,8 @@ public class MemberDslImpl implements MemberDsl {
 
         QueryResults<Member> result = null;
 
-        String key          = searchDto.getSearchId();
-        String val          = searchDto.getSearchData();
+        String key          = objNullToStr(searchDto.getSearchId());
+        String val          = objNullToStr(searchDto.getSearchData());
         int nowPage         = pagingDto.getNowPage();
 
         BooleanBuilder builder = new BooleanBuilder();

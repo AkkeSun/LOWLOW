@@ -1,10 +1,10 @@
 // ================ 전역변수 ==============
-let totalPages = "";
+var totalPages = "";
 
 
 // ================= Ajax 처리 함수 ====================
 function ajaxComm(type, data, url, async, csrfHeader, csrfToken) {
-    let callback =
+    var callback =
         $.ajax({
             type       : type,
             url        : url,
@@ -25,7 +25,7 @@ function ajaxComm(type, data, url, async, csrfHeader, csrfToken) {
 // ================= Ajax 콜백 처리 함수 ====================
 function ajaxCallbackProcess(isSecurity, data, type, redirectUrl){
 
-    let returnMsg = "";
+    var returnMsg = "";
 
     switch(type)
     {
@@ -55,8 +55,8 @@ function ajaxCallbackProcess(isSecurity, data, type, redirectUrl){
 
 // ================= serializeArray() -> Json Object ====================
 function objToJson(formData){
-    let data = formData;
-    let obj = {};
+    var data = formData;
+    var obj = {};
     $.each(data, function(idx, ele){
         obj[ele.name] = ele.value;
     });
@@ -68,7 +68,7 @@ function objToJson(formData){
 // ================= 공용 페이징처리 ====================
 function commonPagingProcess(pageName){
 
-    let nowPage = 1;
+    var nowPage = 1;
 
     $("#basicPagination").twbsPagination('destroy');
     $("#basicPagination").twbsPagination({
@@ -105,17 +105,18 @@ function commonUpdateViewSetting(pageName){
 
 
 
+
 // ================= 공용 CREATE & UPDATE 처리 ====================
 function commonCreateAndUpdate(pageName, type){
 
     // param setting
-    let csrfHeader  = $("#_csrf_header").attr('content');
-    let csrfToken   = $("#_csrf").attr('content');
-    let url         = `/api/${pageName}`;
-    let redirectUrl = `/admin/${pageName}`;
-    let async       = true;
-    let isSecurity  = false;
-    let data        = "";
+    var csrfHeader  = $("#_csrf_header").attr('content');
+    var csrfToken   = $("#_csrf").attr('content');
+    var url         = `/api/${pageName}`;
+    var redirectUrl = `/admin/${pageName}`;
+    var async       = true;
+    var isSecurity  = false;
+    var data        = "";
 
     switch(pageName){
         case "members" :
@@ -133,9 +134,8 @@ function commonCreateAndUpdate(pageName, type){
     }
 
 
-    // 이미지 업로드
     if($("#image").val()){
-        let fileUploadCallback = ajaxFileUpload(csrfHeader, csrfToken, new FormData($("#withFileUploadFrm")[0]));
+        var fileUploadCallback = ajaxFileUpload(csrfHeader, csrfToken, new FormData($("#withFileUploadFrm")[0]));
         fileUploadCallback.done( uploadData => {
             data.uploadName   = uploadData.uploadName;
             data.originalName = uploadData.originalName;
@@ -150,14 +150,13 @@ function commonCreateAndUpdate(pageName, type){
     }
 
 
-
     // update url 변경
     if(type == 'put')
         url = `/api/${pageName}/${$("#id").val()}`;
 
 
     // ajax
-    let callback = ajaxComm(type, JSON.stringify(data), url, async, csrfHeader, csrfToken);
+    var callback = ajaxComm(type, JSON.stringify(data), url, async, csrfHeader, csrfToken);
 
     callback.done( data => ajaxCallbackProcess(isSecurity, data, type, redirectUrl) );
 
@@ -167,14 +166,14 @@ function commonCreateAndUpdate(pageName, type){
         if(data.uploadName)
             ajaxFileDelete(csrfHeader, csrfToken, data.uploadName);
 
-        let errorResource = JSON.parse(xhr.responseText).content[0];
+        var errorResource = JSON.parse(xhr.responseText).content[0];
         console.log("[ERROR STATUS] : " + xhr.status);
         console.log(errorResource);
         alert(errorResource.defaultMessage);
     });
 
-}
 
+}
 
 
 
@@ -183,29 +182,24 @@ function commonCreateAndUpdate(pageName, type){
 // ================= 공용 DELETE 처리 ====================
 function commonDelete(pageName){
 
-    let check = confirm('정말 삭제하시겠습니까');
+    var check = confirm('정말 삭제하시겠습니까');
     if(check) {
 
         // param setting
-        let csrfHeader  = $("#_csrf_header").attr('content');
-        let csrfToken   = $("#_csrf").attr('content');
-        let type        = "delete";
-        let url         = `/api/${pageName}/${$("#id").val()}`;
-        let redirectUrl = `/admin/${pageName}`;
-        let async       = true;
-        let isSecurity  = false;
-        let data        = "";
+        var csrfHeader  = $("#_csrf_header").attr('content');
+        var csrfToken   = $("#_csrf").attr('content');
+        var type        = "delete";
+        var url         = `/api/${pageName}/${$("#id").val()}`;
+        var redirectUrl = `/admin/${pageName}`;
+        var async       = true;
+        var isSecurity  = false;
+        var data        = "";
 
         // ajax process
-        let callback = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
+        var callback = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
         callback.done(data => ajaxCallbackProcess(isSecurity, data, type, redirectUrl));
     }
-
-
 }
-
-
-
 
 
 
@@ -245,7 +239,6 @@ function commonSearch(pageName){
 
 
 
-
 // ================ 공용 검색기능 초기화================
 function commonSearchInitialize(pageName){
     switch(pageName){
@@ -272,6 +265,51 @@ function commonSearchInitialize(pageName){
     }
 }
 
+// ================= 파일 사이즈 체크 ====================
+function fileCheck(e){
+
+    let files = e.target.files;
+    let filesArr = Array.prototype.slice.call(files);
+
+    
+    filesArr.forEach(function(f) {
+        
+        //========= 이미지 종류 체크 =========
+        if(!f.type.match("image.*")) {
+            alert("이미지만 업로드 가능합니다.");
+            return;
+        }
+        
+        //========= 파일 사이즈 체크 =========
+        var maxSize = 5 * 1024 * 1024; // 5MB
+        var browser=navigator.appName;
+
+        if (browser == "Microsoft Internet Explorer") {
+            var oas = new ActiveXObject("Scripting.FileSystemObject");
+            fileSize = oas.getFile(f.value).size;
+        }
+        else
+            fileSize = f.size;
+
+        if (fileSize > maxSize) {
+            alert("첨부파일 사이즈는 5MB 이내로 등록 가능합니다.");
+            $(this).val('');
+            $("#imageView").attr('src', '/image/uploadSample.png');
+            return;
+        }
+
+        //========= 이미지 미리보기 기능 구현 =========
+        sel_file = f;
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            $("#imageView").attr("src", e.target.result);
+            $("#imageView").css("width", '150px');
+        }
+        reader.readAsDataURL(f);
+    });
+
+}
+
 
 
 
@@ -281,7 +319,7 @@ function commonSearchInitialize(pageName){
 // ================= 파일 업로드 처리함수 ====================
 function ajaxFileUpload (csrfHeader, csrfToken, data){
 
-    let callback =
+    var callback =
         $.ajax({
             type       : "post",
             url        : "/file/upload",
@@ -299,7 +337,7 @@ function ajaxFileUpload (csrfHeader, csrfToken, data){
 // ================= 파일 삭제 처리함수 ====================
 function ajaxFileDelete (csrfHeader, csrfToken, uploadFileName){
 
-    let callback =
+    var callback =
         $.ajax({
             type       : "post",
             url        : "/file/delete",
@@ -315,20 +353,6 @@ function ajaxFileDelete (csrfHeader, csrfToken, uploadFileName){
 
 
 // ================= DatePicker 셋팅 함수 ====================
-function datePickerSet(sDate, eDate) {
-    sDate.datepicker({
-        format : "yyyy-mm-dd",
-        todayHighlight : true,
-        autoclose : true,
-        language : "ko"
-    });
-    eDate.datepicker({
-        format : "yyyy-mm-dd",
-        todayHighlight : true,
-        autoclose : true,
-        language : "ko",
-    });
-}
 function datePickerSet(date) {
 
     date.datepicker({
@@ -386,9 +410,9 @@ function useSummernote() {
 function uploadSummernoteImageFile(file, el) {
     data = new FormData();
     data.append("image", file);
-    let csrfHeader  = $("#_csrf_header").attr('content');
-    let csrfToken   = $("#_csrf").attr('content');
-    let callback = ajaxFileUpload(csrfHeader,csrfToken, data);
+    var csrfHeader  = $("#_csrf_header").attr('content');
+    var csrfToken   = $("#_csrf").attr('content');
+    var callback = ajaxFileUpload(csrfHeader,csrfToken, data);
 
     callback.done(data => {
         $('#contents').summernote("insertImage", "/upload/"+data.uploadName);
