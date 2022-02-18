@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 누구나 접근가능한 path를 설정하는 필터
+ * 누구나 접근가능한 path 를 설정하는 필터
  * FilterInvocationSecurityMetadataSource 에서 자원을 확인하기 전에 걸러버리기
  */
 public class PermitAllFilter extends FilterSecurityInterceptor {
@@ -23,7 +23,7 @@ public class PermitAllFilter extends FilterSecurityInterceptor {
 
     private List<RequestMatcher> permitAllRequestMatcher = new ArrayList<>();
 
-    // 생성자로 인증이 필요없는 path를 받은 후 List에 저장
+    // 생성자로 인증이 필요없는 path 를 받은 후 List 에 저장
     public PermitAllFilter(String ...permitAllResources){
         for(String resurece : permitAllResources){
             permitAllRequestMatcher.add(new AntPathRequestMatcher(resurece));
@@ -36,7 +36,7 @@ public class PermitAllFilter extends FilterSecurityInterceptor {
         boolean permitAll = false;
         HttpServletRequest request = ((FilterInvocation)object).getRequest(); // 유저가 요청한 path
 
-        // 유저가 요청한 path가 인증이 필요없는 path인지 검사
+        // 유저가 요청한 path 가 인증이 필요없는 path 인지 검사
         for(RequestMatcher requestMatcher : permitAllRequestMatcher){
             if(requestMatcher.matches(request)){
                 permitAll = true;

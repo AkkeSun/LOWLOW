@@ -1,4 +1,4 @@
-package church.lowlow.user_api.common;
+package church.lowlow.user_api.admin.common.util;
 
 import church.lowlow.rest_api.accounting.db.Accounting;
 import church.lowlow.rest_api.common.entity.SearchDto;
@@ -7,6 +7,7 @@ import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.awt.*;
 import java.io.File;
@@ -36,7 +37,10 @@ public class ExcelUtil {
      *  4. 하나의 row에 여러개의 cell을 생성한다. (= 하나의 행에 여러 열을 생성한다)
      */
 
-    public static String filePath = "C:/upload";
+    @Value("${fileUploadPath}")
+    public static String filePath;
+
+   // public static String filePath = "C:/upload";
     public static String fileNm = "accounting.xlsx";
 
     public static void accountingExcelCreate(SearchDto searchDto, List<Accounting> accountingList, Map<String ,Object> statisticsMap){

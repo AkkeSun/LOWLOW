@@ -1,5 +1,6 @@
 package church.lowlow.rest_api.gallery.controller;
 
+import church.lowlow.rest_api.common.aop.LogComponent;
 import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.gallery.db.Gallery;
@@ -41,11 +42,17 @@ public class GalleryController {
     @Autowired
     private GalleryValidation galleryValidation;
 
+    @Autowired
+    private LogComponent logComponent;
+
     /**
      * CREATE API
      */
     @PostMapping
     public ResponseEntity createGallery(@RequestBody GalleryDto dto, Errors errors){
+
+        // request param logging
+        logComponent.galleryDtoLogging(dto);
 
         // check
         galleryValidation.validate(dto, errors);
@@ -74,6 +81,10 @@ public class GalleryController {
     @GetMapping
     public ResponseEntity getGalleries(PagedResourcesAssembler<Gallery> assembler, SearchDto searchDto, PagingDto pagingDto){
 
+        // request param logging
+        logComponent.searchDtoLogging(searchDto);
+        logComponent.pagingDtoLogging(pagingDto);
+
         Page<Gallery> page = repository.getGalleryPage(searchDto, pagingDto);
         var pagedResources = assembler.toResource(page, e -> new GalleryResource(e));
         return ResponseEntity.ok(pagedResources);
@@ -81,6 +92,10 @@ public class GalleryController {
 
     @GetMapping("{id}")
     public ResponseEntity getGallery(@PathVariable Integer id){
+
+        // request param logging
+        logComponent.idLogging(id);
+
         Optional<Gallery> optional = repository.findById(id);
         Gallery gallery = optional.orElseThrow(ArithmeticException::new);
 
@@ -95,6 +110,9 @@ public class GalleryController {
      */
     @PutMapping("/{id}")
     public ResponseEntity updateGallery(@RequestBody GalleryDto dto, @PathVariable Integer id, Errors errors){
+
+        // request param logging
+        logComponent.galleryDtoLogging(dto);
 
         // check
         galleryValidation.validate(dto, errors);
@@ -121,6 +139,9 @@ public class GalleryController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity deleteGallery(@PathVariable Integer id, Resource resource){
+
+        // request param logging
+        logComponent.idLogging(id);
 
         // check
         Optional<Gallery> optional = repository.findById(id);

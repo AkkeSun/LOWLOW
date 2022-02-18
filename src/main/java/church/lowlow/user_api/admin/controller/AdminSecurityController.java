@@ -1,4 +1,4 @@
-package church.lowlow.user_api.admin;
+package church.lowlow.user_api.admin.controller;
 
 import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.security.domain.dto.AccountDto;
@@ -13,6 +13,7 @@ import church.lowlow.security.domain.validation.RoleValidation;
 import church.lowlow.security.service.AccountService;
 import church.lowlow.security.service.ResourcesService;
 import church.lowlow.security.service.RoleService;
+import church.lowlow.user_api.admin.common.interceptor.SecurityLogComponent;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -54,6 +55,9 @@ public class AdminSecurityController {
 
     @Autowired
     private ResourceValidation resourceValidation;
+
+    @Autowired
+    private SecurityLogComponent logComponent;
 
 
     /*********************************************
@@ -153,7 +157,7 @@ public class AdminSecurityController {
 
 
 
-
+   //==================================================================================
 
 
 
@@ -181,6 +185,9 @@ public class AdminSecurityController {
     public String accountCreateProcess(@RequestBody AccountDto accountDto,
                                        SessionStatus sessionStatus, Errors errors)  {
 
+        // request param logging
+        logComponent.accountDtoLogging(accountDto);
+
         String returnMsg = "success";
         accountValidation.createValidate(accountDto, errors);
 
@@ -200,6 +207,10 @@ public class AdminSecurityController {
     // ================ UPDATE ==============
     @GetMapping("/account/{id}")
     public String accountDetailView(@PathVariable("id") Long id, Model model) {
+
+        // request param logging
+        logComponent.idLogging(id);
+
         model.addAttribute("account", accountService.getUser(id));
         model.addAttribute("nowTab", "tab1");
         listInitialize(model);
@@ -217,6 +228,9 @@ public class AdminSecurityController {
     public String accountUpdateProcess(@RequestBody AccountDto accountDto,
                                        @PathVariable("id") Long id, Errors errors,
                                        SessionStatus sessionStatus){
+
+        // request param logging
+        logComponent.accountDtoLogging(accountDto);
 
         String returnMsg = "success";
         accountValidation.updateValidate(accountDto, errors);
@@ -238,6 +252,9 @@ public class AdminSecurityController {
     @ResponseBody
     @DeleteMapping("/account/{id}")
     public String accountDeleteProcess(@PathVariable("id") Long id, SessionStatus sessionStatus)  {
+
+        // request param logging
+        logComponent.idLogging(id);
 
         String returnMsg = "success";
         accountService.delete(id);
@@ -275,6 +292,9 @@ public class AdminSecurityController {
     public String roleCreateProcess(@RequestBody RoleDto roleDto,
                                     SessionStatus sessionStatus, Errors errors, Model model)  {
 
+        // request param logging
+        logComponent.roleDtoLogging(roleDto);
+
         String returnMsg = "success";
         roleValidation.createValidate(roleDto, errors);
 
@@ -297,6 +317,9 @@ public class AdminSecurityController {
     @GetMapping("/role/{id}")
     public String roleDetailView(@PathVariable("id") Long id, Model model) {
 
+        // request param logging
+        logComponent.idLogging(id);
+
         model.addAttribute("nowTab", "tab2");
         model.addAttribute("role", roleService.getRole(id));
         listInitialize(model);
@@ -313,6 +336,9 @@ public class AdminSecurityController {
     public String roleUpdateProcess(@RequestBody RoleDto roleDto,
                                     @PathVariable("id") Long id, Errors errors,
                                     SessionStatus sessionStatus){
+
+        // request param logging
+        logComponent.roleDtoLogging(roleDto);
 
         String returnMsg = "success";
         roleValidation.updateValidate(roleDto, id, errors);
@@ -334,6 +360,9 @@ public class AdminSecurityController {
     @ResponseBody
     @DeleteMapping("/role/{id}")
     public String roleDeleteProcess(@PathVariable("id") Long id, SessionStatus sessionStatus)  {
+
+        // request param logging
+        logComponent.idLogging(id);
 
         String returnMsg = "success";
         roleService.delete(id);
@@ -371,6 +400,9 @@ public class AdminSecurityController {
     public String resourceCreateProcess(@RequestBody ResourcesDto resourcesDto,
                                        SessionStatus sessionStatus, Errors errors, Model model)  {
 
+        // request param logging
+        logComponent.resourceDtoLogging(resourcesDto);
+
         String returnMsg = "success";
         resourceValidation.createValidate(resourcesDto, errors);
 
@@ -392,6 +424,9 @@ public class AdminSecurityController {
     @GetMapping("/resource/{id}")
     public String resourceDetailView(@PathVariable("id") Long id, Model model) {
 
+        // request param logging
+        logComponent.idLogging(id);
+
         model.addAttribute("nowTab", "tab3");
         model.addAttribute("res", resourcesService.getResource(id));
         listInitialize(model);
@@ -408,6 +443,9 @@ public class AdminSecurityController {
     public String resourceUpdateProcess(@RequestBody ResourcesDto resourcesDto,
                                         @PathVariable("id") Long id, Errors errors,
                                         SessionStatus sessionStatus){
+
+        // request param logging
+        logComponent.resourceDtoLogging(resourcesDto);
 
         String returnMsg = "success";
         resourceValidation.updateValidate(resourcesDto, id, errors);
@@ -429,6 +467,9 @@ public class AdminSecurityController {
     @ResponseBody
     @DeleteMapping("/resource/{id}")
     public String resourceDeleteProcess(@PathVariable("id") Long id, SessionStatus sessionStatus)  {
+
+        // request param logging
+        logComponent.idLogging(id);
 
         String returnMsg = "success";
         resourcesService.delete(id);

@@ -6,6 +6,7 @@ import church.lowlow.rest_api.basicInfo.repository.BasicInfoRepository;
 import church.lowlow.rest_api.basicInfo.resource.BasicInfoErrorsResource;
 import church.lowlow.rest_api.basicInfo.resource.BasicInfoResource;
 
+import church.lowlow.rest_api.common.aop.LogComponent;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
@@ -32,12 +33,18 @@ public class BasicInfoController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private LogComponent logComponent;
+
     /**
      * CREATE API
      */
     @PostMapping
     public ResponseEntity createInfo(@RequestBody @Valid BasicInfoDto dto,
                                        Errors errors){
+
+        // request param Logging
+        logComponent.basicInfoDtoLogging(dto);
 
         // check
         if(errors.hasErrors())
@@ -64,6 +71,10 @@ public class BasicInfoController {
      */
     @GetMapping("/{id}")
     public ResponseEntity getInfo(@PathVariable Integer id){
+
+        // request param Logging
+        logComponent.idLogging(id);
+
         Optional<BasicInfo> optional = repository.findById(id);
         BasicInfo basicInfo = optional.orElseThrow(ArithmeticException::new);
 
@@ -81,6 +92,9 @@ public class BasicInfoController {
     public ResponseEntity updateInfo(@RequestBody @Valid BasicInfoDto dto,
                                         @PathVariable Integer id,
                                         Errors errors){
+
+        // request param Logging
+        logComponent.basicInfoDtoLogging(dto);
 
         // check
         Optional<BasicInfo> optional = repository.findById(id);
@@ -109,6 +123,9 @@ public class BasicInfoController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity deleteInfo(@PathVariable Integer id, Resource resource){
+
+        // request param Logging
+        logComponent.idLogging(id);
 
         // check
         Optional<BasicInfo> optional = repository.findById(id);

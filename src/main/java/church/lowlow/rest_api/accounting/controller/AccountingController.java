@@ -5,6 +5,7 @@ import church.lowlow.rest_api.accounting.repository.AccountingRepository;
 import church.lowlow.rest_api.accounting.resource.AccountingErrorsResource;
 import church.lowlow.rest_api.accounting.resource.AccountingResource;
 import church.lowlow.rest_api.accounting.db.AccountingSearchValidation;
+import church.lowlow.rest_api.common.aop.LogComponent;
 import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.member.db.Member;
@@ -48,12 +49,20 @@ public class AccountingController {
     @Autowired
     private AccountingSearchValidation accountingSearchValidation;
 
+    @Autowired
+    private LogComponent logComponent;
+
+
+
 
     /*******************************************
      *                  CREATE API
      ********************************************/
     @PostMapping
     public ResponseEntity createAccounting(@RequestBody AccountingDto dto, Errors errors){
+
+        // request Logging
+        logComponent.accountingDtoLogging(dto);
 
         // check
         accountingValidation.validate(dto, errors);
@@ -89,6 +98,10 @@ public class AccountingController {
     public ResponseEntity getAccountingPage(SearchDto searchDto, PagingDto pagingDto, Errors errors,
                                             PagedResourcesAssembler<Accounting> assembler) {
 
+        // request Logging
+        logComponent.searchDtoLogging(searchDto);
+        logComponent.pagingDtoLogging(pagingDto);
+
         // check
         accountingSearchValidation.dateValidate(searchDto, errors);
         if(errors.hasErrors())
@@ -106,6 +119,10 @@ public class AccountingController {
     // ======================== one data ========================
     @GetMapping("{id}")
     public ResponseEntity getAccounting(@PathVariable Integer id){
+
+        // request Logging
+        logComponent.idLogging(id);
+
         Optional<Accounting> optional = accountingRepository.findById(id);
         Accounting accounting = optional.orElseThrow(ArithmeticException::new);
 
@@ -118,6 +135,9 @@ public class AccountingController {
     // ======================== 헌금 내용 분석 ========================
     @GetMapping("/statistics")
     public ResponseEntity getStatisticsMap(SearchDto searchDto, Errors errors) {
+
+        // request Logging
+        logComponent.searchDtoLogging(searchDto);
 
         // check
         accountingSearchValidation.dateValidate(searchDto, errors);
@@ -139,6 +159,9 @@ public class AccountingController {
     public ResponseEntity updateAccounting(@RequestBody AccountingDto dto,
                                            @PathVariable Integer id,
                                            Errors errors){
+
+        // request Logging
+        logComponent.accountingDtoLogging(dto);
 
         // check
         accountingValidation.validate(dto, errors);
@@ -169,6 +192,9 @@ public class AccountingController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteWorshipVideo(@PathVariable Integer id, Resource resource){
 
+        // request Logging
+        logComponent.idLogging(id);
+
         // check
         Optional<Accounting> optional = accountingRepository.findById(id);
         if(optional.isEmpty())
@@ -186,7 +212,7 @@ public class AccountingController {
 
 
     /*******************************************
-     *    헌금 내용을 분석하여 Map으로 출력하는 함수
+     *    헌금 내용을 분석하여 Map 으로 출력하는 함수
      ********************************************/
     public Map<String, Object> getStatisticsMap(SearchDto searchDto){
 

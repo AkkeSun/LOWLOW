@@ -1,4 +1,4 @@
-package church.lowlow.user_api.admin;
+package church.lowlow.user_api.admin.controller;
 
 import church.lowlow.rest_api.gallery.db.Gallery;
 import lombok.extern.log4j.Log4j2;

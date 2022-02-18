@@ -1,4 +1,4 @@
-package church.lowlow.user_api.admin;
+package church.lowlow.user_api.admin.controller;
 
 import church.lowlow.rest_api.member.db.Member;
 import org.springframework.beans.factory.annotation.Autowired;

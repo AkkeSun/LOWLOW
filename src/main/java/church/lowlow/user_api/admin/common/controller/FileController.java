@@ -1,17 +1,13 @@
-package church.lowlow.user_api.common;
+package church.lowlow.user_api.admin.common.controller;
 
 import church.lowlow.rest_api.common.entity.FileDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.File;
-import java.util.List;
 import java.util.UUID;
 
 @Log4j2

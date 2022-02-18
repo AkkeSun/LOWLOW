@@ -9,6 +9,7 @@ import church.lowlow.security.domain.entity.Role;
 import church.lowlow.security.repository.AccountRepo;
 import church.lowlow.security.repository.ResourcesRepo;
 import church.lowlow.security.repository.RoleRepo;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
@@ -21,6 +22,7 @@ import javax.transaction.Transactional;
 /**
  * Runner 실행 전 기본 데이터 입력 이벤트
  */
+@Log4j2
 @Component
 public class SecurityPostListener implements ApplicationListener<ApplicationStartedEvent> {
 
@@ -73,6 +75,8 @@ public class SecurityPostListener implements ApplicationListener<ApplicationStar
 
         // MEMBER
         createMemberIfNotFound("익명");
+
+        log.info("[Security 기본 데이터 입력 완료]");
 
     }
 

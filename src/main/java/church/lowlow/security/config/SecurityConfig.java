@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity // spring security 사용
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -49,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Override
-    //============ Login처리 ============
+    //============ Login 처리 ============
     protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(ajaxLoginProvider);
     }
@@ -66,9 +66,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         //============ 인가 처리 ============
         http
+                // 기본적으로 사용하는 FilterSecurityInterceptor 보다 커스텀 필터를 앞에 두어야 한다
                 .addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class)
                 .exceptionHandling()
-                .accessDeniedHandler(deniedHandler)
+                .accessDeniedHandler(deniedHandler) // 접근 권한이 없는 사람이 접근 시 실행되는 핸들러
         ;
 
         //=========== 인증 처리 ===============
@@ -140,10 +141,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private String[] permitAllResources = {"/", "/adminLogin", "/adminLogin*", "/adminLogout"};
     @Bean
     public PermitAllFilter customFilterSecurityInterceptor() throws Exception {
-        PermitAllFilter permitAllFilter = new PermitAllFilter(permitAllResources);
-        permitAllFilter.setSecurityMetadataSource(urlMetadataSource());      // url 시큐리티 인가 정보
-        permitAllFilter.setAccessDecisionManager(accessDecisionManager());   // 접근 결정 매니저
-        permitAllFilter.setAuthenticationManager(authenticationManager());   // 인증 매니저
+        PermitAllFilter permitAllFilter = new PermitAllFilter(permitAllResources); // 누구나 접근 가능한 Path 설정 (시큐리티 필터링 전에 처리함)
+        permitAllFilter.setSecurityMetadataSource(urlMetadataSource());            // url 시큐리티 인가 정보
+        permitAllFilter.setAccessDecisionManager(accessDecisionManager());         // 접근 결정 매니저
+        permitAllFilter.setAuthenticationManager(authenticationManager());         // 인증 매니저
         return permitAllFilter;
     }
 }

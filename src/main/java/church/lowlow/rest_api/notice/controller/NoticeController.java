@@ -1,5 +1,6 @@
 package church.lowlow.rest_api.notice.controller;
 
+import church.lowlow.rest_api.common.aop.LogComponent;
 import church.lowlow.rest_api.notice.db.Notice;
 import church.lowlow.rest_api.notice.db.NoticeDto;
 import church.lowlow.rest_api.notice.repository.NoticeRepository;
@@ -34,12 +35,18 @@ public class NoticeController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private LogComponent logComponent;
+
     /**
      * CREATE API
      */
     @PostMapping
-    public ResponseEntity createWorshipVideo(@RequestBody @Valid NoticeDto dto,
-                                              Errors errors){
+    public ResponseEntity createNotice(@RequestBody @Valid NoticeDto dto, Errors errors){
+
+        // request param logging
+        logComponent.noticeDtoLogging(dto);
+
         // check
         if(errors.hasErrors())
             return badRequest().body(new NoticeErrorsResource(errors));
@@ -64,19 +71,23 @@ public class NoticeController {
      * READ API
      */
     @GetMapping
-    public ResponseEntity getWorshipVideo(Pageable pageable,
-                                          PagedResourcesAssembler<Notice> assembler){
+    public ResponseEntity getNotice(Pageable pageable, PagedResourcesAssembler<Notice> assembler){
+
         Page<Notice> page = repository.findAll(pageable);
         var pagedResources = assembler.toResource(page, e -> new NoticeResource(e));
         return ResponseEntity.ok(pagedResources);
+
     }
 
     @GetMapping("{id}")
     public ResponseEntity geWorshipVideo(@PathVariable Integer id){
+
+        // request param logging
+        logComponent.idLogging(id);
+
         Optional<Notice> optional = repository.findById(id);
         Notice notice = optional.orElseThrow(ArithmeticException::new);
 
-        // 로그인 유무 체크 후 로그인 했으면 update, delete url 넣어주기
         NoticeResource resource = new NoticeResource(notice);
         return ResponseEntity.ok(resource);
     }
@@ -87,9 +98,10 @@ public class NoticeController {
      * UPDATE API
      */
     @PutMapping("/{id}")
-    public ResponseEntity updateWorshipVideo(@RequestBody @Valid NoticeDto dto,
-                                             @PathVariable Integer id,
-                                             Errors errors){
+    public ResponseEntity updateWorshipVideo(@RequestBody @Valid NoticeDto dto, @PathVariable Integer id, Errors errors){
+
+        // request param logging
+        logComponent.noticeDtoLogging(dto);
 
         // check
         Optional<Notice> optional = repository.findById(id);
@@ -118,6 +130,9 @@ public class NoticeController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity deleteWorshipVideo(@PathVariable Integer id, Resource resource){
+
+        // request param logging
+        logComponent.idLogging(id);
 
         // check
         Optional<Notice> optional = repository.findById(id);

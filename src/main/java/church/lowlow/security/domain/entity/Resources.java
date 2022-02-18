@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Entity
 @Getter @Setter @ToString(exclude = {"roleSet"}) @EqualsAndHashCode(of = "id")
 @NoArgsConstructor @AllArgsConstructor @Builder
-@NamedEntityGraph(name = "getRole", attributeNodes = @NamedAttributeNode("resourceRole"))
+@NamedEntityGraph(name = "getRole", attributeNodes = @NamedAttributeNode("resourceRole")) // 자식 엔티티를 무조건 얻지 않기 위한 설정
 public class Resources implements Serializable {
 
     @Id

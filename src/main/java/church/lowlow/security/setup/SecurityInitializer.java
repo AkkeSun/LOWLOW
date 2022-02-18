@@ -26,7 +26,7 @@ public class SecurityInitializer implements ApplicationRunner {
 
         // Role roleHierarchy 정보 등록
         String allHierarchy = roleService.findAllHierarchy();
-        log.info("[ROLE 계층적용] ==> "+allHierarchy.replace("\n", " || "));
+        log.info("[ROLE 계층적용] " + allHierarchy.replace("\n", " || "));
         roleHierarchy.setHierarchy(allHierarchy);
     }
 }

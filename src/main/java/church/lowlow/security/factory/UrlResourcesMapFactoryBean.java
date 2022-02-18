@@ -13,8 +13,8 @@ public class UrlResourcesMapFactoryBean implements FactoryBean<LinkedHashMap<Req
     private SecurityResourceService resourceService;
     private LinkedHashMap<RequestMatcher, List<ConfigAttribute>> resourceMap;
 
-    public UrlResourcesMapFactoryBean(SecurityResourceService securityResourceService){
-        this.resourceService = securityResourceService;
+    public UrlResourcesMapFactoryBean(SecurityResourceService resourceService){
+        this.resourceService = resourceService;
     }
 
     private void init() {
@@ -25,7 +25,7 @@ public class UrlResourcesMapFactoryBean implements FactoryBean<LinkedHashMap<Req
     public LinkedHashMap<RequestMatcher, List<ConfigAttribute>> getObject() {
         if(resourceMap == null)
             init();
-        return resourceMap;
+        return resourceMap;  // bean 으로 등록하고자 하는 객채 리턴
     }
 
     @Override

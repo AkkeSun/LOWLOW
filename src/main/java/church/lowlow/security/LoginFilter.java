@@ -2,6 +2,7 @@ package church.lowlow.security;
 
 import church.lowlow.security.domain.dto.AccountDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ import java.io.IOException;
  * ajax 로그인 요청처리 filter
  * UsernamePasswordAuthenticationFilter 대신 사용
  */
+@Log4j2
 public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -46,6 +48,8 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
         // details 설정
         setDetails(request, token);
+
+        log.info("[LoginFilter 토큰생성] username : " + token.getName());
 
         return getAuthenticationManager().authenticate(token);
     }
