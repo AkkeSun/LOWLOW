@@ -120,9 +120,6 @@ public class AccountingController {
     @GetMapping("{id}")
     public ResponseEntity getAccounting(@PathVariable Integer id){
 
-        // request Logging
-        logComponent.idLogging(id);
-
         Optional<Accounting> optional = accountingRepository.findById(id);
         Accounting accounting = optional.orElseThrow(ArithmeticException::new);
 

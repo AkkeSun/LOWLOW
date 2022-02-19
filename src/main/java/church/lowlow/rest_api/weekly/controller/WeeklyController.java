@@ -80,9 +80,6 @@ public class WeeklyController {
     @GetMapping("{id}")
     public ResponseEntity getWeekly(@PathVariable Integer id){
 
-        // request param logging
-        logComponent.idLogging(id);
-
         Optional<Weekly> optional = repository.findById(id);
         Weekly weekly = optional.orElseThrow(ArithmeticException::new);
 

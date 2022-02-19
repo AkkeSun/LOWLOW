@@ -29,7 +29,7 @@ public class WebConfig implements WebMvcConfigurer{
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 
-        List<String> URL_PATTERNS = Arrays.asList("/admin/security", "/admin/security/*", "/admin/security/*/*");
+        List<String> URL_PATTERNS = Arrays.asList("/admin/security/*", "/admin/security/*/*");
 
         registry.addInterceptor(new SecurityInterceptor())
                 .addPathPatterns(URL_PATTERNS)

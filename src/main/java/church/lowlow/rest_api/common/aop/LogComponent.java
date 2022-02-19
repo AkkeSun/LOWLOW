@@ -85,7 +85,7 @@ public class LogComponent {
         log.info("[REQUEST] belong : \"" + dto.getBelong() + "\"");
         log.info("[REQUEST] churchOfficer : \"" + dto.getChurchOfficer() + "\"");
         log.info("[REQUEST] regiDate : \"" + dto.getRegiDate() + " \"");
-        log.info("[REQUEST] img_originalName : \" " + dto.getOriginalName() + "\"");
+        log.info("[REQUEST] img_originalName : \"" + dto.getOriginalName() + "\"");
         log.info("[REQUEST] img_uploadName : \"" + dto.getUploadName() + "\"");
     }
 
@@ -116,10 +116,6 @@ public class LogComponent {
     public void pagingDtoLogging(PagingDto dto){
         log.info("[REQUEST] PAGING_nowPage : \"" + dto.getNowPage() + "\"");
         log.info("[REQUEST] PAGING_totalPages : \"" + dto.getTotalPages() + "\"");
-    }
-
-    public void idLogging(Integer id){
-        log.info("[REQUEST] id : \"" + id + "\"");
     }
 
 }

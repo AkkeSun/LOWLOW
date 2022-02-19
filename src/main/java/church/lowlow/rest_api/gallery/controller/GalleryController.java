@@ -93,9 +93,6 @@ public class GalleryController {
     @GetMapping("{id}")
     public ResponseEntity getGallery(@PathVariable Integer id){
 
-        // request param logging
-        logComponent.idLogging(id);
-
         Optional<Gallery> optional = repository.findById(id);
         Gallery gallery = optional.orElseThrow(ArithmeticException::new);
 

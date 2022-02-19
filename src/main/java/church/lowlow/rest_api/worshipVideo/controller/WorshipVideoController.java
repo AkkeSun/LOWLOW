@@ -85,9 +85,6 @@ public class WorshipVideoController {
     @GetMapping("{id}")
     public ResponseEntity getWorshipVideo(@PathVariable Integer id){
 
-        // request param logging
-        logComponent.idLogging(id);
-
         Optional<WorshipVideo> optional = repository.findById(id);
         WorshipVideo worshipVideo = optional.orElseThrow(ArithmeticException::new);
 

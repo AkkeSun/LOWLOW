@@ -94,9 +94,6 @@ public class MemberController {
     @GetMapping("{id}")
     public ResponseEntity getMember(@PathVariable Integer id){
 
-        // request param logging
-        logComponent.idLogging(id);
-
         Optional<Member> optional = repository.findById(id);
         Member member = optional.orElseThrow(ArithmeticException::new);
 

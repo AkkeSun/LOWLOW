@@ -72,9 +72,6 @@ public class BasicInfoController {
     @GetMapping("/{id}")
     public ResponseEntity getInfo(@PathVariable Integer id){
 
-        // request param Logging
-        logComponent.idLogging(id);
-
         Optional<BasicInfo> optional = repository.findById(id);
         BasicInfo basicInfo = optional.orElseThrow(ArithmeticException::new);
 

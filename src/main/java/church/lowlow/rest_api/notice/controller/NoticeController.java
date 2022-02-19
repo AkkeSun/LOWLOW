@@ -82,9 +82,6 @@ public class NoticeController {
     @GetMapping("{id}")
     public ResponseEntity geWorshipVideo(@PathVariable Integer id){
 
-        // request param logging
-        logComponent.idLogging(id);
-
         Optional<Notice> optional = repository.findById(id);
         Notice notice = optional.orElseThrow(ArithmeticException::new);
 
