@@ -23,6 +23,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static church.lowlow.rest_api.common.util.WriterUtil.getWriter;
@@ -90,6 +93,16 @@ public class GalleryController {
         return ResponseEntity.ok(pagedResources);
     }
 
+    @GetMapping("/list")
+    public ResponseEntity getGalleryList(){
+
+        List<Gallery> list = repository.findAll();
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("galleryList", list);
+
+        return ResponseEntity.ok().body(resultMap);
+    }
+
     @GetMapping("{id}")
     public ResponseEntity getGallery(@PathVariable Integer id){
 
@@ -136,9 +149,6 @@ public class GalleryController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity deleteGallery(@PathVariable Integer id, Resource resource){
-
-        // request param logging
-        logComponent.idLogging(id);
 
         // check
         Optional<Gallery> optional = repository.findById(id);

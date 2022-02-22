@@ -10,6 +10,7 @@ import church.lowlow.security.handler.CustomAuthenticationFailureHandler;
 import church.lowlow.security.handler.CustomAuthenticationSuccessHandler;
 import church.lowlow.security.service.SecurityResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -138,7 +139,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     // ================== DB 인가처리 Filter ================
-    private String[] permitAllResources = {"/", "/adminLogin", "/adminLogin*", "/adminLogout"};
+    @Value("${permitAllResources}")
+    private String[] permitAllResources;
     @Bean
     public PermitAllFilter customFilterSecurityInterceptor() throws Exception {
         PermitAllFilter permitAllFilter = new PermitAllFilter(permitAllResources); // 누구나 접근 가능한 Path 설정 (시큐리티 필터링 전에 처리함)

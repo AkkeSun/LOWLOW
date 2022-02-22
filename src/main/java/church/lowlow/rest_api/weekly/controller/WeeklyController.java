@@ -126,9 +126,6 @@ public class WeeklyController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteMembers(@PathVariable Integer id, Resource resource){
 
-        // request param logging
-        logComponent.idLogging(id);
-
         // check
         Optional<Weekly> optional = repository.findById(id);
         if(optional.isEmpty())

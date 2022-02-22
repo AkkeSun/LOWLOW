@@ -106,8 +106,8 @@ function commonUpdateViewSetting(pageName){
 
 
 
-// ================= 공용 CREATE & UPDATE 처리 ====================
-function commonCreateAndUpdate(pageName, type){
+// ================= 공용 INSERT & UPDATE 처리 ====================
+function commonInsertAndUpdate(pageName, type){
 
     // param setting
     var csrfHeader  = $("#_csrf_header").attr('content');
@@ -334,6 +334,9 @@ function ajaxFileUpload (csrfHeader, csrfToken, data){
 };
 
 
+
+
+
 // ================= 파일 삭제 처리함수 ====================
 function ajaxFileDelete (csrfHeader, csrfToken, uploadFileName){
 
@@ -412,10 +415,17 @@ function uploadSummernoteImageFile(file, el) {
     data.append("image", file);
     var csrfHeader  = $("#_csrf_header").attr('content');
     var csrfToken   = $("#_csrf").attr('content');
-    var callback = ajaxFileUpload(csrfHeader,csrfToken, data);
+    var callback = ajaxFileUpload(csrfHeader, csrfToken, data);
 
     callback.done(data => {
         $('#contents').summernote("insertImage", "/upload/"+data.uploadName);
+
+        var ajaxData = {};
+        ajaxData.uploadName = data.uploadName;
+        ajaxData.originalName = data.originalName;
+        ajaxData.bbsType = "gallery";
+
+        ajaxComm("post", JSON.stringify(ajaxData), "/api/summerNote", 'true', csrfHeader, csrfToken);
     })
 }
 

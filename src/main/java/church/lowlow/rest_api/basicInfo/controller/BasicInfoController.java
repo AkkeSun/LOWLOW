@@ -121,9 +121,6 @@ public class BasicInfoController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteInfo(@PathVariable Integer id, Resource resource){
 
-        // request param Logging
-        logComponent.idLogging(id);
-
         // check
         Optional<BasicInfo> optional = repository.findById(id);
         if(optional.isEmpty())
