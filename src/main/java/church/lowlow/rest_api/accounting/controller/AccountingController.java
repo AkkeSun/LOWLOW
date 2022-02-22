@@ -189,9 +189,6 @@ public class AccountingController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteWorshipVideo(@PathVariable Integer id, Resource resource){
 
-        // request Logging
-        logComponent.idLogging(id);
-
         // check
         Optional<Accounting> optional = accountingRepository.findById(id);
         if(optional.isEmpty())

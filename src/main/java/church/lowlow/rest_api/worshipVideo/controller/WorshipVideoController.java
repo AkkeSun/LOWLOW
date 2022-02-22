@@ -132,9 +132,6 @@ public class WorshipVideoController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteWorshipVideo(@PathVariable Integer id, Resource resource){
 
-        // request param logging
-        logComponent.idLogging(id);
-
         // check
         Optional<WorshipVideo> optional = repository.findById(id);
         if(optional.isEmpty())

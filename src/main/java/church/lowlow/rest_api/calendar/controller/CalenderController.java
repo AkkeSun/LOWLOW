@@ -89,9 +89,6 @@ public class CalenderController {
     @GetMapping("{id}")
     public ResponseEntity getCalendar(@PathVariable Integer id){
 
-        // request param logging
-        logComponent.idLogging(id);
-
         Optional<Calendar> optional = repository.findById(id);
         Calendar notice = optional.orElseThrow(ArithmeticException::new);
 
@@ -136,9 +133,6 @@ public class CalenderController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity deleteCalendar(@PathVariable Integer id, Resource resource){
-
-        // request param logging
-        logComponent.idLogging(id);
 
         // check
         Optional<Calendar> optional = repository.findById(id);

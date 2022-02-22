@@ -81,7 +81,7 @@ function calendarSetting(){
                 $("#end").val(arg.event.endStr);
                 $("#start").val(arg.event.startStr);
                 $("#title").val(arg.event.title);
-                commonCreateAndUpdate('calendars', 'put');
+                commonInsertAndUpdate('calendars', 'put');
             },
 
         });

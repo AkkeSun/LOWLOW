@@ -128,9 +128,6 @@ public class NoticeController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteWorshipVideo(@PathVariable Integer id, Resource resource){
 
-        // request param logging
-        logComponent.idLogging(id);
-
         // check
         Optional<Notice> optional = repository.findById(id);
         if(optional.isEmpty())

@@ -139,9 +139,6 @@ public class MemberController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteMembers(@PathVariable Integer id){
 
-        // request param logging
-        logComponent.idLogging(id);
-
         // check
         Optional<Member> optional = repository.findById(id);
         if(optional.isEmpty())
