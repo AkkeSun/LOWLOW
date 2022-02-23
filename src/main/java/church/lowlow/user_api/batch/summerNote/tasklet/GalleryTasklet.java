@@ -20,8 +20,6 @@ public class GalleryTasklet implements Tasklet {
 
     private final FileService fileService;
     private final SummerNoteService summerNoteService;
-
-    private List<String> deleteFileList = new ArrayList<>();
     private boolean isFileExist = false;
 
     @Override
@@ -31,18 +29,21 @@ public class GalleryTasklet implements Tasklet {
 
         List<SummerNoteVo> galleryUploadFileList = instance.getGalleryUploadFileList();
         List<String> galleryContentList = instance.getGalleryContentList();
+        List<String> deleteFileList = new ArrayList<>();
 
-        if(galleryUploadFileList != null && galleryContentList != null) {
-            fileCheckProcess(galleryUploadFileList, galleryContentList);
+        if(galleryUploadFileList.size() != 0 && galleryContentList.size() != 0) {
+            deleteFileList = fileCheckProcess(galleryUploadFileList, galleryContentList);
         }
-
         instance.setDeleteGalleryFileList(deleteFileList);
 
         return RepeatStatus.FINISHED;
     }
 
 
-    public void fileCheckProcess(List<SummerNoteVo> galleryUploadFileList, List<String> galleryContentList) {
+    public List<String> fileCheckProcess(List<SummerNoteVo> galleryUploadFileList, List<String> galleryContentList) {
+
+        List<String> deleteFileList = new ArrayList<>();
+
         galleryUploadFileList.forEach(summerNoteVo -> {
 
             // db에 저장된 파일이 본문에 수록된 파일인지 체크
@@ -60,6 +61,8 @@ public class GalleryTasklet implements Tasklet {
             }
             isFileExist = false;
         });
+
+        return deleteFileList;
     }
     
 

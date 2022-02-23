@@ -1,8 +1,7 @@
 package church.lowlow.user_api.batch.summerNote.service;
 
-import church.lowlow.rest_api.summerNote.repository.SummerNoteImgRepository;
-import church.lowlow.user_api.admin.file.service.FileService;
 import church.lowlow.user_api.batch.summerNote.domain.SummerNoteVo;
+import church.lowlow.user_api.batch.summerNote.singleton.SummerNoteSingleton;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -24,17 +23,12 @@ public class DefaultSummerNoteService implements SummerNoteService {
     @Autowired
     private WebClient webClient;
 
-    @Autowired
-    private SummerNoteImgRepository repository;
-
-    private int uploadFileListCnt;
-
-    private int galleryContentCnt;
-    private int noticeContentCnt;
-
+    private SummerNoteSingleton instance = SummerNoteSingleton.getInstance();
 
     @Override
     public SummerNoteVo getUploadFileList() {
+
+        int uploadFileListCnt = instance.getUploadFileListCnt();
 
         // Data Load
         Mono<Map> mono = webClient
@@ -42,8 +36,17 @@ public class DefaultSummerNoteService implements SummerNoteService {
                 .uri("/summerNote")
                 .retrieve()
                 .bodyToMono(Map.class);
-
         Map<String, Object> resultMap = mono.block();
+        
+        
+        // 비동기 다시 찾아보기
+        List l = new ArrayList();
+        System.err.println("==============");
+        mono.subscribe(data -> {
+            System.err.println(data.get("summernoteImgList"));
+        });
+
+
         List<Map<String, Object>> summernoteImgList = (List)resultMap.get("summernoteImgList");
 
 
@@ -59,13 +62,15 @@ public class DefaultSummerNoteService implements SummerNoteService {
             returnList.add(vo);
         });
 
+
         // return
         SummerNoteVo summerNoteVo = null;
-
         if(uploadFileListCnt < returnList.size()){
             summerNoteVo = returnList.get(uploadFileListCnt);
             uploadFileListCnt++;
         }
+
+        instance.setUploadFileListCnt(uploadFileListCnt);
 
         return summerNoteVo;
     }
@@ -74,6 +79,8 @@ public class DefaultSummerNoteService implements SummerNoteService {
 
     @Override
     public SummerNoteVo getGalleryList() {
+
+        int galleryContentCnt = instance.getGalleryContentCnt();
 
         // Data Load
         Mono<Map> mono = webClient
@@ -109,8 +116,12 @@ public class DefaultSummerNoteService implements SummerNoteService {
             galleryContentCnt++;
         }
 
+        instance.setGalleryContentCnt(galleryContentCnt);
+
         return summerNoteVo;
     }
+
+
 
     @Override
     public SummerNoteVo getNoticeList() {
@@ -119,12 +130,14 @@ public class DefaultSummerNoteService implements SummerNoteService {
 
 
 
+
     @Override
     public void deleteData(Integer id) {
-       // repository.deleteById(id);
-        // 이거 수정 (delete 는 void로 가면 되나>
-        webClient.delete().uri("/summerNote/{id}", id).retrieve().bodyToMono(Void.class);
+
+        webClient.delete()
+                .uri("/summerNote/{id}", id)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .subscribe();
     }
-
-
 }

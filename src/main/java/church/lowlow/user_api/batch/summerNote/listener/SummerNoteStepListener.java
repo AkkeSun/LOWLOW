@@ -18,7 +18,6 @@ public class SummerNoteStepListener implements StepExecutionListener {
         List<String> galleryContentList = instance.getGalleryContentList();
         List<String> noticeContentList = instance.getNoticeContentList();
 
-
         System.err.println();
         System.err.println(">> [Parallel 1] Processing Success");
 

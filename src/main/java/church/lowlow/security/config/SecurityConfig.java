@@ -47,8 +47,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private CustomAuthenticationSuccessHandler successHandler;
     @Autowired
     private SecurityResourceService securityResourceService;
+    @Value("${security.csrf.permitALlResources}")
+    private String[] csrfPermitAllResource;
+    @Value("${security.permitAllResources}")
+    private String[] permitAllResources;
 
-
+    
     @Override
     //============ Login 처리 ============
     protected void configure(AuthenticationManagerBuilder auth) {
@@ -63,11 +67,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
+
         //============ 인가 처리 ============
         http
-                // 기본적으로 사용하는 FilterSecurityInterceptor 보다 커스텀 필터를 앞에 두어야 한다
+                .csrf().ignoringAntMatchers(csrfPermitAllResource) // csrf 예외처리
+                .and()
+                .authorizeRequests()
+                .anyRequest().authenticated()
+                .and()
                 .addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class)
                 .exceptionHandling()
                 .accessDeniedHandler(deniedHandler) // 접근 권한이 없는 사람이 접근 시 실행되는 핸들러
@@ -139,11 +149,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     // ================== DB 인가처리 Filter ================
-    @Value("${permitAllResources}")
-    private String[] permitAllResources;
     @Bean
     public PermitAllFilter customFilterSecurityInterceptor() throws Exception {
-        PermitAllFilter permitAllFilter = new PermitAllFilter(permitAllResources); // 누구나 접근 가능한 Path 설정 (시큐리티 필터링 전에 처리함)
+        PermitAllFilter permitAllFilter = new PermitAllFilter(permitAllResources); // 누구나 접근 가능한 get Path 설정 (시큐리티 필터링 전에 처리함)
         permitAllFilter.setSecurityMetadataSource(urlMetadataSource());            // url 시큐리티 인가 정보
         permitAllFilter.setAccessDecisionManager(accessDecisionManager());         // 접근 결정 매니저
         permitAllFilter.setAuthenticationManager(authenticationManager());         // 인증 매니저

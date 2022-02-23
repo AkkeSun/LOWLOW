@@ -21,12 +21,12 @@ public class PermitAllFilter extends FilterSecurityInterceptor {
     private static final String FILTER_APPLIED = "__spring_security_filterSecurityInterceptor_filterApplied";
     private boolean observeOncePerRequest = true;
 
-    private List<RequestMatcher> permitAllRequestMatcher = new ArrayList<>();
+    private List<RequestMatcher> questMatcher = new ArrayList<>();
 
     // 생성자로 인증이 필요없는 path 를 받은 후 List 에 저장
     public PermitAllFilter(String ...permitAllResources){
-        for(String resurece : permitAllResources){
-            permitAllRequestMatcher.add(new AntPathRequestMatcher(resurece));
+        for(String resource : permitAllResources){
+            questMatcher.add(new AntPathRequestMatcher(resource));
         }
     }
 
@@ -37,8 +37,9 @@ public class PermitAllFilter extends FilterSecurityInterceptor {
         HttpServletRequest request = ((FilterInvocation)object).getRequest(); // 유저가 요청한 path
 
         // 유저가 요청한 path 가 인증이 필요없는 path 인지 검사
-        for(RequestMatcher requestMatcher : permitAllRequestMatcher){
+        for(RequestMatcher requestMatcher : questMatcher){
             if(requestMatcher.matches(request)){
+                System.out.println("인증이 필요없는 path");
                 permitAll = true;
                 break;
             }
@@ -51,11 +52,11 @@ public class PermitAllFilter extends FilterSecurityInterceptor {
     }
 
     public void invoke(FilterInvocation fi) throws IOException, ServletException {
-        if (fi.getRequest() != null && fi.getRequest().getAttribute("__spring_security_filterSecurityInterceptor_filterApplied") != null && this.observeOncePerRequest) {
+        if (fi.getRequest() != null && fi.getRequest().getAttribute(FILTER_APPLIED) != null && this.observeOncePerRequest) {
             fi.getChain().doFilter(fi.getRequest(), fi.getResponse());
         } else {
             if (fi.getRequest() != null && this.observeOncePerRequest) {
-                fi.getRequest().setAttribute("__spring_security_filterSecurityInterceptor_filterApplied", Boolean.TRUE);
+                fi.getRequest().setAttribute(FILTER_APPLIED, Boolean.TRUE);
             }
 
             InterceptorStatusToken token = super.beforeInvocation(fi);

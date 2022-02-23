@@ -16,7 +16,9 @@ public class SummerNoteSingleton {
     private List<String> noticeContentList;
     private List<String> deleteGalleryFileList;
     private List<String> deleteNoticeFileList;
-
+    private int uploadFileListCnt;
+    private int galleryContentCnt;
+    private int noticeContentCnt;
 
     private SummerNoteSingleton() {
     }
@@ -44,6 +46,15 @@ public class SummerNoteSingleton {
     public void setDeleteNoticeFileList( List<String> deleteNoticeFileList) {
         this.deleteNoticeFileList = deleteNoticeFileList;
     }
+    public void setUploadFileListCnt (int uploadFileListCnt){
+        this.uploadFileListCnt = uploadFileListCnt;
+    }
+    public void setGalleryContentCnt (int galleryContentCnt){
+        this.galleryContentCnt = galleryContentCnt;
+    }
+    public void setNoticeContentCnt (int noticeContentCnt){
+        this.noticeContentCnt = noticeContentCnt;
+    }
 
     public List<SummerNoteVo> getGalleryUploadFileList() {
         return galleryUploadFileList;
@@ -63,5 +74,13 @@ public class SummerNoteSingleton {
     public List<String> getDeleteNoticeFileList() {
         return noticeContentList;
     }
-
+    public int getUploadFileListCnt() {
+        return uploadFileListCnt;
+    }
+    public int getGalleryContentCnt(){
+        return galleryContentCnt;
+    }
+    public int getNoticeContentCnt(){
+        return galleryContentCnt;
+    }
 }
