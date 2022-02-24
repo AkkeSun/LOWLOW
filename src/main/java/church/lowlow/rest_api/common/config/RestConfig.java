@@ -28,12 +28,4 @@ public class RestConfig {
         return new ModelMapper();
     }
 
-    @Bean
-    public WebClient webClient(){
-        String BASE_URL = "http://localhost:8090/api";
-        return WebClient.builder()
-                .baseUrl(BASE_URL)
-                .build();
-    }
-
 }

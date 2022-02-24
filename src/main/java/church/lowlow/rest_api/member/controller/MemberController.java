@@ -1,5 +1,6 @@
 package church.lowlow.rest_api.member.controller;
 
+import church.lowlow.rest_api.common.aop.LogComponent;
 import church.lowlow.rest_api.common.entity.FileDto;
 import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
@@ -38,12 +39,19 @@ public class MemberController {
     @Autowired
     private  ModelMapper modelMapper;
 
+    @Autowired
+    private LogComponent logComponent;
+
+
     /**************************
      *       CREATE API
      **************************/
     @PostMapping
-    public ResponseEntity createMember(@RequestBody MemberDto dto,
-                                       Errors errors){
+    public ResponseEntity createMember(@RequestBody MemberDto dto, Errors errors){
+
+        // request param logging
+        logComponent.memberDtoLogging(dto);
+
         // check
         validation.createValidate(dto, errors);
         if(errors.hasErrors())
@@ -73,6 +81,10 @@ public class MemberController {
     public ResponseEntity getMembers(PagedResourcesAssembler<Member> assembler,
                                      SearchDto searchDto, PagingDto pagingDto) {
 
+        // request param logging
+        logComponent.searchDtoLogging(searchDto);
+        logComponent.pagingDtoLogging(pagingDto);
+
         Page<Member> page = repository.getMemberPage(searchDto, pagingDto);
 
         var pagedResources = assembler.toResource(page, e -> new MemberResource(e));
@@ -81,6 +93,7 @@ public class MemberController {
 
     @GetMapping("{id}")
     public ResponseEntity getMember(@PathVariable Integer id){
+
         Optional<Member> optional = repository.findById(id);
         Member member = optional.orElseThrow(ArithmeticException::new);
 
@@ -94,9 +107,10 @@ public class MemberController {
      *       UPDATE API
      **************************/
     @PutMapping("/{id}")
-    public ResponseEntity updateMembers(@RequestBody MemberDto dto,
-                                        @PathVariable Integer id,
-                                        Errors errors){
+    public ResponseEntity updateMembers(@RequestBody MemberDto dto, @PathVariable Integer id, Errors errors){
+
+        // request param logging
+        logComponent.memberDtoLogging(dto);
 
         // check
         validation.basicValidate(dto, errors);

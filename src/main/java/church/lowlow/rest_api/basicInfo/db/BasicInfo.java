@@ -14,13 +14,16 @@ import javax.persistence.*;
  *
  * @Column
  * id 고유 식별자
+ * mainTitle 메인에 걸리는 교회 소개글
  * Info 교회 소개글
  * name 교회 이름
  * senior_pastor_name 담임목사 이름
  * address 주소
  * callNumber 전화번호
- * kakaoPage 카카오페이지
- * liveWorshipURL 온라인 예배 링크 (Youtube Page, vimeo)
+ * kakaoPage 카카오페이지 링크
+ * youtubeURL 온라인 예배 링크
+ * instagram 인스타그램 링크
+ * blog 블로그 링크
  * infoImage 교회 소개글 이미지 (최대 6개)
  * carouselImg 메인 carousel 이미지 (최대 6개)
  * organizationChart 섬기는 사람들 이미지 (최대 3개)
@@ -33,7 +36,9 @@ public class BasicInfo extends BaseTimeEntity {
 
     @Id @GeneratedValue
     private Integer id;
-
+    
+    private String mainTitle;
+    
     private String info;
 
     private String name;
@@ -44,9 +49,13 @@ public class BasicInfo extends BaseTimeEntity {
 
     private String callNumber;
 
-    private String  kakaoPage;
+    private String kakaoPage;
 
-    private String liveWorshipURL;
+    private String youtubeURL;
+
+    private String instagram;
+
+    private String blog;
 
     @Embedded
     private Writer writer;

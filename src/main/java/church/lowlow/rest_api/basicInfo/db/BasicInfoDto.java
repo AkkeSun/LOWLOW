@@ -17,7 +17,10 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor @AllArgsConstructor
 public class BasicInfoDto {
 
-    @NotBlank(message = "소개글은 비워둘 수 없습니다")
+    @NotBlank(message = "메인타이틀은 비워둘 수 없습니다")
+    private String mainTitle;
+
+    @NotBlank(message = "기본 소개글은 비워둘 수 없습니다")
     private String info;
 
     @NotBlank(message = "교회 이름은 비워둘 수 없습니다")
@@ -36,7 +39,10 @@ public class BasicInfoDto {
     private Writer writer;
 
     private String kakaoPage;
-    private String liveWorshipURL;
+    private String youtubeURL;
+    private String instagram;
+    private String blog;
+
     private FileDto infoImage1;
     private FileDto infoImage2;
     private FileDto infoImage3;

@@ -1,5 +1,6 @@
 package church.lowlow.rest_api.gallery.controller;
 
+import church.lowlow.rest_api.common.aop.LogComponent;
 import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.gallery.db.Gallery;
@@ -22,6 +23,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static church.lowlow.rest_api.common.util.WriterUtil.getWriter;
@@ -41,11 +45,17 @@ public class GalleryController {
     @Autowired
     private GalleryValidation galleryValidation;
 
+    @Autowired
+    private LogComponent logComponent;
+
     /**
      * CREATE API
      */
     @PostMapping
     public ResponseEntity createGallery(@RequestBody GalleryDto dto, Errors errors){
+
+        // request param logging
+        logComponent.galleryDtoLogging(dto);
 
         // check
         galleryValidation.validate(dto, errors);
@@ -74,13 +84,28 @@ public class GalleryController {
     @GetMapping
     public ResponseEntity getGalleries(PagedResourcesAssembler<Gallery> assembler, SearchDto searchDto, PagingDto pagingDto){
 
+        // request param logging
+        logComponent.searchDtoLogging(searchDto);
+        logComponent.pagingDtoLogging(pagingDto);
+
         Page<Gallery> page = repository.getGalleryPage(searchDto, pagingDto);
         var pagedResources = assembler.toResource(page, e -> new GalleryResource(e));
         return ResponseEntity.ok(pagedResources);
     }
 
+    @GetMapping("/list")
+    public ResponseEntity getGalleryList(){
+
+        List<Gallery> list = repository.findAll();
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("galleryList", list);
+
+        return ResponseEntity.ok().body(resultMap);
+    }
+
     @GetMapping("{id}")
     public ResponseEntity getGallery(@PathVariable Integer id){
+
         Optional<Gallery> optional = repository.findById(id);
         Gallery gallery = optional.orElseThrow(ArithmeticException::new);
 
@@ -95,6 +120,9 @@ public class GalleryController {
      */
     @PutMapping("/{id}")
     public ResponseEntity updateGallery(@RequestBody GalleryDto dto, @PathVariable Integer id, Errors errors){
+
+        // request param logging
+        logComponent.galleryDtoLogging(dto);
 
         // check
         galleryValidation.validate(dto, errors);

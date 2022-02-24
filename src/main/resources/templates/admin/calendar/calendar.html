@@ -64,8 +64,8 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-primary" id="updateViewBtn" th:onclick="commonUpdateViewSetting('calendars')">수정</button>
         <button type="button" class="btn btn-outline-primary" id="deleteBtn" th:onclick="commonDelete('calendars')">삭제</button>
-        <button type="button" class="btn btn-outline-primary" id="updateProcessBtn" th:onclick="commonCreateAndUpdate('calendars', 'put')" >수정완료</button>
-        <button type="button" class="btn btn-outline-primary" id="createProcessBtn" th:onclick="commonCreateAndUpdate('calendars', 'post')" >등록완료</button>
+        <button type="button" class="btn btn-outline-primary" id="updateProcessBtn" th:onclick="commonInsertAndUpdate('calendars', 'put')" >수정완료</button>
+        <button type="button" class="btn btn-outline-primary" id="createProcessBtn" th:onclick="commonInsertAndUpdate('calendars', 'post')" >등록완료</button>
         <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
       </div>
 

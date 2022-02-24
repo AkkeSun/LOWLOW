@@ -22,7 +22,6 @@ import java.util.List;
 
 import static church.lowlow.rest_api.common.util.StringUtil.objNullToStr;
 
-@Log4j2
 public class AccountingDslImpl implements AccountingDsl {
 
     private final JPAQueryFactory jpaQueryFactory;
@@ -45,8 +44,6 @@ public class AccountingDslImpl implements AccountingDsl {
         LocalDate startDate = searchDto.getStartDate();
         LocalDate endDate   = searchDto.getEndDate();
         int nowPage         = pagingDto.getNowPage();
-
-        log.info("[검색 데이터] id : " + key + " || data : " + val + " || StartDate : " + startDate + " || EndDate : " + endDate);
 
 
         // 시작일, 종료일 미입력시 전체 기간 검색

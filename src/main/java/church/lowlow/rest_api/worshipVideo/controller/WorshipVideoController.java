@@ -1,5 +1,6 @@
 package church.lowlow.rest_api.worshipVideo.controller;
 
+import church.lowlow.rest_api.common.aop.LogComponent;
 import church.lowlow.rest_api.weekly.db.Weekly;
 import church.lowlow.rest_api.weekly.db.WeeklyDto;
 import church.lowlow.rest_api.weekly.repository.WeeklyRepository;
@@ -39,12 +40,18 @@ public class WorshipVideoController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private LogComponent logComponent;
+
     /**
      * CREATE API
      */
     @PostMapping
-    public ResponseEntity createWorshipVideo(@RequestBody @Valid WorshipVideoDto dto,
-                                              Errors errors){
+    public ResponseEntity createWorshipVideo(@RequestBody @Valid WorshipVideoDto dto, Errors errors){
+
+        // request param logging
+        logComponent.worshipVideoDtoLogging(dto);
+
         // check
         if(errors.hasErrors())
             return badRequest().body(new WorshipVideoErrorsResource(errors));
@@ -69,8 +76,7 @@ public class WorshipVideoController {
      * READ API
      */
     @GetMapping
-    public ResponseEntity getWorshipVideo(Pageable pageable,
-                                         PagedResourcesAssembler<WorshipVideo> assembler){
+    public ResponseEntity getWorshipVideo(Pageable pageable, PagedResourcesAssembler<WorshipVideo> assembler){
         Page<WorshipVideo> page = repository.findAll(pageable);
         var pagedResources = assembler.toResource(page, e -> new WorshipVideoResource(e));
         return ResponseEntity.ok(pagedResources);
@@ -78,6 +84,7 @@ public class WorshipVideoController {
 
     @GetMapping("{id}")
     public ResponseEntity getWorshipVideo(@PathVariable Integer id){
+
         Optional<WorshipVideo> optional = repository.findById(id);
         WorshipVideo worshipVideo = optional.orElseThrow(ArithmeticException::new);
 
@@ -92,9 +99,10 @@ public class WorshipVideoController {
      * UPDATE API
      */
     @PutMapping("/{id}")
-    public ResponseEntity updateWorshipVideo(@RequestBody @Valid WeeklyDto dto,
-                                             @PathVariable Integer id,
-                                             Errors errors){
+    public ResponseEntity updateWorshipVideo(@RequestBody @Valid WorshipVideoDto dto, @PathVariable Integer id, Errors errors){
+
+        // request param logging
+        logComponent.worshipVideoDtoLogging(dto);
 
         // check
         Optional<WorshipVideo> optional = repository.findById(id);

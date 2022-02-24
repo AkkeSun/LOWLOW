@@ -1,5 +1,6 @@
 package church.lowlow.rest_api.weekly.controller;
 
+import church.lowlow.rest_api.common.aop.LogComponent;
 import church.lowlow.rest_api.weekly.db.Weekly;
 import church.lowlow.rest_api.weekly.db.WeeklyDto;
 import church.lowlow.rest_api.weekly.repository.WeeklyRepository;
@@ -34,12 +35,18 @@ public class WeeklyController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private LogComponent logComponent;
+
     /**
      * CREATE API
      */
     @PostMapping
-    public ResponseEntity createWeekly(@RequestBody @Valid WeeklyDto dto,
-                                       Errors errors){
+    public ResponseEntity createWeekly(@RequestBody @Valid WeeklyDto dto, Errors errors){
+
+        // request param logging
+        logComponent.weeklyDtoLogging(dto);
+
         // check
         if(errors.hasErrors())
             return badRequest().body(new WeeklyErrorsResource(errors));
@@ -64,8 +71,7 @@ public class WeeklyController {
      * READ API
      */
     @GetMapping
-    public ResponseEntity getWeekly(Pageable pageable,
-                                     PagedResourcesAssembler<Weekly> assembler){
+    public ResponseEntity getWeekly(Pageable pageable, PagedResourcesAssembler<Weekly> assembler){
         Page<Weekly> page = repository.findAll(pageable);
         var pagedResources = assembler.toResource(page, e -> new WeeklyResource(e));
         return ResponseEntity.ok(pagedResources);
@@ -73,10 +79,10 @@ public class WeeklyController {
 
     @GetMapping("{id}")
     public ResponseEntity getWeekly(@PathVariable Integer id){
+
         Optional<Weekly> optional = repository.findById(id);
         Weekly weekly = optional.orElseThrow(ArithmeticException::new);
 
-        // 로그인 유무 체크 후 로그인 했으면 update, delete url 넣어주기
         WeeklyResource resource = new WeeklyResource(weekly);
         return ResponseEntity.ok(resource);
     }
@@ -87,9 +93,10 @@ public class WeeklyController {
      * UPDATE API
      */
     @PutMapping("/{id}")
-    public ResponseEntity updateWeekly(@RequestBody @Valid WeeklyDto dto,
-                                        @PathVariable Integer id,
-                                        Errors errors){
+    public ResponseEntity updateWeekly(@RequestBody @Valid WeeklyDto dto, @PathVariable Integer id, Errors errors){
+
+        // request param logging
+        logComponent.weeklyDtoLogging(dto);
 
         // check
         Optional<Weekly> optional = repository.findById(id);

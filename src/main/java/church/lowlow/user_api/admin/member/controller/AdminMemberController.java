@@ -1,6 +1,7 @@
-package church.lowlow.user_api.admin;
+package church.lowlow.user_api.admin.member.controller;
 
 import church.lowlow.rest_api.member.db.Member;
+import church.lowlow.user_api.admin.member.service.AdminMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +15,7 @@ import reactor.core.publisher.Mono;
 public class AdminMemberController {
 
     @Autowired
-    private WebClient webClient;
+    private AdminMemberService service;
 
     // ========== List View ==========
     @GetMapping
@@ -35,13 +36,7 @@ public class AdminMemberController {
     @GetMapping("/{id}")
     public String getMemberCreateView(@PathVariable Long id, Model model) {
 
-        Mono<Member> memberMono = webClient
-                .get()
-                .uri("/members/{id}", id)
-                .retrieve()
-                .bodyToMono(Member.class);
-
-        Member member = memberMono.block();
+        Member member = service.getMember(id);
         model.addAttribute("member", member);
         return "admin/member/memberDetail";
 

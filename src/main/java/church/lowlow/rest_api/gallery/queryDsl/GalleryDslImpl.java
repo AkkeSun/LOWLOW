@@ -7,7 +7,6 @@ import church.lowlow.rest_api.gallery.db.QGallery;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +16,6 @@ import javax.transaction.Transactional;
 
 import static church.lowlow.rest_api.common.util.StringUtil.objNullToStr;
 
-@Log4j2
 public class GalleryDslImpl implements GalleryDsl{
 
     private final JPAQueryFactory jpaQueryFactory;
@@ -34,9 +32,6 @@ public class GalleryDslImpl implements GalleryDsl{
         String key          = objNullToStr(searchDto.getSearchId());
         String val          = objNullToStr(searchDto.getSearchData());
         int nowPage         = pagingDto.getNowPage();
-
-        log.info("[검색 데이터] id : " + key + " || data : " + val);
-
 
         BooleanBuilder builder = new BooleanBuilder();
 

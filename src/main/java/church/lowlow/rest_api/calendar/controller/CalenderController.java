@@ -6,6 +6,7 @@ import church.lowlow.rest_api.calendar.db.CalenderValidation;
 import church.lowlow.rest_api.calendar.repository.CalendarRepository;
 import church.lowlow.rest_api.calendar.resource.CalendarErrorsResource;
 import church.lowlow.rest_api.calendar.resource.CalendarResource;
+import church.lowlow.rest_api.common.aop.LogComponent;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,12 +43,17 @@ public class CalenderController {
     @Autowired
     private CalenderValidation validation;
 
+    @Autowired
+    private LogComponent logComponent;
+
     /**
      * CREATE API
      */
     @PostMapping
-    public ResponseEntity createCalendar(@RequestBody CalendarDto dto,
-                                              Errors errors){
+    public ResponseEntity createCalendar(@RequestBody CalendarDto dto, Errors errors){
+
+        // request param logging
+        logComponent.calendarDtoLogging(dto);
 
         // check
         validation.validate(dto, errors);
@@ -82,10 +88,10 @@ public class CalenderController {
 
     @GetMapping("{id}")
     public ResponseEntity getCalendar(@PathVariable Integer id){
+
         Optional<Calendar> optional = repository.findById(id);
         Calendar notice = optional.orElseThrow(ArithmeticException::new);
 
-        // 로그인 유무 체크 후 로그인 했으면 update, delete url 넣어주기
         CalendarResource resource = new CalendarResource(notice);
         return ResponseEntity.ok(resource);
     }
@@ -96,9 +102,10 @@ public class CalenderController {
      * UPDATE API
      */
     @PutMapping("/{id}")
-    public ResponseEntity updateCalendar(@RequestBody @Valid CalendarDto dto,
-                                             @PathVariable Integer id,
-                                             Errors errors){
+    public ResponseEntity updateCalendar(@RequestBody @Valid CalendarDto dto, @PathVariable Integer id, Errors errors){
+
+        // request param logging
+        logComponent.calendarDtoLogging(dto);
 
         // check
         Optional<Calendar> optional = repository.findById(id);

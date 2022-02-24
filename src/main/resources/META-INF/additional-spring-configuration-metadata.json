@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "permitAllResources",
+      "type": "java.lang.String",
+      "description": "Description for permitAllResources."
+  }
+] }

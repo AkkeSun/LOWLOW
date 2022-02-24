@@ -10,6 +10,7 @@ import church.lowlow.security.handler.CustomAuthenticationFailureHandler;
 import church.lowlow.security.handler.CustomAuthenticationSuccessHandler;
 import church.lowlow.security.service.SecurityResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity // spring security 사용
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -46,10 +47,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private CustomAuthenticationSuccessHandler successHandler;
     @Autowired
     private SecurityResourceService securityResourceService;
+    @Value("${security.csrf.permitALlResources}")
+    private String[] csrfPermitAllResource;
+    @Value("${security.permitAllResources}")
+    private String[] permitAllResources;
 
-
+    
     @Override
-    //============ Login처리 ============
+    //============ Login 처리 ============
     protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(ajaxLoginProvider);
     }
@@ -62,13 +67,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
+
         //============ 인가 처리 ============
         http
+                .csrf().ignoringAntMatchers(csrfPermitAllResource) // csrf 예외처리
+                .and()
+                .authorizeRequests()
+                .anyRequest().authenticated()
+                .and()
                 .addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class)
                 .exceptionHandling()
-                .accessDeniedHandler(deniedHandler)
+                .accessDeniedHandler(deniedHandler) // 접근 권한이 없는 사람이 접근 시 실행되는 핸들러
         ;
 
         //=========== 인증 처리 ===============
@@ -137,13 +149,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     // ================== DB 인가처리 Filter ================
-    private String[] permitAllResources = {"/", "/adminLogin", "/adminLogin*", "/adminLogout"};
     @Bean
     public PermitAllFilter customFilterSecurityInterceptor() throws Exception {
-        PermitAllFilter permitAllFilter = new PermitAllFilter(permitAllResources);
-        permitAllFilter.setSecurityMetadataSource(urlMetadataSource());      // url 시큐리티 인가 정보
-        permitAllFilter.setAccessDecisionManager(accessDecisionManager());   // 접근 결정 매니저
-        permitAllFilter.setAuthenticationManager(authenticationManager());   // 인증 매니저
+        PermitAllFilter permitAllFilter = new PermitAllFilter(permitAllResources); // 누구나 접근 가능한 get Path 설정 (시큐리티 필터링 전에 처리함)
+        permitAllFilter.setSecurityMetadataSource(urlMetadataSource());            // url 시큐리티 인가 정보
+        permitAllFilter.setAccessDecisionManager(accessDecisionManager());         // 접근 결정 매니저
+        permitAllFilter.setAuthenticationManager(authenticationManager());         // 인증 매니저
         return permitAllFilter;
     }
 }

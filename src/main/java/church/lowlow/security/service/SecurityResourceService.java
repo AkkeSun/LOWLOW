@@ -39,23 +39,4 @@ public class SecurityResourceService {
         return result;
     }
 
-
-    // ========================= Method Resource 최종 Return ==========================
-    // LinkedHashMap ( path : roleList )
-    @Transactional
-    public LinkedHashMap<String, List<ConfigAttribute>> getMethodResourceList() {
-
-        LinkedHashMap<String, List<ConfigAttribute>> result = new LinkedHashMap<>();
-        List<Resources> resourceList = resourcesRepository.findAllMethodResources();
-
-        resourceList.forEach(resource -> {
-            List<ConfigAttribute> roleList = new ArrayList<>();
-            roleList.add(new SecurityConfig(resource.getResourceRole().getRoleName()));
-            result.put(resource.getResourceName(), roleList);
-        });
-
-        return result;
-    }
-
-
 }

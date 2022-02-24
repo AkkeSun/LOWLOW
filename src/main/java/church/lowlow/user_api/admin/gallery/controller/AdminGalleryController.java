@@ -1,6 +1,7 @@
-package church.lowlow.user_api.admin;
+package church.lowlow.user_api.admin.gallery.controller;
 
 import church.lowlow.rest_api.gallery.db.Gallery;
+import church.lowlow.user_api.admin.gallery.service.AdminGalleryService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +18,7 @@ import reactor.core.publisher.Mono;
 public class AdminGalleryController {
 
     @Autowired
-    private WebClient webClient;
+    private AdminGalleryService service;
 
     // ========== List View ==========
     @GetMapping
@@ -38,13 +39,7 @@ public class AdminGalleryController {
     @GetMapping("/{id}")
     public String getGalleryDetailView(@PathVariable Long id, Model model) {
 
-        Mono<Gallery> galleryMono = webClient
-                .get()
-                .uri("/galleries/{id}", id)
-                .retrieve()
-                .bodyToMono(Gallery.class);
-
-        Gallery gallery = galleryMono.block();
+        Gallery gallery = service.getGallery(id);
         model.addAttribute("gallery", gallery);
 
         return "admin/gallery/galleryDetail";

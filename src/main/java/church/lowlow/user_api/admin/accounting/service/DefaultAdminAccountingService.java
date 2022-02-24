@@ -1,19 +1,13 @@
-package church.lowlow.user_api.admin;
+package church.lowlow.user_api.admin.accounting.service;
 
 import church.lowlow.rest_api.accounting.db.Accounting;
-import church.lowlow.rest_api.accounting.db.AccountingDto;
 import church.lowlow.rest_api.accounting.db.OfferingKind;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.member.db.Member;
-import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -24,66 +18,42 @@ import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.util.*;
 
-import static church.lowlow.user_api.common.ExcelUtil.accountingExcelCreate;
+import static church.lowlow.user_api.admin.accounting.util.ExcelUtil.accountingExcelCreate;
 
-@Controller
-@RequestMapping("/admin/accounting")
-@Log4j2
-public class AdminAccountingController {
+@Service
+public class DefaultAdminAccountingService implements AdminAccountingService{
 
     @Autowired
     private WebClient webClient;
+    @Value("${fileUploadPath}")
+    private String fileUploadPath;
 
 
-    // ========== List View ==========
-    @GetMapping
-    public String getAccountingListView() {
-        return "admin/accounting/accountingList";
-    }
-
-
-    // ========== Create View ==========
-    @GetMapping("/create")
-    public String getAccountingCreateView(Model model) {
-        model.addAttribute("accounting", new Accounting());
-        return "admin/accounting/accountingCreate";
-    }
-
-
-    // ========== Detail (Update) View ==========
-    @GetMapping("/{id}")
-    public String getAccountingDetailView(@PathVariable Long id, Model model) {
-
+    @Override
+    public Accounting getAccounting(Long id) {
         Mono<Accounting> accountingMono = webClient
-                            .get()
-                            .uri("/accounting/{id}", id)
-                            .retrieve()
-                            .bodyToMono(Accounting.class);
+                .get()
+                .uri("/accounting/{id}", id)
+                .retrieve()
+                .bodyToMono(Accounting.class);
 
-        Accounting accounting = accountingMono.block();
-        model.addAttribute("accounting", accounting);
-
-        return "admin/accounting/accountingDetail";
-
+        return accountingMono.block();
     }
 
 
-    // =================== 엑셀파일 다운로드 =====================
-    @GetMapping("/excelDown")
-    public void download(SearchDto searchDto, HttpServletResponse response) throws IOException {
-
+    @Override
+    public void excelDown(SearchDto searchDto, HttpServletResponse response) throws IOException {
         // 엑셀에 들어갈 데이터 로드
-        List<Accounting> accountingList = getAccountList(searchDto);
+        List<Accounting> accountingList = getAccountingList(searchDto);
         Map<String, Object> statisticsMap = getStatisticsMap(searchDto);
 
         // 엑셀파일 생성
         accountingExcelCreate(searchDto, accountingList, statisticsMap);
 
         // 다운로드
-        String filePath = "C:/upload/";
         String fileName = "accounting.xlsx";
 
-        byte[] fileByte = FileUtils.readFileToByteArray(new File(filePath + fileName));
+        byte[] fileByte = FileUtils.readFileToByteArray(new File(fileUploadPath + fileName));
 
         response.setContentType("application/octet-stream");
         response.setHeader("Content-Disposition", "attachment; fileName=\"" + URLEncoder.encode(LocalDate.now() + ".xlsx", "UTF-8")+"\";");
@@ -97,8 +67,11 @@ public class AdminAccountingController {
 
 
 
-    // =================== Accounting List 출력 함수  =====================
-    public List getAccountList(SearchDto searchDto){
+
+
+    // ============================ Accounting List 출력 함수 ========================
+    @Override
+    public List<Accounting> getAccountingList(SearchDto searchDto) {
 
         String searchId = searchDto.getSearchId();
         String searchData = searchDto.getSearchData();
@@ -162,6 +135,5 @@ public class AdminAccountingController {
 
         return mono.block();
     }
-
 
 }

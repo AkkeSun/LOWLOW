@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
 @Aspect
@@ -22,19 +23,17 @@ public class LogAspect {
     public Object logAspect(ProceedingJoinPoint pjp) throws Throwable{
 
         //---------타겟 메서드 실행 전----------
-        String param = Arrays.toString(pjp.getArgs());
-
-        log.info("REQUEST <======= " + pjp.getSignature().getDeclaringTypeName() + "/"
-                + pjp.getSignature().getName()  + " : " + param );
+        System.out.println();
+        log.info("================================ [REST API REQUEST START] ================================");
+        log.info("[REQUEST] path : " +  pjp.getSignature().getDeclaringTypeName() + "." +  pjp.getSignature().getName());
 
         //------------------------------------
         Object retVal = pjp.proceed();
         //------------------------------------
 
         //---------타겟 메서드 실행 후-----------
-        log.info("RESPONSE =======> " + pjp.getSignature().getDeclaringTypeName() + "/"
-                + pjp.getSignature().getName() + " : " + retVal);
-
+        log.info("[RESPONSE] " + retVal);
+        log.info("================================ [REST API RESPONSE END] ================================");
         return retVal;
     }
 }

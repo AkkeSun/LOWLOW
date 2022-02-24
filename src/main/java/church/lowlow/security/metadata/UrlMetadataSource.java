@@ -1,6 +1,7 @@
 package church.lowlow.security.metadata;
 
 import church.lowlow.security.service.SecurityResourceService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.web.FilterInvocation;
@@ -11,15 +12,16 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
- * URL 방식의 자원 관리
+ * URL 방식의 자원 관리 설정
  */
+@Log4j2
 public class UrlMetadataSource implements FilterInvocationSecurityMetadataSource {
 
     @Autowired
     private SecurityResourceService securityResourceService;
     private LinkedHashMap<RequestMatcher, List<ConfigAttribute>> resourceMap;
 
-    public UrlMetadataSource(LinkedHashMap<RequestMatcher, List<ConfigAttribute>> resourceMap){
+    public UrlMetadataSource(LinkedHashMap<RequestMatcher, List<ConfigAttribute>> resourceMap) {
         this.resourceMap = resourceMap;
     }
 
@@ -31,11 +33,15 @@ public class UrlMetadataSource implements FilterInvocationSecurityMetadataSource
         // 현재 사용자가 요청하는 자원 객채
         HttpServletRequest request = ((FilterInvocation) object).getRequest();
 
-        if(resourceMap != null){
+        if(resourceMap != null) {
             for(Map.Entry<RequestMatcher, List<ConfigAttribute>> entry : resourceMap.entrySet()){
 
                 RequestMatcher mather = entry.getKey();
-                if(mather.matches(request)) return entry.getValue();
+                if(mather.matches(request)) {
+                    System.out.println();
+                    log.info("[SECURITY SAVED URL] url = " + request.getRequestURI() + " || accessRole : " + entry.getValue().get(0));
+                    return entry.getValue();
+                }
 
             }
         }
@@ -44,7 +50,7 @@ public class UrlMetadataSource implements FilterInvocationSecurityMetadataSource
 
 
     // =============== 자원이 새로 생성될 때 실시간 데이터 업데이트 =================
-    public void reload(){
+    public void reload() {
         LinkedHashMap<RequestMatcher, List<ConfigAttribute>> reloadMap = securityResourceService.getUrlResourceList();
         Iterator<Map.Entry<RequestMatcher, List<ConfigAttribute>>> iterator = reloadMap.entrySet().iterator();
 
@@ -55,6 +61,8 @@ public class UrlMetadataSource implements FilterInvocationSecurityMetadataSource
             Map.Entry<RequestMatcher, List<ConfigAttribute>> entry = iterator.next();
             resourceMap.put(entry.getKey(), entry.getValue());
         }
+
+        log.info("[ROLE reload 성공]");
     }
 
 
