@@ -37,15 +37,6 @@ public class DefaultSummerNoteService implements SummerNoteService {
                 .retrieve()
                 .bodyToMono(Map.class);
         Map<String, Object> resultMap = mono.block();
-        
-        
-        // 비동기 다시 찾아보기
-        List l = new ArrayList();
-        System.err.println("==============");
-        mono.subscribe(data -> {
-            System.err.println(data.get("summernoteImgList"));
-        });
-
 
         List<Map<String, Object>> summernoteImgList = (List)resultMap.get("summernoteImgList");
 
@@ -138,6 +129,6 @@ public class DefaultSummerNoteService implements SummerNoteService {
                 .uri("/summerNote/{id}", id)
                 .retrieve()
                 .bodyToMono(Void.class)
-                .subscribe();
+                .block();
     }
 }
