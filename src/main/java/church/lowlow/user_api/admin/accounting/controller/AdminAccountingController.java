@@ -3,9 +3,12 @@ package church.lowlow.user_api.admin.accounting.controller;
 import church.lowlow.rest_api.accounting.db.Accounting;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.user_api.admin.accounting.service.AdminAccountingService;
+import church.lowlow.user_api.admin.accounting.service.DefaultExecService;
+import church.lowlow.user_api.admin.accounting.service.ExcelService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +26,8 @@ public class AdminAccountingController {
     @Autowired
     private AdminAccountingService accountingService;
 
-
+    @Value("${fileUploadPath}")
+    public String fileDownloadPath;
 
     // ========== List View ==========
     @GetMapping
@@ -55,7 +59,8 @@ public class AdminAccountingController {
     // =================== 엑셀파일 다운로드 =====================
     @GetMapping("/excelDown")
     public void download(SearchDto searchDto, HttpServletResponse response) throws IOException {
-        accountingService.excelDown(searchDto, response);
+        ExcelService excelService = new DefaultExecService(fileDownloadPath, accountingService);
+        excelService.excelFileDownload(searchDto, response);
     }
 
 

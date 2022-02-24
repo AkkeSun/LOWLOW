@@ -1,6 +1,5 @@
 package church.lowlow.user_api.admin.accounting.util;
 
-import church.lowlow.rest_api.accounting.db.Accounting;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -14,7 +13,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 
@@ -32,18 +30,17 @@ public class ExcelUtil {
      *
      * [ 개발순서 ]
      *  1. workbook 을 생성한다.
-     *  2. workbook 내에 sheet를 생성한다.
-     *  3. sheet 내에 row를 생성한다.
-     *  4. 하나의 row에 여러개의 cell을 생성한다. (= 하나의 행에 여러 열을 생성한다)
+     *  2. workbook 내에 sheet 를 생성한다.
+     *  3. sheet 내에 row 를 생성한다.
+     *  4. 하나의 row 에 여러개의 cell 을 생성한다. (= 하나의 행에 여러 열을 생성한다)
      */
 
-    @Value("${fileUploadPath}")
-    public static String filePath;
+    @Value("${excel.fileUploadPath}")
+    public String filePath;
 
-   // public static String filePath = "C:/upload";
-    public static String fileNm = "accounting.xlsx";
+    public String fileNm = "accounting.xlsx";
 
-    public static void accountingExcelCreate(SearchDto searchDto, List<Accounting> accountingList, Map<String ,Object> statisticsMap){
+    public void accountingExcelCreate(SearchDto searchDto, List<LinkedHashMap<String, Object>> accountingList, Map<String ,Object> statisticsMap){
 
         //============= Workbook & Sheet 생성 ===============
         XSSFWorkbook workbook = new XSSFWorkbook();
@@ -61,7 +58,7 @@ public class ExcelUtil {
 
         //============= 테이블 스타일 설정 ===============
         CellStyle mainTitleStyle = workbook.createCellStyle();
-        mainTitleStyle.setFont(mainFont); // cellStyle에 font를 적용
+        mainTitleStyle.setFont(mainFont); // cellStyle 에 font 를 적용
         mainTitleStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);         // 가로 정렬
         mainTitleStyle.setVerticalAlignment(HSSFCellStyle.ALIGN_CENTER); // 세로정렬
 
@@ -100,7 +97,7 @@ public class ExcelUtil {
     /**************************************
      *      전체 리스트 엑셀 데이터 입력
      **************************************/
-    public static void accountingListExcelCreate(XSSFSheet xssfSheet, List<Accounting> accountingList,
+    public void accountingListExcelCreate(XSSFSheet xssfSheet, List<LinkedHashMap<String, Object>> accountingList,
                                                  CellStyle mainTitleStyle, CellStyle tableStyle,
                                                  SearchDto searchDto){
 
@@ -141,24 +138,23 @@ public class ExcelUtil {
 
         // table data
         if(accountingList != null) {
-
-            for (Accounting accounting : accountingList) {
+            accountingList.forEach( map -> {
 
                 String belong = "-";
-                String name = "익명";
                 String phoneNum = "-";
-                String offeringKind = offeringKindConverter(accounting.getOfferingKind().toString());
-                String offeringDate = accounting.getOfferingDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                String note = objNullToStr(accounting.getNote(), "-");
-                int money = accounting.getMoney();
+                String offeringKind = offeringKindConverter((String)map.get("offeringKind"));
+                String offeringDate = (String) map.get("offeringDate");
+                String note = objNullToStr((String)map.get("note"), "-");
+                Map<String, Object> member = (Map<String, Object>) map.get("member");
+                String name = (String) member.get("name");
+                int money = (int) map.get("money");
 
-                if (!accounting.getMember().getName().equals("익명")) {
-                    belong = accounting.getMember().getBelong();
-                    name = accounting.getMember().getName();
-                    phoneNum = accounting.getMember().getPhoneNumber();
+                if (!member.equals("익명")) {
+                    belong = (String) member.get("belong");;
+                    phoneNum = (String) member.get("phoneNumber");
                 }
                 excelDataList.add(new Object[]{belong, name, phoneNum, money, offeringKind, offeringDate, note});
-            }
+            });
 
             // Data append
             for(Object[] excelData : excelDataList){
@@ -179,12 +175,12 @@ public class ExcelUtil {
         }
     }
 
-    
+
 
     /**************************************
      *      헌금 통계분석 엑셀 데이터 입력
      **************************************/
-    public static void accountingStatisticsExcelCreate(XSSFSheet statisticsSheet, Map<String ,Object> statisticsMap,
+    public void accountingStatisticsExcelCreate(XSSFSheet statisticsSheet, Map<String ,Object> statisticsMap,
                                                        CellStyle mainTitleStyle,  CellStyle tableStyle){
 
         //============= 행, 열, 인덱스 변수===============
@@ -308,7 +304,7 @@ public class ExcelUtil {
     /**************************************
      *        헌금 종류 한글 컨버터
      **************************************/
-    public static String offeringKindConverter(String offeringKind){
+    public String offeringKindConverter(String offeringKind){
 
         switch(offeringKind){
             case "SUNDAY"       : return "주정헌금";

@@ -39,16 +39,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private LoginProvider ajaxLoginProvider;
+
     @Autowired
     private CustomAccessDeniedHandler deniedHandler;
+
     @Autowired
     private CustomAuthenticationFailureHandler failureHandler;
+
     @Autowired
     private CustomAuthenticationSuccessHandler successHandler;
+
     @Autowired
     private SecurityResourceService securityResourceService;
+
     @Value("${security.csrf.permitALlResources}")
     private String[] csrfPermitAllResource;
+
     @Value("${security.permitAllResources}")
     private String[] permitAllResources;
 
