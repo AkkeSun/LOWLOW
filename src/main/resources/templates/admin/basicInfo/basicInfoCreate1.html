@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+<head th:replace="admin/common/head"></head>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+<script th:inline="javascript">
+    $(document).ready(function(){
+    });
+
+    function addressSearch() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+
+                var addr = '';
+
+                // 도로명 주소 (R)
+                if (data.userSelectedType === 'R') {
+                    addr = data.roadAddress;
+                // 지번주소 (J)
+                } else {
+                    addr = data.jibunAddress;
+                }
+                $("#basicAddress").val(addr);
+                $("#detailAddress").focus();
+            }
+        }).open();
+    }
+
+</script>
+
+<body>
+
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <div th:replace="admin/common/sidebar"></div>
+        <div class="col py-3">
+            <th:block th:replace="admin/basicInfo/fragment :: basicInfoTitle"/>
+
+            <!-- Main Contents -->
+            <div class="container">
+                <form class="form-horizontal" th:object="${basicInfo}" th:action="@{/admin/basicInfo/create/chapter2}" th:method="post">
+                    <div class="form-group">
+                        <label for="name" th:if="${#fields.hasErrors('name')}"  th:errors="*{name}" class="control-label label-margin-left" style="color: red"></label>
+                        <label for="name" th:unless="${#fields.hasErrors('name')}"  class="control-label label-margin-left" >교회명</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control input-large" id="name" name="name" placeholder="000 교회"  th:value="*{name}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="senior_pastor_name" th:if="${#fields.hasErrors('senior_pastor_name')}"  th:errors="*{senior_pastor_name}" class="control-label label-margin-left" style="color: red"></label>
+                        <label for="senior_pastor_name" th:unless="${#fields.hasErrors('senior_pastor_name')}"  class="control-label label-margin-left" >담임목사</label>
+                        <div class="col-sm-10">
+                            <input type="text" maxlength="13" class="form-control input-large" id="senior_pastor_name" name="senior_pastor_name" placeholder="홍길동"  th:value="*{senior_pastor_name}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="callNumber" th:if="${#fields.hasErrors('callNumber')}"  th:errors="*{callNumber}" class="control-label label-margin-left" style="color: red"></label>
+                        <label for="callNumber" th:unless="${#fields.hasErrors('callNumber')}"  class="control-label label-margin-left">전화번호</label>
+                        <div class="col-sm-10">
+                            <input type="text" maxlength="13" class="form-control input-large" id="callNumber" name="callNumber" placeholder="예) 02-123-1234"  th:value="*{callNumber}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="basicAddress" th:if="${#fields.hasErrors('basicAddress')}"  th:errors="*{basicAddress}" class="control-label label-margin-left" style="color: red"></label>
+                        <label for="basicAddress" th:unless="${#fields.hasErrors('basicAddress')}"  class="control-label label-margin-left">주소</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control input-large" id="basicAddress" name="basicAddress" placeholder="기본주소" onclick="addressSearch()" th:value="*{basicAddress}"><br>
+                            <input type="text" style="margin-top: -20px" class="form-control input-large" id="detailAddress" name="detailAddress" placeholder="상세주소" th:value="*{detailAddress}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="youtubeURL" class="label-margin-left control-label inputMarginTop">(선택) 온라인 예배 링크</label>
+                        <div class="col-sm-10">
+                            <input type="text" maxlength="13" class="form-control input-large" id="youtubeURL" name="youtubeURL" placeholder="www.youtube.com"  th:value="*{youtubeURL}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="kakaoPage" class="label-margin-left control-label inputMarginTop">(선택) 카카오 페이지</label>
+                        <div class="col-sm-10">
+                            <input type="text" maxlength="13" class="form-control input-large" id="kakaoPage" name="kakaoPage" placeholder="kakaoPage"  th:value="*{kakaoPage}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="instagram" class="label-margin-left control-label inputMarginTop">(선택) 인스타그램 링크</label>
+                        <div class="col-sm-10">
+                            <input type="text" maxlength="13" class="form-control input-large" id="instagram" name="instagram" placeholder="www.instagram.com"  th:value="*{instagram}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="blog" class="label-margin-left control-label inputMarginTop">(선택) 블로그 링크</label>
+                        <div class="col-sm-10">
+                            <input type="text" maxlength="13" class="form-control input-large" id="blog" name="blog" placeholder="www.naver.com"  th:value="*{blog}">
+                        </div>
+                    </div>
+
+                    <br>
+                    &nbsp;&nbsp;
+                    <button type="submit" class="btn btn-outline-primary">다음</button>
+                    <a class="btn btn-outline-primary" th:href="@{/admin}">등록 취소 </a>
+                </form>
+            </div>
+            <br><br><br><br>
+            <!-- Main Contents -->
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

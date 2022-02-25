@@ -31,11 +31,12 @@ public class LogComponent {
     }
 
     public void basicInfoDtoLogging(BasicInfoDto dto){
-        log.info("[REQUEST] mainTitle : \"" + dto.getMainTitle() + "\"");
-        log.info("[REQUEST] info : \"" + dto.getInfo() + "\"");
+        log.info("[REQUEST] basicInfo : \"" + dto.getBasicInfo() + "\"");
+        log.info("[REQUEST] detailInfo : \"" + dto.getDetailInfo() + "\"");
         log.info("[REQUEST] name : \"" + dto.getName() + "\"");
         log.info("[REQUEST] senior_pastor_name : \" " + dto.getSenior_pastor_name() + "\"");
-        log.info("[REQUEST] address : \"" + dto.getAddress() + "\"");
+        log.info("[REQUEST] basicAddress : \"" + dto.getBasicAddress() + "\"");
+        log.info("[REQUEST] detailAddress : \"" + dto.getDetailAddress() + "\"");
         log.info("[REQUEST] callNumber : \"" + dto.getCallNumber() + "\"");
         log.info("[REQUEST] kakaoPage : \"" + dto.getKakaoPage() + "\"");
         log.info("[REQUEST] youtubeURL : \"" + dto.getYoutubeURL() + "\"");

@@ -7,6 +7,7 @@ import church.lowlow.rest_api.basicInfo.resource.BasicInfoErrorsResource;
 import church.lowlow.rest_api.basicInfo.resource.BasicInfoResource;
 
 import church.lowlow.rest_api.common.aop.LogComponent;
+import church.lowlow.rest_api.gallery.db.Gallery;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
@@ -17,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static church.lowlow.rest_api.common.util.WriterUtil.getWriter;
@@ -75,12 +79,19 @@ public class BasicInfoController {
         Optional<BasicInfo> optional = repository.findById(id);
         BasicInfo basicInfo = optional.orElseThrow(ArithmeticException::new);
 
-        // 로그인 유무 체크 후 로그인 했으면 update, delete url 넣어주기
         BasicInfoResource resource = new BasicInfoResource(basicInfo);
         return ResponseEntity.ok(resource);
     }
 
+    @GetMapping("/list")
+    public ResponseEntity getBasicInfoList(){
 
+        List<BasicInfo> list = repository.findAll();
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("basicInfoList", list);
+
+        return ResponseEntity.ok().body(resultMap);
+    }
 
     /**
      * UPDATE API

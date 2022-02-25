@@ -1,14 +1,12 @@
 package church.lowlow.rest_api.basicInfo.db;
 
 import church.lowlow.rest_api.common.entity.FileDto;
-import church.lowlow.rest_api.common.entity.Writer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * BasicInfo 객채 검증을 위한 DTO
@@ -17,11 +15,11 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor @AllArgsConstructor
 public class BasicInfoDto {
 
-    @NotBlank(message = "메인타이틀은 비워둘 수 없습니다")
-    private String mainTitle;
-
     @NotBlank(message = "기본 소개글은 비워둘 수 없습니다")
-    private String info;
+    private String basicInfo;
+
+    @NotBlank(message = "상세 소개글은 비워둘 수 없습니다")
+    private String detailInfo;
 
     @NotBlank(message = "교회 이름은 비워둘 수 없습니다")
     private String name;
@@ -30,13 +28,12 @@ public class BasicInfoDto {
     private String senior_pastor_name;
 
     @NotBlank(message = "주소는 비워둘 수 없습니다")
-    private String address;
+    private String basicAddress;
+
+    private String detailAddress;
 
     @NotBlank(message = "전화번호는 비워둘 수 없습니다")
     private String callNumber;
-
-    @NotNull(message = "작성자는 비워둘 수 없습니다")
-    private Writer writer;
 
     private String kakaoPage;
     private String youtubeURL;

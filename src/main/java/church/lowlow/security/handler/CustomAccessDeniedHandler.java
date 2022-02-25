@@ -22,7 +22,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException {
-    //    setDeniedHandlerLogging(request);
+        setDeniedHandlerLogging(request);
         String deniedURL = errorPage + "?exception=" + "Access is Denied";
         response.sendRedirect(deniedURL);
     }

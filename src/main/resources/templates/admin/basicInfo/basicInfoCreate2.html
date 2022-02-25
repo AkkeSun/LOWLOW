@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+<head th:replace="admin/common/head"></head>
+<script th:inline="javascript">
+    $(document).ready(function(){
+        useSummernote();
+    });
+
+
+    function goChapter1(){
+        $("#basicInfoFrm2").attr("action", "/admin/basicInfo/create/chapter1/reload");
+        $("#basicInfoFrm2").submit();
+    }
+
+</script>
+
+<body>
+
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <div th:replace="admin/common/sidebar"></div>
+        <div class="col py-3">
+            <th:block th:replace="admin/basicInfo/fragment :: basicInfoTitle"/>
+
+            <!-- Main Contents -->
+            <div class="container">
+                <form class="form-horizontal" id=basicInfoFrm2" method="post" th:object="${basicInfo}" action="/admin/basicInfo/create/chapter3">
+                    <div class="form-group">
+                        <label for="basicInfo" class="col-sm-2 control-label">기본 소개글</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control input-large" id="basicInfo" name="basicInfo" placeholder="메인 페이지에 노출되는 교회 기본 소개글을 작성해주세요 (한 문장)"  th:value="*{basicInfo}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contents" class="col-sm-2 control-label inputMarginTop">상세 소개글</label>
+                        <textarea id="contents" name="detailInfo"></textarea>
+                    </div>
+
+                    <br>
+                    &nbsp;&nbsp;
+                    <button type="button" class="btn btn-outline-primary"  onclick="goChapter1()">이전</button>
+                    <button type="submit" class="btn btn-outline-primary">다음</button>
+                    <a class="btn btn-outline-primary" th:href="@{/admin}">등록 취소 </a>
+                </form>
+            </div>
+            <br><br><br><br>
+            <!-- Main Contents -->
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

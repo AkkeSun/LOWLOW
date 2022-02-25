@@ -22,6 +22,10 @@
     background-color: #dfeae3;
 }
 
+.inputMarginTop{
+    margin-top:10px;
+}
+
 
 .imgSample{
     max-width: 150px;
@@ -29,4 +33,8 @@
 
 .note-frame {
     margin-left: 15px;
+}
+
+.label-margin-left {
+    margin-left: 13px;
 }
