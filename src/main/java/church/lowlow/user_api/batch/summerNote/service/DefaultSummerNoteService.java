@@ -23,6 +23,8 @@ public class DefaultSummerNoteService implements SummerNoteService {
     @Autowired
     private WebClient webClient;
 
+
+
     private SummerNoteSingleton instance = SummerNoteSingleton.getInstance();
 
     @Override

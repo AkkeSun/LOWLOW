@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+<head th:replace="admin/common/head"></head>
+<script th:inline="javascript">
+    $(document).ready(function(){
+    });
+
+    function goChapter2(){
+        var cfm = confirm("업로드한 이미지가 삭제됩니다. 계속하시겠습니까")
+        if(cfm){
+            $("#basicInfoFrm3").attr("action", "/admin/basicInfo/create/chapter2/reload");
+            $("#basicInfoFrm3").submit();
+        }
+    }
+
+    function cancelBtn(){
+        var cfm =confirm("정말 취소하시겠습니까")
+        if(cfm)
+            location.href="/admin";
+    }
+
+</script>
+
+<body>
+
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <div th:replace="admin/common/sidebar"></div>
+        <div class="col py-3">
+            <th:block th:replace="admin/basicInfo/fragment :: basicInfoTitle"/>
+
+            <!-- Main Contents -->
+            <div class="container">
+                <form class="form-horizontal" id="basicInfoFrm3" th:object="${basicInfo}" th:action="@{/admin/basicInfo/create}" th:method="post" enctype="multipart/form-data" >
+                    <input type="hidden" name="csrf_token" th:value="${_csrf.token}">
+                    <input type="hidden" name="csrf_header" th:value="${_csrf.headerName}">
+
+                    <div class="mb-3">
+                        <label for="infoImg1" class="form-label">교회 소개글 이미지 1 (사이즈 = 100 * 100)</label>
+                        <input class="form-control-file" type="file" id="infoImg1" name="infoImg1">
+                    </div>
+                    <div class="mb-3">
+                        <label for="infoImg2" class="form-label">교회 소개글 이미지 2 (사이즈 = 100 * 100)</label>
+                        <input class="form-control-file" type="file" id="infoImg2" name="infoImg2">
+                    </div>
+                    <div class="mb-3">
+                        <label for="infoImg3" class="form-label">교회 소개글 이미지 3 (사이즈 = 100 * 100)</label>
+                        <input class="form-control-file" type="file" id="infoImg3" name="infoImg3">
+                    </div>
+                    <div class="mb-3">
+                        <label for="infoImg4" class="form-label">교회 소개글 이미지 4 (사이즈 = 100 * 100)</label>
+                        <input class="form-control-file" type="file" id="infoImg4" name="infoImg4">
+                    </div>
+                    <div class="mb-3">
+                        <label for="infoImg5" class="form-label">교회 소개글 이미지 5 (사이즈 = 100 * 100)</label>
+                        <input class="form-control-file" type="file" id="infoImg5" name="infoImg5">
+                    </div>
+                    <div class="mb-3">
+                        <label for="infoImg6" class="form-label">교회 소개글 이미지 6 (사이즈 = 100 * 100)</label>
+                        <input class="form-control-file" type="file" id="infoImg6" name="infoImg6">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="carImg1" class="form-label">캐러셋 이미지 1 (사이즈 = 100 * 100)</label>
+                        <input class="form-control-file" type="file" id="carImg1" name="carImg1">
+                    </div>
+                    <div class="mb-3">
+                        <label for="carImg2" class="form-label">캐러셋 이미지 2 (사이즈 = 100 * 100)</label>
+                        <input class="form-control-file" type="file" id="carImg2" name="carImg2">
+                    </div>
+                    <div class="mb-3">
+                        <label for="carImg3" class="form-label">캐러셋 이미지 3 (사이즈 = 100 * 100)</label>
+                        <input class="form-control-file" type="file" id="carImg3" name="carImg3">
+                    </div>
+                    <div class="mb-3">
+                        <label for="carImg4" class="form-label">캐러셋 이미지 4 (사이즈 = 100 * 100)</label>
+                        <input class="form-control-file" type="file" id="carImg4" name="carImg4">
+                    </div>
+                    <div class="mb-3">
+                        <label for="carImg5" class="form-label">캐러셋 이미지 5 (사이즈 = 100 * 100)</label>
+                        <input class="form-control-file" type="file" id="carImg5" name="carImg5">
+                    </div>
+                    <div class="mb-3">
+                        <label for="carImg6" class="form-label">캐러셋 이미지 6 (사이즈 = 100 * 100)</label>
+                        <input class="form-control-file" type="file" id="carImg6" name="carImg6">
+                    </div>
+                    <div class="mb-3">
+                        <label for="chartImg1" class="form-label">섬기는 사람들 이미지 1 (사이즈 = 100 * 100)</label>
+                        <input class="form-control-file" type="file" id="chartImg1" name="chartImg1">
+                    </div>
+                    <div class="mb-3">
+                        <label for="chartImg2" class="form-label">섬기는 사람들 이미지 2 (사이즈 = 100 * 100)</label>
+                        <input class="form-control-file" type="file" id="chartImg2" name="chartImg2">
+                    </div>
+                    <div class="mb-3">
+                        <label for="chartImg3" class="form-label">섬기는 사람들 이미지 3 (사이즈 = 100 * 100)</label>
+                        <input class="form-control-file" type="file" id="chartImg3" name="chartImg3">
+                    </div>
+                    <br>
+                    &nbsp;&nbsp;
+                    <button type="button" class="btn btn-outline-primary" onclick="goChapter2()">이전</button>
+                    <button type="submit" class="btn btn-outline-primary">저장</button>
+                    <a class="btn btn-outline-primary" onclick="cancelBtn()">등록 취소 </a>
+                </form>
+            </div>
+            <br><br><br><br>
+            <!-- Main Contents -->
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -42,21 +42,21 @@ public class LogComponent {
         log.info("[REQUEST] youtubeURL : \"" + dto.getYoutubeURL() + "\"");
         log.info("[REQUEST] instagram : \"" + dto.getInstagram() + "\"");
         log.info("[REQUEST] blog : \"" + dto.getBlog() + "\"");
-        log.info("[REQUEST] infoImage1 : \"" + dto.getInfoImage1() + "\"");
-        log.info("[REQUEST] infoImage2 : \"" + dto.getInfoImage2() + "\"");
-        log.info("[REQUEST] infoImage3 : \"" + dto.getInfoImage3() + "\"");
-        log.info("[REQUEST] infoImage4 : \"" + dto.getInfoImage4() + "\"");
-        log.info("[REQUEST] infoImage5 : \"" + dto.getInfoImage5() + "\"");
-        log.info("[REQUEST] infoImage6 : \"" + dto.getInfoImage6() + "\"");
-        log.info("[REQUEST] carouselImg1 : \"" + dto.getCarouselImg1() + "\"");
-        log.info("[REQUEST] carouselImg2 : \"" + dto.getCarouselImg2() + "\"");
-        log.info("[REQUEST] carouselImg3 : \"" + dto.getCarouselImg3() + "\"");
-        log.info("[REQUEST] carouselImg4 : \"" + dto.getCarouselImg4() + "\"");
-        log.info("[REQUEST] carouselImg5 : \"" + dto.getCarouselImg5() + "\"");
-        log.info("[REQUEST] carouselImg6 : \"" + dto.getCarouselImg6() + "\"");
-        log.info("[REQUEST] organizationChart1 : \"" + dto.getOrganizationChart1() + "\"");
-        log.info("[REQUEST] organizationChart2 : \"" + dto.getOrganizationChart2() + "\"");
-        log.info("[REQUEST] organizationChart3 : \"" + dto.getOrganizationChart3() + "\"");
+        log.info("[REQUEST] infoImage1 : \"" + dto.getInfo1_OriginalName() + "\"");
+        log.info("[REQUEST] infoImage2 : \"" + dto.getInfo2_OriginalName() + "\"");
+        log.info("[REQUEST] infoImage3 : \"" + dto.getInfo3_OriginalName() + "\"");
+        log.info("[REQUEST] infoImage4 : \"" + dto.getInfo4_OriginalName() + "\"");
+        log.info("[REQUEST] infoImage5 : \"" + dto.getInfo5_OriginalName() + "\"");
+        log.info("[REQUEST] infoImage6 : \"" + dto.getInfo6_OriginalName() + "\"");
+        log.info("[REQUEST] carouselImg1 : \"" + dto.getCar1_OriginalName() + "\"");
+        log.info("[REQUEST] carouselImg2 : \"" + dto.getCar2_OriginalName() + "\"");
+        log.info("[REQUEST] carouselImg3 : \"" + dto.getCar3_OriginalName() + "\"");
+        log.info("[REQUEST] carouselImg4 : \"" + dto.getCar4_OriginalName() + "\"");
+        log.info("[REQUEST] carouselImg5 : \"" + dto.getCar5_OriginalName() + "\"");
+        log.info("[REQUEST] carouselImg6 : \"" + dto.getCar6_OriginalName() + "\"");
+        log.info("[REQUEST] organizationChart1 : \"" + dto.getChart1_OriginalName() + "\"");
+        log.info("[REQUEST] organizationChart2 : \"" + dto.getChart2_OriginalName() + "\"");
+        log.info("[REQUEST] organizationChart3 : \"" + dto.getChart3_OriginalName() + "\"");
     }
 
 

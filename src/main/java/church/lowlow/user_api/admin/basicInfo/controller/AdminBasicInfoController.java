@@ -2,17 +2,21 @@ package church.lowlow.user_api.admin.basicInfo.controller;
 
 import church.lowlow.rest_api.basicInfo.db.BasicInfo;
 import church.lowlow.rest_api.basicInfo.db.BasicInfoDto;
+import church.lowlow.rest_api.basicInfo.db.BasicInfoValidation;
+import church.lowlow.rest_api.common.entity.FileDto;
 import church.lowlow.user_api.admin.basicInfo.service.BasicInfoService;
+import church.lowlow.user_api.admin.file.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
 
 @Controller
 @RequestMapping("/admin/basicInfo")
@@ -20,13 +24,20 @@ import java.util.List;
 public class AdminBasicInfoController {
 
     @Autowired
-    private BasicInfoService service;
+    private BasicInfoService basicInfoService;
+
+    @Autowired
+    private BasicInfoValidation validation;
+
+    @Autowired
+    private FileService fileService;
+
 
     @GetMapping
     public String getBasicInfo(Model model, @RequestParam(required = false) boolean afterCreate) {
 
         if(!afterCreate) {
-            BasicInfo basicInfo = service.getBasicInfo();
+            BasicInfo basicInfo = basicInfoService.getBasicInfo();
 
             if(basicInfo == null)
                 return "admin/basicInfo/basicInfoNotFound";
@@ -50,14 +61,14 @@ public class AdminBasicInfoController {
         return "admin/basicInfo/basicInfoCreate1";
     }
 
-
     @PostMapping("/create/chapter2")
-    public String getBasicInfoCreateChapter2(Model model, @ModelAttribute("basicInfo") @Valid BasicInfoDto basicInfoDto, BindingResult bindingResult) {
+    public String getBasicInfoCreateChapter2(@ModelAttribute("basicInfo") BasicInfoDto basicInfoDto, Errors errors) {
 
-        if(bindingResult.getAllErrors().size() != 2)
+        validation.chapter1Validate(basicInfoDto, errors);
+        if(errors.hasErrors())
             return "admin/basicInfo/basicInfoCreate1";
-
         return "admin/basicInfo/basicInfoCreate2";
+
     }
 
     @PostMapping("/create/chapter2/reload")
@@ -66,21 +77,41 @@ public class AdminBasicInfoController {
     }
 
 
+
     @PostMapping("/create/chapter3")
-    public String getBasicInfoCreateChapter3(@ModelAttribute("basicInfo") BasicInfoDto basicInfoDto) {
+    public String getBasicInfoCreateChapter3(@ModelAttribute("basicInfo") BasicInfoDto basicInfoDto, Errors errors) {
+
+        validation.chapter2Validate(basicInfoDto, errors);
+        if(errors.hasErrors())
+            return "admin/basicInfo/basicInfoCreate2";
         return "admin/basicInfo/basicInfoCreate3";
     }
 
 
     @PostMapping("/create")
-    public String createBasicInfo(@ModelAttribute("basicInfo") BasicInfoDto basicInfoDto) {
+    public String createBasicInfo(MultipartHttpServletRequest mRequest,
+                                  @ModelAttribute("basicInfo") BasicInfoDto basicInfoDto) {
+
+        // make FileMap
+        Map<String, MultipartFile> fileMap = basicInfoService.makeMultipartFileMap(mRequest);
+
+        // file upload
+        fileMap.forEach( (key, multipartFile) -> {
+            if(!multipartFile.getOriginalFilename().equals("")) {
+                FileDto fileDto = fileService.fileUpload(multipartFile);
+                basicInfoService.fileDtoSave(key, fileDto, basicInfoDto);
+            }
+        });
+
+
+        // DB save
+        boolean result = basicInfoService.createBasicInfo(basicInfoDto);
+
+
 
         // 세션 삭제
 
-
         return "redirect:/admin/basicInfo?afterCreate=true";
     }
-
-
 
 }

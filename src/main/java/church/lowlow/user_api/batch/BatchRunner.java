@@ -34,14 +34,12 @@ public class BatchRunner {
 
     @GetMapping("/test2")
     public String test()  {
-        System.out.println("in");
         service.getGalleryList();
         return "BATCH START";
     }
 
     @PostMapping("/test3")
     public String test3()  {
-        System.out.println("in");
         return "BATCH START";
     }
 

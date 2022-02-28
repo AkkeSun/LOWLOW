@@ -2,6 +2,7 @@ package church.lowlow.rest_api.basicInfo.controller;
 
 import church.lowlow.rest_api.basicInfo.db.BasicInfo;
 import church.lowlow.rest_api.basicInfo.db.BasicInfoDto;
+import church.lowlow.rest_api.basicInfo.db.BasicInfoValidation;
 import church.lowlow.rest_api.basicInfo.repository.BasicInfoRepository;
 import church.lowlow.rest_api.basicInfo.resource.BasicInfoErrorsResource;
 import church.lowlow.rest_api.basicInfo.resource.BasicInfoResource;
@@ -40,17 +41,25 @@ public class BasicInfoController {
     @Autowired
     private LogComponent logComponent;
 
+    @Autowired
+    private BasicInfoValidation validation;
+
     /**
      * CREATE API
      */
     @PostMapping
-    public ResponseEntity createInfo(@RequestBody @Valid BasicInfoDto dto,
-                                       Errors errors){
+    public ResponseEntity createInfo(@RequestBody BasicInfoDto dto, Errors errors){
 
         // request param Logging
         logComponent.basicInfoDtoLogging(dto);
 
-        // check
+        // check 1
+        validation.chapter1Validate(dto, errors);
+        if(errors.hasErrors())
+            return badRequest().body(new BasicInfoErrorsResource(errors));
+
+        // check 2
+        validation.chapter2Validate(dto, errors);
         if(errors.hasErrors())
             return badRequest().body(new BasicInfoErrorsResource(errors));
 
