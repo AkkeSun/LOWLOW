@@ -8,17 +8,22 @@ import church.lowlow.rest_api.basicInfo.resource.BasicInfoErrorsResource;
 import church.lowlow.rest_api.basicInfo.resource.BasicInfoResource;
 
 import church.lowlow.rest_api.common.aop.LogComponent;
+import church.lowlow.rest_api.common.entity.Writer;
 import church.lowlow.rest_api.gallery.db.Gallery;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.nio.file.Watchable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +70,6 @@ public class BasicInfoController {
 
         // save
         BasicInfo info = modelMapper.map(dto, BasicInfo.class);
-        info.setWriter(getWriter());
         BasicInfo newInfo = repository.save(info);
         URI createdUri = linkTo(BasicInfoController.class).slash(newInfo.getId()).toUri();
 

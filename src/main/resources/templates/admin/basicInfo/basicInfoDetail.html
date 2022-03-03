@@ -24,65 +24,65 @@
 
             <!-- Main Contents -->
             <div class="container">
-                <form class="form-horizontal" id="withFileUploadFrm" th:object="${member}" enctype="multipart/form-data">
-                    <input type="hidden" id="id" th:value="*{id}">
-                    <input type="hidden" id="createdDate" th:value="*{createdDate}">
-                    <div class="form-group">
-                        <label for="name" class="col-sm-2 control-label">이름</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control input-large" id="name" name="name" placeholder="이름"  th:value="*{name}" disabled="disabled">
+                <form class="form-horizontal" id="withFileUploadFrm" th:object="${basicInfo}" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="name" th:if="${#fields.hasErrors('name')}"  th:errors="*{name}" class="control-label label-margin-left" style="color: red"></label>
+                            <label for="name" th:unless="${#fields.hasErrors('name')}"  class="control-label label-margin-left" >교회명</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control input-large" id="name" name="name" placeholder="000 교회"  th:value="*{name}">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="phoneNumber" class="col-sm-2 control-label">전화번호</label>
-                        <div class="col-sm-10">
-                            <input type="text" maxlength="13" class="form-control input-large" id="phoneNumber" name="phoneNumber" placeholder="000-0000-0000"  th:value="*{phoneNumber}" disabled="disabled">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="gender" class="col-sm-2 control-label">성별</label>
-                        <div class="col-sm-10">
-                            <select class="custom-select" id="gender" th:field="*{gender}" disabled="disabled">
-                                <option th:value="MALE" th:text= "남자"/>
-                                <option th:value="FEMALE" th:text= "여자"/>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="birthDay" class="col-sm-2 control-label">생년월일</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control input-large" id="birthDay" name="birthDay" th:value="*{birthDay}" disabled="disabled">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="belong" class="col-sm-2 control-label">교구(목장)</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control input-large" id="belong" placeholder="교구(목장)" th:field="*{belong}" disabled="disabled">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="gender" class="col-sm-2 control-label">직분</label>
-                        <div class="col-sm-10">
-                            <select class="custom-select" id="churchOfficer" th:field="*{churchOfficer}" disabled="disabled">
-                                <option th:value="LAYMAN" th:text="평신도">
-                                <option th:value="DEACON" th:text="집사"/>
-                                <option th:value="ORDAINED_DEACON" th:text="안수집사"/>
-                                <option th:value="SENIOR_DEACONESS" th:text="권사"/>
-                                <option th:value="ELDER" th:text="장로"/>
-                                <option th:value="JUNIOR_PASTOR" th:text="전도사"/>
-                                <option th:value="ASSISTANT_PASTOR" th:text="부목사"/>
-                                <option th:value="SENIOR_PASTOR" th:text="담임목사"/>
-                                <option th:value="WIFE" th:text="사모"/>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="regiDate" class="col-sm-2 control-label">등록일</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control input-large" id="regiDate" name="regiDate" th:value="*{regiDate}" disabled="disabled">
-                        </div>
-                    </div>
 
+                        <div class="form-group">
+                            <label for="senior_pastor_name" th:if="${#fields.hasErrors('senior_pastor_name')}"  th:errors="*{senior_pastor_name}" class="control-label label-margin-left" style="color: red"></label>
+                            <label for="senior_pastor_name" th:unless="${#fields.hasErrors('senior_pastor_name')}"  class="control-label label-margin-left" >담임목사</label>
+                            <div class="col-sm-10">
+                                <input type="text" maxlength="13" class="form-control input-large" id="senior_pastor_name" name="senior_pastor_name" placeholder="홍길동"  th:value="*{senior_pastor_name}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="callNumber" th:if="${#fields.hasErrors('callNumber')}"  th:errors="*{callNumber}" class="control-label label-margin-left" style="color: red"></label>
+                            <label for="callNumber" th:unless="${#fields.hasErrors('callNumber')}"  class="control-label label-margin-left">전화번호</label>
+                            <div class="col-sm-10">
+                                <input type="text" maxlength="13" class="form-control input-large" id="callNumber" name="callNumber" placeholder="예) 02-123-1234"  th:value="*{callNumber}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="basicAddress" th:if="${#fields.hasErrors('basicAddress')}"  th:errors="*{basicAddress}" class="control-label label-margin-left" style="color: red"></label>
+                            <label for="basicAddress" th:unless="${#fields.hasErrors('basicAddress')}"  class="control-label label-margin-left">주소</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control input-large" id="basicAddress" name="basicAddress" placeholder="기본주소" onclick="addressSearch()" th:value="*{basicAddress}"><br>
+                                <input type="text" style="margin-top: -20px" class="form-control input-large" id="detailAddress" name="detailAddress" placeholder="상세주소" th:value="*{detailAddress}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="youtubeURL" class="label-margin-left control-label inputMarginTop">(선택) 온라인 예배 링크</label>
+                            <div class="col-sm-10">
+                                <input type="text" maxlength="13" class="form-control input-large" id="youtubeURL" name="youtubeURL" placeholder="www.youtube.com"  th:value="*{youtubeURL}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="kakaoPage" class="label-margin-left control-label inputMarginTop">(선택) 카카오 페이지</label>
+                            <div class="col-sm-10">
+                                <input type="text" maxlength="13" class="form-control input-large" id="kakaoPage" name="kakaoPage" placeholder="kakaoPage"  th:value="*{kakaoPage}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="instagram" class="label-margin-left control-label inputMarginTop">(선택) 인스타그램 링크</label>
+                            <div class="col-sm-10">
+                                <input type="text" maxlength="13" class="form-control input-large" id="instagram" name="instagram" placeholder="www.instagram.com"  th:value="*{instagram}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="blog" class="label-margin-left control-label inputMarginTop">(선택) 블로그 링크</label>
+                            <div class="col-sm-10">
+                                <input type="text" maxlength="13" class="form-control input-large" id="blog" name="blog" placeholder="www.naver.com"  th:value="*{blog}">
+                            </div>
+                        </div>
+
+
+
+                            <!--
                     <div class="form-group">
                         <label for="image" class="col-sm-2 control-label">이미지</label>
                         <input type="file" class="form-control-file input-large" multiple="multiple" id="image" name="image" style="display: none" disabled="disabled">
@@ -102,7 +102,7 @@
                         </div>
 
                     </div>
-
+                     -->
                     <br>
                     &nbsp;&nbsp;
                     <button type="button" class="btn btn-outline-primary" id="updateViewBtn" onclick="commonUpdateViewSetting('members')">수정</button>

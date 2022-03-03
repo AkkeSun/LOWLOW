@@ -1,18 +1,20 @@
 package church.lowlow.user_api.admin.basicInfo.service;
 
-import church.lowlow.rest_api.basicInfo.db.BasicInfo;
 import church.lowlow.rest_api.basicInfo.db.BasicInfoDto;
 import church.lowlow.rest_api.common.entity.FileDto;
+import church.lowlow.rest_api.common.entity.Writer;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunctions;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -25,49 +27,64 @@ import java.util.Map;
 public class DefaultBasicInfoService implements BasicInfoService{
 
     @Autowired
-    private WebClient webClientBasicAUth;
+    private WebClient webClient;
+
 
     @Override
-    public BasicInfo getBasicInfo() {
+    public BasicInfoDto getBasicInfo() {
 
-        Mono<ResponseEntity<Object>> responseEntityMono = webClientBasicAUth.get()
+        Mono<ResponseEntity<Object>> responseEntityMono = webClient.get()
                 .uri("/basicInfo/list")
                 .exchange()
                 .flatMap(clientResponse -> clientResponse.toEntity(Object.class));
 
         ResponseEntity<Object> block = responseEntityMono.block();
         Map<String, Object> body = (Map<String, Object>) block.getBody();
-        List <BasicInfo> basicInfoList = (List<BasicInfo>) body.get("basicInfoList");
+        List <LinkedHashMap<String, Object>> basicInfoList = (List<LinkedHashMap<String, Object>>) body.get("basicInfoList");
 
         if (basicInfoList.size() == 0)
             return null;
-        return basicInfoList.get(0);
+
+        return basicInfoBuilder(basicInfoList.get(0));
     }
 
     @Override
-    public boolean createBasicInfo(BasicInfoDto dto) {
+    public BasicInfoDto createBasicInfo(BasicInfoDto dto) {
 
-        // 406 에러가 나온다!!!!!!! 타입 오류
-        ResponseEntity<Object> block = webClientBasicAUth.post()
+        ResponseEntity<Object> block = webClient.post()
                 .uri("/basicInfo")
-                .accept(MediaType.APPLICATION_JSON_UTF8)
                 .body(BodyInserters.fromObject(dto))
                 .exchange()
                 .flatMap(clientResponse -> clientResponse.toEntity(Object.class)).block();
 
-        HttpStatus statusCode = block.getStatusCode();
+        if(!block.getStatusCode().is2xxSuccessful())
+            return null;
 
-        if(statusCode.is2xxSuccessful())
-            return true;
-        return false;
+        Map<String, Object> body = (Map<String, Object>) block.getBody();
+        return basicInfoBuilder(body);
     }
 
 
 
     @Override
-    public boolean updateBasicInfo(BasicInfoDto dto) {
-        return false;
+    public BasicInfoDto updateBasicInfo(BasicInfoDto dto) {
+        return null;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     @Override
@@ -158,5 +175,69 @@ public class DefaultBasicInfoService implements BasicInfoService{
                 basicInfoDto.setChart3_UploadName(fileDto.getUploadName());
                 break;
         }
+    }
+
+    @Override
+    // api/basicInfo 는 csrf() 예외 처리를 하므로 username 을 불러올 수 없어서 dto로 처리
+    public void setWriter(BasicInfoDto basicInfoDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        WebAuthenticationDetails details = (WebAuthenticationDetails) authentication.getDetails();
+        String ip = details.getRemoteAddress();
+
+        Object principal = authentication.getPrincipal();
+        String writer = ((UserDetails) principal).getUsername();
+
+        Writer saveWriter = Writer.builder().writer(writer).ip(ip).build();
+        basicInfoDto.setWriter(saveWriter);
+    }
+
+
+    public BasicInfoDto basicInfoBuilder(Map<String, Object> map) {
+
+        BasicInfoDto build = BasicInfoDto.builder()
+                .basicInfo((String) map.get("basicInfo"))
+                .detailInfo((String) map.get("detailInfo"))
+                .name((String) map.get("name"))
+                .senior_pastor_name((String) map.get("senior_pastor_name"))
+                .basicAddress((String) map.get("basicAddress"))
+                .detailAddress((String) map.get("detailAddress"))
+                .callNumber((String) map.get("callNumber"))
+                .kakaoPage((String) map.get("kakaoPage"))
+                .youtubeURL((String) map.get("youtubeURL"))
+                .blog((String) map.get("blog"))
+                .Info1_OriginalName((String) map.get("Info1_OriginalName"))
+                .Info1_UploadName((String) map.get("Info1_UploadName"))
+                .Info2_OriginalName((String) map.get("Info2_OriginalName"))
+                .Info2_UploadName((String) map.get("Info2_UploadName"))
+                .Info3_OriginalName((String) map.get("Info3_OriginalName"))
+                .Info3_UploadName((String) map.get("Info3_UploadName"))
+                .Info4_OriginalName((String) map.get("Info4_OriginalName"))
+                .Info4_UploadName((String) map.get("Info4_UploadName"))
+                .Info5_OriginalName((String) map.get("Info5_OriginalName"))
+                .Info5_UploadName((String) map.get("Info5_UploadName"))
+                .Info6_OriginalName((String) map.get("Info6_OriginalName"))
+                .Info6_UploadName((String) map.get("Info6_UploadName"))
+                .Car1_OriginalName((String) map.get("Car1_OriginalName"))
+                .Car1_UploadName((String) map.get("Car1_UploadName"))
+                .Car2_OriginalName((String) map.get("Car2_OriginalName"))
+                .Car2_UploadName((String) map.get("Car2_UploadName"))
+                .Car3_OriginalName((String) map.get("Car3_OriginalName"))
+                .Car3_UploadName((String) map.get("Car3_UploadName"))
+                .Car4_OriginalName((String) map.get("Car4_OriginalName"))
+                .Car4_UploadName((String) map.get("Car4_UploadName"))
+                .Car5_OriginalName((String) map.get("Car5_OriginalName"))
+                .Car5_UploadName((String) map.get("Car5_UploadName"))
+                .Car6_OriginalName((String) map.get("Car6_OriginalName"))
+                .Car6_UploadName((String) map.get("Car6_UploadName"))
+                .Chart1_OriginalName((String) map.get("Chart1_OriginalName"))
+                .Chart1_UploadName((String) map.get("Chart1_UploadName"))
+                .Chart2_OriginalName((String) map.get("Chart2_OriginalName"))
+                .Chart2_UploadName((String) map.get("Chart2_UploadName"))
+                .Chart3_OriginalName((String) map.get("Chart3_OriginalName"))
+                .Chart3_UploadName((String) map.get("Chart3_UploadName"))
+                .build();
+
+        return build;
     }
 }

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+<head th:replace="admin/common/head"></head>
+
+<script th:inline="javascript">
+
+    var code = [[${code}]];
+
+    switch(code){
+        case "E1" : e1Exception(); break;
+        case "E2" : e2Exception(); break;
+    }
+
+
+    function e1Exception() {
+        var check = confirm('등록된 교회정보가 없습니다. 신규 등록하시겠습니까?');
+        if(check){
+            location.href="/admin/basicInfo/create/chapter1";
+        }else{
+            location.href="/admin";
+        }
+    }
+
+    function e2Exception() {
+        alert("등록 중 오류가 발생했습니다");
+        location.href="/admin";
+    }
+</script>
+
+<body>
+</body>
+</html>

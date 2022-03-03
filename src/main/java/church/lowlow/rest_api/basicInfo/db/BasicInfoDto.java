@@ -1,15 +1,10 @@
 package church.lowlow.rest_api.basicInfo.db;
 
-import church.lowlow.rest_api.common.entity.FileDto;
+import church.lowlow.rest_api.common.entity.Writer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
 
 /**
  * BasicInfo 객채 검증을 위한 DTO
@@ -29,6 +24,7 @@ public class BasicInfoDto {
     private String youtubeURL;
     private String instagram;
     private String blog;
+    private Writer writer;
 
     private String Info1_OriginalName;
     private String Info1_UploadName;

@@ -11,10 +11,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.HashMap;
+import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 
@@ -34,19 +36,28 @@ public class AdminBasicInfoController {
 
 
     @GetMapping
-    public String getBasicInfo(Model model, @RequestParam(required = false) boolean afterCreate) {
+    public String getBasicInfo(Model model, HttpSession session) {
 
-        if(!afterCreate) {
-            BasicInfo basicInfo = basicInfoService.getBasicInfo();
+        // ------------ 여기부터
+        session.getAttribute("newBasicInfo");
 
-            if(basicInfo == null)
-                return "admin/basicInfo/basicInfoNotFound";
-
-            model.addAttribute("basicInfo", basicInfo);
+        // 신규등록 후 리다이렉트 시
+        if(newBasicInfo.getId() != null){
+            model.addAttribute("basicInfo", newBasicInfo);
             return "admin/basicInfo/basicInfoDetail";
         }
 
+
+        BasicInfoDto dto = basicInfoService.getBasicInfo();
+
+        if(dto == null){
+            model.addAttribute("code", "E1");
+            return "admin/basicInfo/basicInfoErr";
+        }
+
+        model.addAttribute("basicInfo", dto);
         return "admin/basicInfo/basicInfoDetail";
+
     }
 
 
@@ -68,15 +79,12 @@ public class AdminBasicInfoController {
         if(errors.hasErrors())
             return "admin/basicInfo/basicInfoCreate1";
         return "admin/basicInfo/basicInfoCreate2";
-
     }
 
     @PostMapping("/create/chapter2/reload")
     public String getBasicInfoCreateChapter2(@ModelAttribute("basicInfo")BasicInfoDto basicInfoDto) {
         return "admin/basicInfo/basicInfoCreate2";
     }
-
-
 
     @PostMapping("/create/chapter3")
     public String getBasicInfoCreateChapter3(@ModelAttribute("basicInfo") BasicInfoDto basicInfoDto, Errors errors) {
@@ -90,7 +98,10 @@ public class AdminBasicInfoController {
 
     @PostMapping("/create")
     public String createBasicInfo(MultipartHttpServletRequest mRequest,
-                                  @ModelAttribute("basicInfo") BasicInfoDto basicInfoDto) {
+                                  @ModelAttribute("basicInfo") BasicInfoDto basicInfoDto,
+                                  SessionStatus sessionStatus, HttpSession session, Model model) {
+
+
 
         // make FileMap
         Map<String, MultipartFile> fileMap = basicInfoService.makeMultipartFileMap(mRequest);
@@ -103,15 +114,21 @@ public class AdminBasicInfoController {
             }
         });
 
+        // writer setting
+        basicInfoService.setWriter(basicInfoDto);
 
         // DB save
-        boolean result = basicInfoService.createBasicInfo(basicInfoDto);
+        BasicInfoDto basicInfo = basicInfoService.createBasicInfo(basicInfoDto);
 
+        // return
+        if(basicInfo == null) {
+            model.addAttribute("code", "E2");
+            return "redirect:/admin/basicInfoErr";
+        }
 
-
-        // 세션 삭제
-
-        return "redirect:/admin/basicInfo?afterCreate=true";
+        sessionStatus.setComplete();
+        session.setAttribute("newBasicInfo", basicInfo);
+        return "redirect:/admin/basicInfo";
     }
 
 }
