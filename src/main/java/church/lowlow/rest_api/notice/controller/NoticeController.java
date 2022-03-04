@@ -1,6 +1,8 @@
 package church.lowlow.rest_api.notice.controller;
 
 import church.lowlow.rest_api.common.aop.LogComponent;
+import church.lowlow.rest_api.common.entity.PagingDto;
+import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.notice.db.Notice;
 import church.lowlow.rest_api.notice.db.NoticeDto;
 import church.lowlow.rest_api.notice.repository.NoticeRepository;
@@ -10,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
@@ -71,12 +74,16 @@ public class NoticeController {
      * READ API
      */
     @GetMapping
-    public ResponseEntity getNotice(Pageable pageable, PagedResourcesAssembler<Notice> assembler){
+    public ResponseEntity getNotice(PagedResourcesAssembler<Notice> assembler, SearchDto searchDto, PagingDto pagingDto){
 
-        Page<Notice> page = repository.findAll(pageable);
+
+        // request param logging
+        logComponent.searchDtoLogging(searchDto);
+        logComponent.pagingDtoLogging(pagingDto);
+
+        Page<Notice> page = repository.getNoticePage(searchDto, pagingDto);
         var pagedResources = assembler.toResource(page, e -> new NoticeResource(e));
         return ResponseEntity.ok(pagedResources);
-
     }
 
     @GetMapping("{id}")

@@ -7,16 +7,9 @@
 <script th:inline="javascript">
     $(document).ready(function(){
         useSummernote();
-
         if([[${basicInfo.detailInfo}]] != null)
             $('#contents').summernote('code', [[${basicInfo.detailInfo}]]);
     });
-
-    function goChapter1(){
-        $("#basicInfoFrm2").attr("action", "/admin/basicInfo/create/chapter1/reload");
-        $("#basicInfoFrm2").submit();
-    }
-
 </script>
 
 <body>

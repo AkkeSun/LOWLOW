@@ -4,40 +4,6 @@
 <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
 <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
 <head th:replace="admin/common/head"></head>
-<script th:inline="javascript">
-    $(document).ready(function(){
-    });
-
-    function goChapter2(){
-        var cfm = confirm("업로드한 이미지가 삭제됩니다. 계속하시겠습니까")
-        if(cfm){
-            $("#basicInfoFrm3").attr("action", "/admin/basicInfo/create/chapter2/reload");
-            $("#basicInfoFrm3").submit();
-        }
-    }
-
-    function cancelBtn(){
-        var cfm =confirm("정말 취소하시겠습니까")
-        if(cfm)
-            location.href="/admin";
-    }
-
-    function basicInfoSave() {
-        var cfm = confirm("저장하시겠습니까")
-        if(cfm)
-            $("#basicInfoFrm3").submit();
-    }
-
-    function basicInfoUpdate() {
-        var cfm = confirm("수정하시겠습니까")
-        if(cfm){
-            $("#method").val("PUT");
-            $("#basicInfoFrm3").attr('action', "/admin/basicInfo/update").submit();
-        }
-    }
-
-</script>
-
 <body>
 
 <div class="container-fluid">

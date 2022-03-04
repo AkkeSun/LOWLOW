@@ -7,33 +7,7 @@
 <head th:replace="admin/common/head"></head>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
-<script th:inline="javascript">
-    $(document).ready(function(){
-    });
-
-    function addressSearch() {
-        new daum.Postcode({
-            oncomplete: function(data) {
-
-                var addr = '';
-
-                // 도로명 주소 (R)
-                if (data.userSelectedType === 'R') {
-                    addr = data.roadAddress;
-                // 지번주소 (J)
-                } else {
-                    addr = data.jibunAddress;
-                }
-                $("#basicAddress").val(addr);
-                $("#detailAddress").focus();
-            }
-        }).open();
-    }
-
-</script>
-
 <body>
-
 <div class="container-fluid">
     <div class="row flex-nowrap">
         <div th:replace="admin/common/sidebar"></div>

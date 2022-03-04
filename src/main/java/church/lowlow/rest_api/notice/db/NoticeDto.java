@@ -19,9 +19,9 @@ public class NoticeDto {
     @NotBlank(message = "제목은 비워둘 수 없습니다")
     private String title;
 
-    @NotNull(message = "작성자는 비워둘 수 없습니다")
     private Writer writer;
-
+    
+    @NotBlank(message = "내용은 비워둘 수 없습니다")
     private String contents;
 
 }

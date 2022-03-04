@@ -100,6 +100,7 @@ function commonUpdateViewSetting(pageName){
         case 'accounting' : accountingUpdateViewSetting(); break;
         case 'galleries'  : galleryUpdateViewSetting();  break;
         case 'calendars'  : calendarUpdateViewSetting();  break;
+        case 'notices'    : noticeUpdateViewSetting();  break;
     }
 }
 
@@ -130,6 +131,9 @@ function commonInsertAndUpdate(pageName, type){
             break;
         case "calendars" :
             data = objToJson($('#calendarFrm').serializeArray());
+            break;
+        case "notices" :
+            data = objToJson($('#noticeFrm').serializeArray());
             break;
     }
 
@@ -209,9 +213,10 @@ function commonDelete(pageName){
 function commonListLoad(pageName, nowPage){
 
     switch(pageName){
-        case 'members' : memberListLoad(nowPage); break;
+        case 'members'    : memberListLoad(nowPage); break;
         case 'accounting' : accountingListLoad(nowPage); break;
-        case 'galleries' : galleryListLoad(nowPage); break;
+        case 'galleries'  : galleryListLoad(nowPage); break;
+        case 'notices'    : noticeListLoad(nowPage); break;
     }
 }
 
@@ -232,6 +237,10 @@ function commonSearch(pageName){
         case 'galleries' :
             commonPagingProcess('gallery');
             galleryListLoad(0);
+            break;
+        case 'notices' :
+            commonPagingProcess('notices');
+            noticeListLoad(0);
             break;
     }
 }
@@ -261,6 +270,12 @@ function commonSearchInitialize(pageName){
             $("#searchData").val("");
             galleryListLoad(0);
             commonPagingProcess('gallery');
+            break;
+        case 'notices' :
+            $("#searchId").val("title");
+            $("#searchData").val("");
+            noticeListLoad(0);
+            commonPagingProcess('notices');
             break;
     }
 }
