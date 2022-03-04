@@ -43,6 +43,7 @@
             <!-- Main Contents -->
             <div class="container">
                 <form class="form-horizontal" th:object="${basicInfo}" th:action="@{/admin/basicInfo/create/chapter2}" th:method="post">
+                    <input type="hidden" name="id" th:value="*{id}">
                     <div class="form-group">
                         <label for="name" th:if="${#fields.hasErrors('name')}"  th:errors="*{name}" class="control-label label-margin-left" style="color: red"></label>
                         <label for="name" th:unless="${#fields.hasErrors('name')}"  class="control-label label-margin-left" >교회명</label>
@@ -50,7 +51,6 @@
                             <input type="text" class="form-control input-large" id="name" name="name" placeholder="000 교회"  th:value="*{name}">
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label for="senior_pastor_name" th:if="${#fields.hasErrors('senior_pastor_name')}"  th:errors="*{senior_pastor_name}" class="control-label label-margin-left" style="color: red"></label>
                         <label for="senior_pastor_name" th:unless="${#fields.hasErrors('senior_pastor_name')}"  class="control-label label-margin-left" >담임목사</label>
@@ -99,8 +99,8 @@
                     </div>
                     <br>
                     &nbsp;&nbsp;
-                    <a class="btn btn-outline-primary" th:href="@{/admin}">등록 취소 </a>
                     <button type="submit" class="btn btn-outline-primary">다음</button>
+                    <a class="btn btn-outline-primary" th:href="@{/admin}">취소</a>
                 </form>
             </div>
             <br><br><br><br>

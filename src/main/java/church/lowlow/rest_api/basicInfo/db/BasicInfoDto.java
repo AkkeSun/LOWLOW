@@ -1,5 +1,6 @@
 package church.lowlow.rest_api.basicInfo.db;
 
+import church.lowlow.rest_api.common.entity.FileDto;
 import church.lowlow.rest_api.common.entity.Writer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data @Builder
 @NoArgsConstructor @AllArgsConstructor
 public class BasicInfoDto {
-
+    private Integer id;
     private String basicInfo;
     private String detailInfo;
     private String name;
@@ -25,37 +26,20 @@ public class BasicInfoDto {
     private String instagram;
     private String blog;
     private Writer writer;
-
-    private String Info1_OriginalName;
-    private String Info1_UploadName;
-    private String Info2_OriginalName;
-    private String Info2_UploadName;
-    private String Info3_OriginalName;
-    private String Info3_UploadName;
-    private String Info4_OriginalName;
-    private String Info4_UploadName;
-    private String Info5_OriginalName;
-    private String Info5_UploadName;
-    private String Info6_OriginalName;
-    private String Info6_UploadName;
-
-    private String Car1_OriginalName;
-    private String Car1_UploadName;
-    private String Car2_OriginalName;
-    private String Car2_UploadName;
-    private String Car3_OriginalName;
-    private String Car3_UploadName;
-    private String Car4_OriginalName;
-    private String Car4_UploadName;
-    private String Car5_OriginalName;
-    private String Car5_UploadName;
-    private String Car6_OriginalName;
-    private String Car6_UploadName;
-    private String Chart1_OriginalName;
-    private String Chart1_UploadName;
-    private String Chart2_OriginalName;
-    private String Chart2_UploadName;
-    private String Chart3_OriginalName;
-    private String Chart3_UploadName;
+    private FileDto infoImage1;
+    private FileDto infoImage2;
+    private FileDto infoImage3;
+    private FileDto infoImage4;
+    private FileDto infoImage5;
+    private FileDto infoImage6;
+    private FileDto carouselImg1;
+    private FileDto carouselImg2;
+    private FileDto carouselImg3;
+    private FileDto carouselImg4;
+    private FileDto carouselImg5;
+    private FileDto carouselImg6;
+    private FileDto organizationChart1;
+    private FileDto organizationChart2;
+    private FileDto organizationChart3;
 
 }

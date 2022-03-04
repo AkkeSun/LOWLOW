@@ -12,8 +12,9 @@
     switch(code){
         case "E1" : e1Exception(); break;
         case "E2" : e2Exception(); break;
+        case "Cs" : createSuccess(); break;
+        case "Us" : updateSuccess(); break;
     }
-
 
     function e1Exception() {
         var check = confirm('등록된 교회정보가 없습니다. 신규 등록하시겠습니까?');
@@ -27,6 +28,16 @@
     function e2Exception() {
         alert("등록 중 오류가 발생했습니다");
         location.href="/admin";
+    }
+
+    function createSuccess() {
+        alert("성공적으로 등록되었습니다");
+        location.href="/admin/basicInfo";
+    }
+
+    function updateSuccess() {
+        alert("성공적으로 수정되었습니다");
+        location.href="/admin/basicInfo";
     }
 </script>
 

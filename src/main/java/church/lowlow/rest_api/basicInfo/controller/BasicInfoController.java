@@ -18,9 +18,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.net.URI;
 import java.nio.file.Watchable;
@@ -110,9 +117,7 @@ public class BasicInfoController {
      * UPDATE API
      */
     @PutMapping("/{id}")
-    public ResponseEntity updateInfo(@RequestBody @Valid BasicInfoDto dto,
-                                        @PathVariable Integer id,
-                                        Errors errors){
+    public ResponseEntity updateInfo(@RequestBody BasicInfoDto dto, @PathVariable Integer id, Errors errors){
 
         // request param Logging
         logComponent.basicInfoDtoLogging(dto);
@@ -121,13 +126,16 @@ public class BasicInfoController {
         Optional<BasicInfo> optional = repository.findById(id);
         if(optional.isEmpty())
             return ResponseEntity.notFound().build();
+        validation.chapter1Validate(dto, errors);
+        if(errors.hasErrors())
+            return badRequest().body(new BasicInfoErrorsResource(errors));
+        validation.chapter2Validate(dto, errors);
         if(errors.hasErrors())
             return badRequest().body(new BasicInfoErrorsResource(errors));
 
-        // save
+        // update
         BasicInfo info = modelMapper.map(dto, BasicInfo.class);
         info.setId(id);
-        info.setWriter(getWriter());
         BasicInfo updateInfo = repository.save(info);
 
         // return
@@ -157,4 +165,6 @@ public class BasicInfoController {
         resource.add(linkTo(BasicInfoController.class).withRel("index"));
         return ResponseEntity.ok(resource);
     }
+
+
 }

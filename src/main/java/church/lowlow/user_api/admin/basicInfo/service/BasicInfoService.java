@@ -11,11 +11,10 @@ public interface BasicInfoService {
 
     BasicInfoDto getBasicInfo();
     BasicInfoDto createBasicInfo(BasicInfoDto dto);
-    BasicInfoDto updateBasicInfo(BasicInfoDto dto);
+    BasicInfoDto updateBasicInfo(BasicInfoDto updateDto);
     Map<String, MultipartFile> makeMultipartFileMap (MultipartHttpServletRequest mRequest);
     void fileDtoSave(String key, FileDto fileDto, BasicInfoDto basicInfoDto);
-
     void setWriter(BasicInfoDto basicInfoDto);
-
+    void fileDtoPreDataSetting(BasicInfoDto preData, BasicInfoDto updateDto);
 }
 
