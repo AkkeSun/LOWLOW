@@ -10,7 +10,7 @@
         datePickerSet($("#regiDate"));
         datePickerSet($("#birthDay"));
         $("#updateProcessBtn").hide();
-        $("#image").on("change", memberHandleImgFileSelect);
+        $("#image").on("change", memberFileCheck);
     });
 </script>
 
@@ -85,7 +85,7 @@
 
                     <div class="form-group">
                         <label for="image" class="col-sm-2 control-label">이미지</label>
-                        <input type="file" class="form-control-file input-large" multiple="multiple" id="image" name="image" style="display: none" disabled="disabled">
+                        <input type="file" class="form-control-file input-large" id="image" name="image" style="display: none" disabled="disabled">
                         <br>
 
                         <div th:if="${member.image} != null">

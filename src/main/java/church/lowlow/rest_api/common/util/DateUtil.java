@@ -159,7 +159,7 @@ public class DateUtil {
 
     /**********************
      *날짜 시간 형식 포맷
-     *@paramuserDateTime: yyyy-MM-dd HH:mm:ss
+     *@param userDateTime: yyyy-MM-dd HH:mm:ss
      *@return: yyyyMMddHHmmss
      *********************/
     public static String dateTimeFormatter(String userDateTime){
@@ -171,6 +171,7 @@ public class DateUtil {
             userDateTime = userDateTime.replace(":", "");
         return userDateTime;
     }
+
 
 
 

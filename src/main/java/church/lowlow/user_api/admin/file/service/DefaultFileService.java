@@ -5,8 +5,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.File;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -34,8 +36,6 @@ public class DefaultFileService implements FileService{
 
         return fileDto;
     }
-
-
 
 
     @Override

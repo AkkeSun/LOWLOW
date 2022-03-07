@@ -52,7 +52,7 @@ public class NoticeDslImpl implements NoticeDsl {
                 .where(builder)
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
-                .orderBy(q1.createdDate.desc())
+                .orderBy(q1.modifiedDate.desc())
                 .fetchResults();
 
         return new PageImpl<>(queryResults.getResults(), pageable, queryResults.getTotal());

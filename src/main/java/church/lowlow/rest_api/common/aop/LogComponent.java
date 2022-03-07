@@ -81,8 +81,7 @@ public class LogComponent {
         log.info("[REQUEST] belong : \"" + dto.getBelong() + "\"");
         log.info("[REQUEST] churchOfficer : \"" + dto.getChurchOfficer() + "\"");
         log.info("[REQUEST] regiDate : \"" + dto.getRegiDate() + " \"");
-        log.info("[REQUEST] img_originalName : \"" + dto.getOriginalName() + "\"");
-        log.info("[REQUEST] img_uploadName : \"" + dto.getUploadName() + "\"");
+        log.info("[REQUEST] image : \"" + dto.getImage() + "\"");
     }
 
     public void noticeDtoLogging(NoticeDto dto){
@@ -92,9 +91,11 @@ public class LogComponent {
 
     public void weeklyDtoLogging(WeeklyDto dto){
         log.info("[REQUEST] title : \"" + dto.getTitle() + "\"");
+        log.info("[REQUEST] weeklyDate : \"" + dto.getWeeklyDate() + "\"");
         log.info("[REQUEST] img1 : \"" + dto.getImg1() + "\"");
         log.info("[REQUEST] img2 : \"" + dto.getImg2() + "\"");
         log.info("[REQUEST] img3 : \"" + dto.getImg3() + "\"");
+        log.info("[REQUEST] img4 : \"" + dto.getImg4() + "\"");
     }
 
     public void worshipVideoDtoLogging(WorshipVideoDto dto){

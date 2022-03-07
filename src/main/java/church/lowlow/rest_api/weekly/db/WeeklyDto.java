@@ -17,14 +17,21 @@ import javax.validation.constraints.NotNull;
 @Builder @NoArgsConstructor @AllArgsConstructor
 public class WeeklyDto {
 
-    @NotBlank(message = "제목은 비워둘 수 없습니다")
     private String title;
-
-    @NotNull(message = "작성자는 비워둘 수 없습니다")
     private Writer writer;
+    private String weeklyDate;
 
     private FileDto img1;
     private FileDto img2;
     private FileDto img3;
     private FileDto img4;
+
+    private String img1_OriginalName;
+    private String img2_OriginalName;
+    private String img3_OriginalName;
+    private String img4_OriginalName;
+    private String img1_UploadName;
+    private String img2_UploadName;
+    private String img3_UploadName;
+    private String img4_UploadName;
 }

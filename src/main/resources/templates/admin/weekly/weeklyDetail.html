@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+<head th:replace="admin/common/head"></head>
+
+<script th:inline="javascript">
+    $(document).ready(function(){
+        datePickerSet($("#weeklyDate"));
+        $("#updateProcessBtn").hide();
+        $("#image").on("change", memberHandleImgFileSelect);
+    });
+</script>
+
+<body>
+
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <div th:replace="admin/common/sidebar"></div>
+        <div class="col py-3">
+            <th:block th:replace="admin/member/fragment :: memberTitle"/>
+
+            <!-- Main Contents -->
+            <div class="container">
+                <form class="form-horizontal" id="withFileUploadFrm" th:object="${weekly}" enctype="multipart/form-data">
+                    <input type="hidden" id="id" th:value="*{id}">
+                    <input type="hidden" id="createdDate" th:value="*{createdDate}">
+                    <div class="form-group">
+                        <label for="title" class="col-sm-2 control-label">제목</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control input-large" id="title" name="title" placeholder="제목"  th:value="*{title}" disabled="disabled">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="weeklyDate" class="col-sm-2 control-label">주차</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control input-large" id="weeklyDate" name="weeklyDate" th:value="*{weeklyDate}" disabled="disabled">
+                        </div>
+                    </div>
+
+
+
+                    <th:block id="imageDetailView">
+                    <div th:if="${weekly.img1} != null" class="form-group">
+                        <label for="img1" class="col-sm-2 control-label">이미지1</label>
+                        <br>
+                        <input type="hidden" id="image1_savedOriginalName" th:value="*${weekly.img1.originalName}">
+                        <input type="hidden" id="image1_savedUploadName" th:value="*${weekly.img1.uploadName}">
+                        &nbsp;&nbsp;
+                        <img class="imgSample" id="img1" th:src="@{/upload/} + ${weekly.img1.uploadName}">
+                    </div>
+                    <div th:if="${weekly.img2} != null" class="form-group">
+                        <label for="img2" class="col-sm-2 control-label">이미지2</label>
+                        <br>
+                        <input type="hidden" id="image2_savedOriginalName" th:value="*${weekly.img2.originalName}">
+                        <input type="hidden" id="image2_savedUploadName" th:value="*${weekly.img2.uploadName}">
+                        &nbsp;&nbsp;
+                        <img class="imgSample" id="img2" th:src="@{/upload/} + ${weekly.img2.uploadName}">
+                    </div>
+                    <div th:if="${weekly.img3} != null" class="form-group">
+                        <label for="img3" class="col-sm-2 control-label">이미지3</label>
+                        <br>
+                        <input type="hidden" id="image3_savedOriginalName" th:value="*${weekly.img3.originalName}">
+                        <input type="hidden" id="image3_savedUploadName" th:value="*${weekly.img3.uploadName}">
+                        &nbsp;&nbsp;
+                        <img class="imgSample" id="img3" th:src="@{/upload/} + ${weekly.img3.uploadName}">
+                    </div>
+                    <div th:if="${weekly.img4} != null" class="form-group">
+                        <label for="img4" class="col-sm-2 control-label">이미지4</label>
+                        <br>
+                        <input type="hidden" id="image4_savedOriginalName" th:value="*${weekly.img4.originalName}">
+                        <input type="hidden" id="image4_savedUploadName" th:value="*${weekly.img4.uploadName}">
+                        &nbsp;&nbsp;
+                        <img class="imgSample" id="img4" th:src="@{/upload/} + ${weekly.img4.uploadName}">
+                    </div>
+                    </th:block>
+
+
+                    <br>
+                    &nbsp;&nbsp;
+                    <button type="button" class="btn btn-outline-primary" id="updateViewBtn" onclick="commonUpdateViewSetting('members')">수정</button>
+                    <button type="button" class="btn btn-outline-primary" id="updateProcessBtn" onclick="commonInsertAndUpdate('members', 'put')">수정완료</button>
+                    <button type="button" class="btn btn-outline-primary" id="deleteBtn" onclick="commonDelete('members')">삭제</button>
+                    <a class="btn btn-outline-primary" th:href="@{/admin/members}">목록 </a>
+                </form>
+            </div>
+            <br><br><br><br>
+            <!-- Main Contents -->
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

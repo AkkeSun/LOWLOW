@@ -1,5 +1,6 @@
 package church.lowlow.rest_api.member.db;
 
+import church.lowlow.rest_api.common.entity.FileDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,8 +33,6 @@ public class MemberDto {
 
     private LocalDate regiDate;
 
-    private String originalName;
-
-    private String uploadName;
+    private FileDto image;
 
 }

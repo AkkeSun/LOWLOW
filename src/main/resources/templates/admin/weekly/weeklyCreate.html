@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+<head th:replace="admin/common/head"></head>
+
+<script th:inline="javascript">
+    $(document).ready(function(){
+        datePickerSet($("#weeklyDate"));
+        $("#image1").on("change", weeklyFileCheck1);
+        $("#image2").on("change", weeklyFileCheck2);
+        $("#image3").on("change", weeklyFileCheck3);
+        $("#image4").on("change", weeklyFileCheck4);
+    });
+</script>
+
+<body>
+
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <div th:replace="admin/common/sidebar"></div>
+        <div class="col py-3">
+            <th:block th:replace="admin/member/fragment :: memberTitle"/>
+
+            <!-- Main Contents -->
+            <div class="container">
+                <form class="form-horizontal" id="weeklyFrm" th:object="${weekly}" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="title" class="col-sm-2 control-label">제목</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control input-large" id="title" name="title" th:value="*{title}" placeholder="0월 0일 주보">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="weeklyDate" class="col-sm-2 control-label">주차</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control input-large" id="weeklyDate" name="weeklyDate" th:value="*{weeklyDate}" placeholder="예) 1900-12-31">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="image1" class="col-sm-2 control-label">이미지1</label>
+                        <input type="file" class="form-control-file input-large" id="image1" name="image1" style="display: none">
+                        <br>
+                        &nbsp;
+                        <label for="image1">
+                            <img class="imgSample" id="imageView1" src="/image/uploadSample.png">
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="image2" class="col-sm-2 control-label">이미지2</label>
+                        <input type="file" class="form-control-file input-large" id="image2" name="image2" style="display: none">
+                        <br>
+                        &nbsp;
+                        <label for="image2">
+                            <img class="imgSample" id="imageView2" src="/image/uploadSample.png">
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="image3" class="col-sm-2 control-label">이미지3</label>
+                        <input type="file" class="form-control-file input-large" id="image3" name="image3" style="display: none">
+                        <br>
+                        &nbsp;
+                        <label for="image3">
+                            <img class="imgSample" id="imageView3" src="/image/uploadSample.png">
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="image4" class="col-sm-2 control-label">이미지4</label>
+                        <input type="file" class="form-control-file input-large" id="image4" name="image4" style="display: none">
+                        <br>
+                        &nbsp;
+                        <label for="image4">
+                            <img class="imgSample" id="imageView4" src="/image/uploadSample.png">
+                        </label>
+                    </div>
+                    <br>
+                    &nbsp;&nbsp;
+                    <button type="button" class="btn btn-outline-primary"  onclick="commonInsertAndUpdate('weekly', 'post')">등록</button>
+                    <a class="btn btn-outline-primary" th:href="@{/admin/weekly}">목록 </a>
+                </form>
+            </div>
+            <br><br><br><br>
+            <!-- Main Contents -->
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,8 +1,11 @@
 package church.lowlow.rest_api.weekly.controller;
 
 import church.lowlow.rest_api.common.aop.LogComponent;
+import church.lowlow.rest_api.common.entity.PagingDto;
+import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.weekly.db.Weekly;
 import church.lowlow.rest_api.weekly.db.WeeklyDto;
+import church.lowlow.rest_api.weekly.db.WeeklyValidation;
 import church.lowlow.rest_api.weekly.repository.WeeklyRepository;
 import church.lowlow.rest_api.weekly.resource.WeeklyErrorsResource;
 import church.lowlow.rest_api.weekly.resource.WeeklyResource;
@@ -38,16 +41,20 @@ public class WeeklyController {
     @Autowired
     private LogComponent logComponent;
 
+    @Autowired
+    private WeeklyValidation validation;
+
     /**
      * CREATE API
      */
     @PostMapping
-    public ResponseEntity createWeekly(@RequestBody @Valid WeeklyDto dto, Errors errors){
+    public ResponseEntity createWeekly(@RequestBody WeeklyDto dto, Errors errors){
 
         // request param logging
         logComponent.weeklyDtoLogging(dto);
 
         // check
+        validation.validate(dto, errors);
         if(errors.hasErrors())
             return badRequest().body(new WeeklyErrorsResource(errors));
 
@@ -71,8 +78,8 @@ public class WeeklyController {
      * READ API
      */
     @GetMapping
-    public ResponseEntity getWeekly(Pageable pageable, PagedResourcesAssembler<Weekly> assembler){
-        Page<Weekly> page = repository.findAll(pageable);
+    public ResponseEntity getWeekly(SearchDto searchDto, PagingDto pagingDto, PagedResourcesAssembler<Weekly> assembler){
+        Page<Weekly> page = repository.getWeeklyList(searchDto, pagingDto);
         var pagedResources = assembler.toResource(page, e -> new WeeklyResource(e));
         return ResponseEntity.ok(pagedResources);
     }
@@ -93,7 +100,7 @@ public class WeeklyController {
      * UPDATE API
      */
     @PutMapping("/{id}")
-    public ResponseEntity updateWeekly(@RequestBody @Valid WeeklyDto dto, @PathVariable Integer id, Errors errors){
+    public ResponseEntity updateWeekly(@RequestBody WeeklyDto dto, @PathVariable Integer id, Errors errors){
 
         // request param logging
         logComponent.weeklyDtoLogging(dto);
@@ -102,6 +109,7 @@ public class WeeklyController {
         Optional<Weekly> optional = repository.findById(id);
         if(optional.isEmpty())
             return ResponseEntity.notFound().build();
+        validation.validate(dto, errors);
         if(errors.hasErrors())
             return badRequest().body(new WeeklyErrorsResource(errors));
 

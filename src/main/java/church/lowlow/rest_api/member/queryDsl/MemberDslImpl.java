@@ -59,6 +59,7 @@ public class MemberDslImpl implements MemberDsl {
         QueryResults<Member> queryResults = jpaQueryFactory.selectFrom(q1)
                 .limit(pageable.getPageSize()) // 출력할 데이터 수
                 .offset(pageable.getOffset())  // 출력할 페이지 인덱스
+                .orderBy(q1.modifiedDate.desc())
                 .where(builder)
                 .fetchResults();
 

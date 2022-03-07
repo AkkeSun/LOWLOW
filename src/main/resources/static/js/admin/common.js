@@ -101,6 +101,7 @@ function commonUpdateViewSetting(pageName){
         case 'galleries'  : galleryUpdateViewSetting();  break;
         case 'calendars'  : calendarUpdateViewSetting();  break;
         case 'notices'    : noticeUpdateViewSetting();  break;
+        case 'weekly'     : weeklyUpdateViewSetting();  break;
     }
 }
 
@@ -118,10 +119,20 @@ function commonInsertAndUpdate(pageName, type){
     var async       = true;
     var isSecurity  = false;
     var data        = "";
+    var img1 = {};
+    var img2 = {};
+    var img3 = {};
+    var img4 = {};
 
+
+    // data setting
     switch(pageName){
         case "members" :
             data = objToJson($('#withFileUploadFrm').serializeArray());
+            var imageObject = memberImageProcess(csrfHeader, csrfToken);
+            img1.uploadName = imageObject.uploadName;
+            img1.originalName = imageObject.originalName;
+            data.image = img1;
             break;
         case "accounting" :
             data = objToJson($('#accountingForm').serializeArray());
@@ -135,10 +146,27 @@ function commonInsertAndUpdate(pageName, type){
         case "notices" :
             data = objToJson($('#noticeFrm').serializeArray());
             break;
+        case "weekly" :
+            data = objToJson($('#weeklyFrm').serializeArray());
+            var imageObject = weeklyImageProcess(csrfHeader, csrfToken);
+            img1.originalName = imageObject.image1_originalName;
+            img1.uploadName = imageObject.image1_uploadName;
+            img2.originalName=imageObject.image2_originalName;
+            img2.uploadName=imageObject.image2_uploadName;
+            img3.originalName=imageObject.image3_originalName;
+            img3.uploadName=imageObject.image3_uploadName;
+            img4.originalName=imageObject.image4_originalName;
+            img4.uploadName=imageObject.image4_uploadName;
+            data.img1 = img1;
+            data.img2 = img2;
+            data.img3 = img3;
+            data.img4 = img4;
+            break;
     }
 
-
+    /*
     if($("#image").val()){
+        alert("이미지 업로드")
         var fileUploadCallback = ajaxFileUpload(csrfHeader, csrfToken, new FormData($("#withFileUploadFrm")[0]));
         fileUploadCallback.done( uploadData => {
             data.uploadName   = uploadData.uploadName;
@@ -148,11 +176,12 @@ function commonInsertAndUpdate(pageName, type){
 
 
     // 업데이트 시 기존 이미지를 사용하는 경우
-    if($("#savedOriginalName").val()){
+    if($("#image").val() == "" && $("#savedOriginalName").val()){
+        alert("저장된 이미지 사용");
         data.uploadName   = $("#savedUploadName").val();
         data.originalName = $("#savedOriginalName").val();
     }
-
+*/
 
     // update url 변경
     if(type == 'put')
@@ -175,11 +204,7 @@ function commonInsertAndUpdate(pageName, type){
         console.log(errorResource);
         alert(errorResource.defaultMessage);
     });
-
-
 }
-
-
 
 
 
@@ -242,6 +267,10 @@ function commonSearch(pageName){
             commonPagingProcess('notices');
             noticeListLoad(0);
             break;
+        case 'weekly' :
+            commonPagingProcess('weekly');
+            weeklyListLoad(0);
+            break;
     }
 }
 
@@ -277,53 +306,16 @@ function commonSearchInitialize(pageName){
             noticeListLoad(0);
             commonPagingProcess('notices');
             break;
+        case 'weekly' :
+            $("#searchId").val("title");
+            $("#searchData").val("");
+            weeklyListLoad(0);
+            commonPagingProcess('weekly');
+            break;
     }
 }
 
-// ================= 파일 사이즈 체크 ====================
-function fileCheck(e){
 
-    let files = e.target.files;
-    let filesArr = Array.prototype.slice.call(files);
-
-    
-    filesArr.forEach(function(f) {
-        
-        //========= 이미지 종류 체크 =========
-        if(!f.type.match("image.*")) {
-            alert("이미지만 업로드 가능합니다.");
-            return;
-        }
-        
-        //========= 파일 사이즈 체크 =========
-        var maxSize = 5 * 1024 * 1024; // 5MB
-        var browser=navigator.appName;
-
-        if (browser == "Microsoft Internet Explorer") {
-            var oas = new ActiveXObject("Scripting.FileSystemObject");
-            fileSize = oas.getFile(f.value).size;
-        }
-        else
-            fileSize = f.size;
-
-        if (fileSize > maxSize) {
-            alert("첨부파일 사이즈는 5MB 이내로 등록 가능합니다.");
-            $(this).val('');
-            $("#imageView").attr('src', '/image/uploadSample.png');
-            return;
-        }
-
-        //========= 이미지 미리보기 기능 구현 =========
-        sel_file = f;
-        let reader = new FileReader();
-        reader.onload = function(e) {
-            $("#imageView").attr("src", e.target.result);
-            $("#imageView").css("width", '150px');
-        }
-        reader.readAsDataURL(f);
-    });
-
-}
 
 
 
@@ -332,13 +324,19 @@ function fileCheck(e){
 
 
 // ================= 파일 업로드 처리함수 ====================
-function ajaxFileUpload (csrfHeader, csrfToken, data){
+function ajaxFileUpload (csrfHeader, csrfToken, data, page){
+
+    var url = "";
+    switch(page){
+        case "member" : url = "/file/upload"; break;
+        case "weekly" : url = "/admin/weekly/fileUpload"; break;
+    }
 
     var callback =
         $.ajax({
             type       : "post",
-            url        : "/file/upload",
-            enctype    : 'multipart/form-data',
+            url        : url,
+            enctype    : false,
             async      : false,
             processData: false,
             contentType: false,

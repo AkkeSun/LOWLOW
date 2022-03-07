@@ -60,7 +60,6 @@ public class MemberController {
         // save
         Member member = modelMapper.map(dto, Member.class);
         member.setWriter( getWriter() );
-        member.setImage(FileDto.builder().originalName(dto.getOriginalName()).uploadName(dto.getUploadName()).build());
         Member newMember = repository.save(member);
         URI createdUri = linkTo(MemberController.class).slash(newMember.getId()).toUri();
 
@@ -120,7 +119,6 @@ public class MemberController {
         // update
         Member member = modelMapper.map(dto, Member.class);
         member.setWriter( getWriter() );
-        member.setImage(FileDto.builder().originalName(dto.getOriginalName()).uploadName(dto.getUploadName()).build());
         member.setId(id);
         Member updateMember = repository.save(member);
 

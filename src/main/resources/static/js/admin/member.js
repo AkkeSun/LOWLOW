@@ -92,3 +92,80 @@ function memberUpdateViewSetting() {
     $("#datePicker").removeAttr("disabled");
     $("#image").removeAttr("disabled");
 };
+
+
+
+
+
+
+// ================= 파일 사이즈 체크 ====================
+function memberFileCheck(e){
+
+    let files = e.target.files;
+    let filesArr = Array.prototype.slice.call(files);
+
+    filesArr.forEach(function(f) {
+
+        //========= 이미지 종류 체크 =========
+        if(!f.type.match("image.*")) {
+            alert("이미지만 업로드 가능합니다.");
+            return;
+        }
+
+        //========= 파일 사이즈 체크 =========
+        var maxSize = 5 * 1024 * 1024; // 5MB
+        var browser=navigator.appName;
+
+        if (browser == "Microsoft Internet Explorer") {
+            var oas = new ActiveXObject("Scripting.FileSystemObject");
+            fileSize = oas.getFile(f.value).size;
+        }
+        else
+            fileSize = f.size;
+
+        if (fileSize > maxSize) {
+            alert("첨부파일 사이즈는 5MB 이내로 등록 가능합니다.");
+            $(this).val('');
+            $("#imageView").attr('src', '/image/uploadSample.png');
+            return;
+        }
+
+        //========= 이미지 미리보기 기능 구현 =========
+        sel_file = f;
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            $("#imageView").attr("src", e.target.result);
+            $("#imageView").css("width", '150px');
+        }
+        reader.readAsDataURL(f);
+    });
+}
+
+
+
+
+
+
+// ================= Member Image Upload Process ====================
+function memberImageProcess(csrfHeader, csrfToken) {
+    imageObject = {};
+
+    // Create : 이미지를 업로드하는 경우
+    if($("#image").val()){
+        var fileUploadCallback = ajaxFileUpload(csrfHeader, csrfToken, new FormData($("#withFileUploadFrm")[0]), "member");
+        fileUploadCallback.done( uploadData => {
+            imageObject.uploadName =  uploadData.uploadName;
+            imageObject.originalName =  uploadData.originalName;
+        });
+    }
+
+    // Update : 이미지를 수정하지 않는 경우
+    if($("#image").val() == "" && $("#savedOriginalName").val()){
+        imageObject.uploadName  = $("#savedUploadName").val();
+        imageObject.originalName  = $("#savedOriginalName").val();
+    }
+    return imageObject;
+}
+
+
+

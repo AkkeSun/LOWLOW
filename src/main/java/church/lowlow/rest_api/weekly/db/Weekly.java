@@ -26,6 +26,8 @@ public class Weekly extends BaseTimeEntity {
 
     private String title;
 
+    private String weeklyDate;
+
     @Embedded
     private Writer writer;
 

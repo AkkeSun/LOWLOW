@@ -28,6 +28,11 @@ public class FileController {
         return service.fileUpload(image);
     }
 
+    @PostMapping("/upload2")
+    public FileDto multiUpload(MultipartFile image) {
+        return service.fileUpload(image);
+    }
+
     @PostMapping("/delete")
     public void fileDelete(String uploadFileName){
         service.deleteFile(uploadFileName);
