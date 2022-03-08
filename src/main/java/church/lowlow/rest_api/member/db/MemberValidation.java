@@ -23,7 +23,7 @@ public class MemberValidation {
         basicValidate(dto, errors);
 
         Member checkMember = memberRepository.findByNameAndPhoneNumber(dto.getName(), dto.getPhoneNumber());
-        if (checkMember != null)
+        if (checkMember != null && !checkMember.isBlock())
             errors.rejectValue("name", "wrongName", "이미 등록된 교인입니다");
 
     }

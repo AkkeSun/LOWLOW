@@ -7,6 +7,5 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import java.util.Map;
 
 public interface WeeklyService {
-    Map<String, MultipartFile> makeMultipartFileMap(MultipartHttpServletRequest mRequest);
     Weekly getWeekly(Long id);
 }

@@ -1,10 +1,8 @@
 package church.lowlow.user_api.admin.weekly.controller;
 
 import church.lowlow.rest_api.common.entity.FileDto;
-import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.weekly.db.Weekly;
 import church.lowlow.user_api.admin.file.service.FileService;
-import church.lowlow.user_api.admin.member.service.AdminMemberService;
 import church.lowlow.user_api.admin.weekly.service.WeeklyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -50,26 +48,6 @@ public class AdminWeeklyController {
 
         return "admin/weekly/weeklyDetail";
 
-    }
-
-    // ========== File Upload ==========
-    @PostMapping("/fileUpload")
-    @ResponseBody
-    public Map<String, FileDto> fileUpload(MultipartHttpServletRequest mRequest) {
-
-        // make FileMap
-        Map<String, MultipartFile> fileMap = weeklyService.makeMultipartFileMap(mRequest);
-
-        // file upload
-        Map<String, FileDto> returnMap = new HashMap<>();
-        fileMap.forEach( (key, multipartFile) -> {
-            if(!multipartFile.getOriginalFilename().equals("")) {
-                FileDto fileDto = fileService.fileUpload(multipartFile);
-                returnMap.put(key, fileDto);
-            }
-        });
-
-        return returnMap;
     }
 
 }

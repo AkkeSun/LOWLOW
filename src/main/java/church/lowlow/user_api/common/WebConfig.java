@@ -27,8 +27,23 @@ public class WebConfig implements WebMvcConfigurer{
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/upload/**")
-                .addResourceLocations("file:" + fileUploadPath)
+        registry.addResourceHandler("/upload/summernote/**")
+                .addResourceLocations("file:" + fileUploadPath + "/summernote/")
+                .setCacheControl(CacheControl.maxAge(10, TimeUnit.MINUTES));
+        registry.addResourceHandler("/upload/member/**")
+                .addResourceLocations("file:" + fileUploadPath + "/member/")
+                .setCacheControl(CacheControl.maxAge(10, TimeUnit.MINUTES));
+        registry.addResourceHandler("/upload/basicInfo/**")
+                .addResourceLocations("file:" + fileUploadPath + "/basicInfo/")
+                .setCacheControl(CacheControl.maxAge(10, TimeUnit.MINUTES));
+        registry.addResourceHandler("/upload/weekly/**")
+                .addResourceLocations("file:" + fileUploadPath + "/weekly/")
+                .setCacheControl(CacheControl.maxAge(10, TimeUnit.MINUTES));
+        registry.addResourceHandler("/upload/gallery/**")
+                .addResourceLocations("file:" + fileUploadPath + "/gallery/")
+                .setCacheControl(CacheControl.maxAge(10, TimeUnit.MINUTES));
+        registry.addResourceHandler("/upload/notice/**")
+                .addResourceLocations("file:" + fileUploadPath + "/notice/")
                 .setCacheControl(CacheControl.maxAge(10, TimeUnit.MINUTES));
     }
 

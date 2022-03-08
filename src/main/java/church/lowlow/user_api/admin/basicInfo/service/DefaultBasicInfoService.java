@@ -83,31 +83,6 @@ public class DefaultBasicInfoService implements BasicInfoService{
 
 
 
-
-    @Override
-    public Map<String, MultipartFile> makeMultipartFileMap(MultipartHttpServletRequest mRequest) {
-        Map<String, MultipartFile> fileMap = new LinkedHashMap<>();
-
-        fileMap.put("infoImg1", mRequest.getFile("infoImg1"));
-        fileMap.put("infoImg2", mRequest.getFile("infoImg2"));
-        fileMap.put("infoImg3", mRequest.getFile("infoImg3"));
-        fileMap.put("infoImg4", mRequest.getFile("infoImg4"));
-        fileMap.put("infoImg5", mRequest.getFile("infoImg5"));
-        fileMap.put("infoImg6", mRequest.getFile("infoImg6"));
-        fileMap.put("carImg1", mRequest.getFile("carImg1"));
-        fileMap.put("carImg2", mRequest.getFile("carImg2"));
-        fileMap.put("carImg3", mRequest.getFile("carImg3"));
-        fileMap.put("carImg4", mRequest.getFile("carImg4"));
-        fileMap.put("carImg5", mRequest.getFile("carImg5"));
-        fileMap.put("carImg6", mRequest.getFile("carImg6"));
-        fileMap.put("chartImg1", mRequest.getFile("carImg1"));
-        fileMap.put("chartImg2", mRequest.getFile("carImg2"));
-        fileMap.put("chartImg3", mRequest.getFile("carImg3"));
-
-        return fileMap;
-    }
-
-
     @Override
     public void fileDtoSave(String key, FileDto fileDto, BasicInfoDto basicInfoDto) {
         switch(key) {

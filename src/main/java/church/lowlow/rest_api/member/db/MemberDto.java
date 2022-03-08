@@ -35,4 +35,6 @@ public class MemberDto {
 
     private FileDto image;
 
+    private boolean block;
+
 }

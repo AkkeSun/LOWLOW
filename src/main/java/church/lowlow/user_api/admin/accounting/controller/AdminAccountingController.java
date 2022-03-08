@@ -27,7 +27,7 @@ public class AdminAccountingController {
     private AdminAccountingService accountingService;
 
     @Value("${fileUploadPath}")
-    public String fileDownloadPath;
+    public String fileUploadPath;
 
     // ========== List View ==========
     @GetMapping
@@ -59,7 +59,7 @@ public class AdminAccountingController {
     // =================== 엑셀파일 다운로드 =====================
     @GetMapping("/excelDown")
     public void download(SearchDto searchDto, HttpServletResponse response) throws IOException {
-        ExcelService excelService = new DefaultExecService(fileDownloadPath, accountingService);
+        ExcelService excelService = new DefaultExecService(fileUploadPath + "/excel/", accountingService);
         excelService.excelFileDownload(searchDto, response);
     }
 

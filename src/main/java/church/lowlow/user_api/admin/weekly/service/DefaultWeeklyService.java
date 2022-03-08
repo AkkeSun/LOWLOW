@@ -17,19 +17,6 @@ public class DefaultWeeklyService implements WeeklyService{
     private WebClient webClient;
 
     @Override
-    public Map<String, MultipartFile> makeMultipartFileMap(MultipartHttpServletRequest mRequest) {
-
-        Map<String, MultipartFile> fileMap = new LinkedHashMap<>();
-
-        fileMap.put("image1", mRequest.getFile("image1"));
-        fileMap.put("image2", mRequest.getFile("image2"));
-        fileMap.put("image3", mRequest.getFile("image3"));
-        fileMap.put("image4", mRequest.getFile("image4"));
-
-        return fileMap;
-    }
-
-    @Override
     public Weekly getWeekly(Long id) {
         Weekly weekly = webClient.get()
                 .uri("/weekly/{id}", id)

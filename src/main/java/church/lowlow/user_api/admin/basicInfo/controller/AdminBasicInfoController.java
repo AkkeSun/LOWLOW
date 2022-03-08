@@ -96,17 +96,13 @@ public class AdminBasicInfoController {
                                   @ModelAttribute("basicInfo") BasicInfoDto basicInfoDto,
                                   SessionStatus sessionStatus, Model model) {
 
-
-        // make FileMap
-        Map<String, MultipartFile> fileMap = basicInfoService.makeMultipartFileMap(mRequest);
-
         // file upload
-        fileMap.forEach( (key, multipartFile) -> {
-            if(!multipartFile.getOriginalFilename().equals("")) {
-                FileDto fileDto = fileService.fileUpload(multipartFile);
-                basicInfoService.fileDtoSave(key, fileDto, basicInfoDto);
-            }
-        });
+        Map<String, FileDto> fileDtoMap = fileService.fileUpload(mRequest, "basicInfo");
+        if(fileDtoMap.size() != 0) {
+            fileDtoMap.forEach((key, value) -> {
+                basicInfoService.fileDtoSave(key, value, basicInfoDto);
+            });
+        }
 
         // writer setting
         basicInfoService.setWriter(basicInfoDto);
@@ -136,16 +132,14 @@ public class AdminBasicInfoController {
         BasicInfoDto preData = basicInfoService.getBasicInfo();
         basicInfoService.fileDtoPreDataSetting(preData, basicInfoDto);
 
-        // make FileMap
-        Map<String, MultipartFile> fileMap = basicInfoService.makeMultipartFileMap(mRequest);
 
         // file upload
-        fileMap.forEach( (key, multipartFile) -> {
-            if(!multipartFile.getOriginalFilename().equals("")) {
-                FileDto fileDto = fileService.fileUpload(multipartFile);
-                basicInfoService.fileDtoSave(key, fileDto, basicInfoDto);
-            }
-        });
+        Map<String, FileDto> fileDtoMap = fileService.fileUpload(mRequest, "basicInfo");
+        if(fileDtoMap.size() != 0) {
+            fileDtoMap.forEach((key, value) -> {
+                basicInfoService.fileDtoSave(key, value, basicInfoDto);
+            });
+        }
 
         // writer setting
         basicInfoService.setWriter(basicInfoDto);

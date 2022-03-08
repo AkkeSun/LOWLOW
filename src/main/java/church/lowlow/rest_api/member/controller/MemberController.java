@@ -10,6 +10,7 @@ import church.lowlow.rest_api.member.resource.MemberErrorsResource;
 import church.lowlow.rest_api.member.resource.MemberResource;
 import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.member.db.MemberDto;
+import church.lowlow.user_api.admin.file.service.FileService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,6 +33,9 @@ public class MemberController {
 
     @Autowired
     private MemberRepository repository;
+
+    @Autowired
+    private FileService fileService;
 
     @Autowired
     private MemberValidation validation;
@@ -146,6 +150,7 @@ public class MemberController {
         Member member = optional.get();
         member.setBlock(true);
         Member deleteMember = repository.save(member);
+        fileService.deleteFile(member.getImage().getUploadName(), "member");
 
         // return
         MemberResource resource = new MemberResource(deleteMember);

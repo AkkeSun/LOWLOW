@@ -49,7 +49,7 @@
                         <input type="hidden" id="image1_savedOriginalName" th:value="*${weekly.img1.originalName}">
                         <input type="hidden" id="image1_savedUploadName" th:value="*${weekly.img1.uploadName}">
                         &nbsp;&nbsp;
-                        <img class="imgSample" id="img1" th:src="@{/upload/} + ${weekly.img1.uploadName}">
+                        <img class="imgSample" id="img1" th:src="@{/upload/weekly/} + ${weekly.img1.uploadName}">
                     </div>
                     <div th:if="${weekly.img2} != null" class="form-group">
                         <label for="img2" class="col-sm-2 control-label">이미지2</label>
@@ -57,7 +57,7 @@
                         <input type="hidden" id="image2_savedOriginalName" th:value="*${weekly.img2.originalName}">
                         <input type="hidden" id="image2_savedUploadName" th:value="*${weekly.img2.uploadName}">
                         &nbsp;&nbsp;
-                        <img class="imgSample" id="img2" th:src="@{/upload/} + ${weekly.img2.uploadName}">
+                        <img class="imgSample" id="img2" th:src="@{/upload/weekly/} + ${weekly.img2.uploadName}">
                     </div>
                     <div th:if="${weekly.img3} != null" class="form-group">
                         <label for="img3" class="col-sm-2 control-label">이미지3</label>
@@ -65,7 +65,7 @@
                         <input type="hidden" id="image3_savedOriginalName" th:value="*${weekly.img3.originalName}">
                         <input type="hidden" id="image3_savedUploadName" th:value="*${weekly.img3.uploadName}">
                         &nbsp;&nbsp;
-                        <img class="imgSample" id="img3" th:src="@{/upload/} + ${weekly.img3.uploadName}">
+                        <img class="imgSample" id="img3" th:src="@{/upload/weekly/} + ${weekly.img3.uploadName}">
                     </div>
                     <div th:if="${weekly.img4} != null" class="form-group">
                         <label for="img4" class="col-sm-2 control-label">이미지4</label>
@@ -73,7 +73,7 @@
                         <input type="hidden" id="image4_savedOriginalName" th:value="*${weekly.img4.originalName}">
                         <input type="hidden" id="image4_savedUploadName" th:value="*${weekly.img4.uploadName}">
                         &nbsp;&nbsp;
-                        <img class="imgSample" id="img4" th:src="@{/upload/} + ${weekly.img4.uploadName}">
+                        <img class="imgSample" id="img4" th:src="@{/upload/weekly/} + ${weekly.img4.uploadName}">
                     </div>
                     </th:block>
 

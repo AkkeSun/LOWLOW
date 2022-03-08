@@ -128,7 +128,7 @@ function commonInsertAndUpdate(pageName, type){
     // data setting
     switch(pageName){
         case "members" :
-            data = objToJson($('#withFileUploadFrm').serializeArray());
+            data = objToJson($('#memberFrm').serializeArray());
             var imageObject = memberImageProcess(csrfHeader, csrfToken);
             img1.uploadName = imageObject.uploadName;
             img1.originalName = imageObject.originalName;
@@ -324,18 +324,11 @@ function commonSearchInitialize(pageName){
 
 
 // ================= 파일 업로드 처리함수 ====================
-function ajaxFileUpload (csrfHeader, csrfToken, data, page){
-
-    var url = "";
-    switch(page){
-        case "member" : url = "/file/upload"; break;
-        case "weekly" : url = "/admin/weekly/fileUpload"; break;
-    }
-
+function ajaxFileUpload (csrfHeader, csrfToken, data, folder){
     var callback =
         $.ajax({
             type       : "post",
-            url        : url,
+            url        : "/file/upload/"+folder,
             enctype    : false,
             async      : false,
             processData: false,
@@ -428,14 +421,14 @@ function uploadSummernoteImageFile(file, el) {
     data.append("image", file);
     var csrfHeader  = $("#_csrf_header").attr('content');
     var csrfToken   = $("#_csrf").attr('content');
-    var callback = ajaxFileUpload(csrfHeader, csrfToken, data);
+    var callback = ajaxFileUpload(csrfHeader, csrfToken, data, "summernote");
 
     callback.done(data => {
-        $('#contents').summernote("insertImage", "/upload/"+data.uploadName);
+        $('#contents').summernote("insertImage", "/upload/summernote/"+data.image.uploadName);
 
         var ajaxData = {};
-        ajaxData.uploadName = data.uploadName;
-        ajaxData.originalName = data.originalName;
+        ajaxData.uploadName = data.image.uploadName;
+        ajaxData.originalName = data.image.originalName;
         ajaxData.bbsType = "gallery";
 
         ajaxComm("post", JSON.stringify(ajaxData), "/api/summerNote", 'true', csrfHeader, csrfToken);

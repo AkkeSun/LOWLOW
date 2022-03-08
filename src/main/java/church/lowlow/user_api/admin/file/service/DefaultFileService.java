@@ -8,6 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
@@ -19,29 +21,34 @@ public class DefaultFileService implements FileService{
     @Value("${fileUploadPath}")
     private String fileUploadPath;
 
+
     @Override
-    public FileDto fileUpload(MultipartFile image) {
+    public Map<String, FileDto> fileUpload(MultipartHttpServletRequest mRequest, String folder){
 
-        String originalFilename = image.getOriginalFilename();
-        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
-        String uploadFileName = UUID.randomUUID().toString().replaceAll("-", "") + fileExtension;
+        // input type file 의 name 추출
+        Iterator<String> iterator = mRequest.getFileNames();
 
-        FileDto fileDto = FileDto.builder()
-                .uploadName(uploadFileName)
-                .originalName(originalFilename)
-                .build();
+        uploadFolderSetting(folder);
+        Map<String, FileDto> returnMap = new HashMap<>();
 
-        // file upload
-        fileUploadProcess(image, fileDto);
+        while(iterator.hasNext()){
+            String formData_Name = iterator.next();
+            MultipartFile file = mRequest.getFile(formData_Name);
 
-        return fileDto;
+            if(file.getSize() > 0 ){
+                FileDto fileDto = fileUploadProcess(file, folder);
+                returnMap.put(formData_Name, fileDto);
+            }
+        }
+
+        return returnMap;
     }
 
 
     @Override
-    public void deleteFile(String uploadFileName) {
+    public void deleteFile(String uploadFileName, String folder) {
 
-        File deleteFile = new File(fileUploadPath + uploadFileName);
+        File deleteFile = new File(fileUploadPath + "/" + folder + "/" + uploadFileName);
 
         if(deleteFile.exists()) {
             deleteFile.delete();
@@ -55,19 +62,38 @@ public class DefaultFileService implements FileService{
 
 
     // ============ 파일 업로드 함수 ============
-    public void fileUploadProcess(MultipartFile image, FileDto fileDto){
+    public FileDto fileUploadProcess(MultipartFile file, String folder){
 
-        File uploadFile = new File(fileUploadPath + fileDto.getUploadName());
+        String originalFilename = file.getOriginalFilename();
+        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String uploadFileName = UUID.randomUUID().toString().replaceAll("-", "") + fileExtension;
+
+        FileDto fileDto = FileDto.builder()
+                .uploadName(uploadFileName)
+                .originalName(originalFilename)
+                .build();
+
+        File uploadFile = new File(fileUploadPath + "/" + folder + "/" +fileDto.getUploadName());
 
         try{
-            image.transferTo(uploadFile);
+            file.transferTo(uploadFile);
             log.info("[File Upload Success] originalFileName : " + fileDto.getOriginalName() + " ||  uploadFileName : " + fileDto.getUploadName());
         } catch (Exception e) {
             log.info("[File Upload Fail]");
             log.info("[ERROR MSG] " + e.getMessage());
         }
+
+        return fileDto;
     }
 
+
+    //============== 파일 업로드 폴더 셋팅 ===========
+    public void uploadFolderSetting (String folderPath){
+        File folder = new File(fileUploadPath + "/" + folderPath);
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+    }
 
 
 }

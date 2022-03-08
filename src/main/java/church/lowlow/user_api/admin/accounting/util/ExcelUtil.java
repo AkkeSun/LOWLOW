@@ -35,7 +35,7 @@ public class ExcelUtil {
      *  4. 하나의 row 에 여러개의 cell 을 생성한다. (= 하나의 행에 여러 열을 생성한다)
      */
 
-    @Value("${excel.fileUploadPath}")
+    @Value("${fileUploadPath}")
     public String filePath;
 
     public String fileNm = "accounting.xlsx";
@@ -77,7 +77,7 @@ public class ExcelUtil {
 
         try {
             // 생성된 엑셀 파일로 추출
-            FileOutputStream out = new FileOutputStream(new File(filePath, fileNm));
+            FileOutputStream out = new FileOutputStream(new File(filePath + "/excel", fileNm));
             workbook.write(out);
             out.close();
         } catch (IOException e) {

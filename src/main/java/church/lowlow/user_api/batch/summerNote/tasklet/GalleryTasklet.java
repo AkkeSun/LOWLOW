@@ -68,6 +68,6 @@ public class GalleryTasklet implements Tasklet {
 
     public void fileDeleteProcess(SummerNoteVo summerNoteVo) {
         summerNoteService.deleteData(summerNoteVo.getId());
-        fileService.deleteFile(summerNoteVo.getUploadName());
+        fileService.deleteFile(summerNoteVo.getUploadName(), "summernote");
     }
 }

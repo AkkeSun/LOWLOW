@@ -24,7 +24,7 @@
 
             <!-- Main Contents -->
             <div class="container">
-                <form class="form-horizontal" id="withFileUploadFrm" th:object="${member}" enctype="multipart/form-data">
+                <form class="form-horizontal" id="memberFrm" th:object="${member}" enctype="multipart/form-data">
                     <input type="hidden" id="id" th:value="*{id}">
                     <input type="hidden" id="createdDate" th:value="*{createdDate}">
                     <div class="form-group">
@@ -92,7 +92,7 @@
                             <input type="hidden" id="savedOriginalName" th:value="${member.image.originalName}">
                             <input type="hidden" id="savedUploadName" th:value="${member.image.uploadName}">
                             <label for="image">
-                                &nbsp;&nbsp;<img class="imgSample" id="imageView" th:src="@{/upload/} + ${member.image.uploadName}">
+                                &nbsp;&nbsp;<img class="imgSample" id="imageView" th:src="@{/upload/member/} + ${member.image.uploadName}">
                             </label>
                         </div>
                         <div th:if="${member.image} == null">

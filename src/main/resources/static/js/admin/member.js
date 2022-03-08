@@ -152,10 +152,10 @@ function memberImageProcess(csrfHeader, csrfToken) {
 
     // Create : 이미지를 업로드하는 경우
     if($("#image").val()){
-        var fileUploadCallback = ajaxFileUpload(csrfHeader, csrfToken, new FormData($("#withFileUploadFrm")[0]), "member");
+        var fileUploadCallback = ajaxFileUpload(csrfHeader, csrfToken, new FormData($("#memberFrm")[0]), "member");
         fileUploadCallback.done( uploadData => {
-            imageObject.uploadName =  uploadData.uploadName;
-            imageObject.originalName =  uploadData.originalName;
+            imageObject.uploadName =  uploadData.image.uploadName;
+            imageObject.originalName =  uploadData.image.originalName;
         });
     }
 
