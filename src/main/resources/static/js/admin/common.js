@@ -96,12 +96,13 @@ function commonUpdateViewSetting(pageName){
     $("#deleteBtn").hide();            // 삭제버튼
 
     switch(pageName){
-        case 'members'    : memberUpdateViewSetting();     break;
-        case 'accounting' : accountingUpdateViewSetting(); break;
-        case 'galleries'  : galleryUpdateViewSetting();  break;
-        case 'calendars'  : calendarUpdateViewSetting();  break;
-        case 'notices'    : noticeUpdateViewSetting();  break;
-        case 'weekly'     : weeklyUpdateViewSetting();  break;
+        case 'members'       : memberUpdateViewSetting(); break;
+        case 'accounting'    : accountingUpdateViewSetting(); break;
+        case 'galleries'     : galleryUpdateViewSetting(); break;
+        case 'calendars'     : calendarUpdateViewSetting(); break;
+        case 'notices'       : noticeUpdateViewSetting(); break;
+        case 'weekly'        : weeklyUpdateViewSetting(); break;
+        case 'worshipVideos' : worshipVideoUpdateViewSetting(); break;
     }
 }
 
@@ -162,26 +163,11 @@ function commonInsertAndUpdate(pageName, type){
             data.img3 = img3;
             data.img4 = img4;
             break;
+        case "worshipVideos" :
+            data = objToJson($('#worshipVideoFrm').serializeArray());
+            data.link = youtubeLinkConverter(data.link);
+            break;
     }
-
-    /*
-    if($("#image").val()){
-        alert("이미지 업로드")
-        var fileUploadCallback = ajaxFileUpload(csrfHeader, csrfToken, new FormData($("#withFileUploadFrm")[0]));
-        fileUploadCallback.done( uploadData => {
-            data.uploadName   = uploadData.uploadName;
-            data.originalName = uploadData.originalName;
-        });
-    }
-
-
-    // 업데이트 시 기존 이미지를 사용하는 경우
-    if($("#image").val() == "" && $("#savedOriginalName").val()){
-        alert("저장된 이미지 사용");
-        data.uploadName   = $("#savedUploadName").val();
-        data.originalName = $("#savedOriginalName").val();
-    }
-*/
 
     // update url 변경
     if(type == 'put')
@@ -238,10 +224,12 @@ function commonDelete(pageName){
 function commonListLoad(pageName, nowPage){
 
     switch(pageName){
-        case 'members'    : memberListLoad(nowPage); break;
-        case 'accounting' : accountingListLoad(nowPage); break;
-        case 'galleries'  : galleryListLoad(nowPage); break;
-        case 'notices'    : noticeListLoad(nowPage); break;
+        case 'members'       : memberListLoad(nowPage); break;
+        case 'accounting'    : accountingListLoad(nowPage); break;
+        case 'galleries'     : galleryListLoad(nowPage); break;
+        case 'notices'       : noticeListLoad(nowPage); break;
+        case 'worshipVideos' : worshipVideoListLoad(nowPage); break;
+        case 'weekly'        : weeklyListLoad(nowPage); break;
     }
 }
 
@@ -270,6 +258,10 @@ function commonSearch(pageName){
         case 'weekly' :
             commonPagingProcess('weekly');
             weeklyListLoad(0);
+            break;
+        case 'worshipVideos' :
+            commonPagingProcess('worshipVideos');
+            worshipVideoListLoad(0);
             break;
     }
 }
@@ -311,6 +303,12 @@ function commonSearchInitialize(pageName){
             $("#searchData").val("");
             weeklyListLoad(0);
             commonPagingProcess('weekly');
+            break;
+        case 'worshipVideos' :
+            $("#searchId").val("title");
+            $("#searchData").val("");
+            worshipVideoListLoad(0);
+            commonPagingProcess('worshipVideos');
             break;
     }
 }

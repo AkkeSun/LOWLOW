@@ -16,8 +16,6 @@ public class AdminWeeklyController {
     @Autowired
     private WeeklyService weeklyService;
 
-    @Autowired
-    private FileService fileService;
 
     // ========== List View ==========
     @GetMapping

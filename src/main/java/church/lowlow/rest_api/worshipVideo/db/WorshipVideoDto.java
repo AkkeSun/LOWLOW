@@ -19,6 +19,5 @@ public class WorshipVideoDto{
     @NotBlank(message = "링크는 비워둘 수 없습니다")
     private String link;
 
-    @NotNull(message = "작성자는 비워둘 수 없습니다")
     private Writer writer;
 }

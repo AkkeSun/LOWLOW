@@ -1,6 +1,8 @@
 package church.lowlow.rest_api.worshipVideo.controller;
 
 import church.lowlow.rest_api.common.aop.LogComponent;
+import church.lowlow.rest_api.common.entity.PagingDto;
+import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.weekly.db.Weekly;
 import church.lowlow.rest_api.weekly.db.WeeklyDto;
 import church.lowlow.rest_api.weekly.repository.WeeklyRepository;
@@ -76,8 +78,14 @@ public class WorshipVideoController {
      * READ API
      */
     @GetMapping
-    public ResponseEntity getWorshipVideo(Pageable pageable, PagedResourcesAssembler<WorshipVideo> assembler){
-        Page<WorshipVideo> page = repository.findAll(pageable);
+    public ResponseEntity getWorshipVideo(SearchDto searchDto, PagingDto pagingDto, PagedResourcesAssembler<WorshipVideo> assembler){
+
+        // request param logging
+        logComponent.searchDtoLogging(searchDto);
+        logComponent.pagingDtoLogging(pagingDto);
+
+        Page<WorshipVideo> page = repository.getWorshipVideList(searchDto, pagingDto);
+
         var pagedResources = assembler.toResource(page, e -> new WorshipVideoResource(e));
         return ResponseEntity.ok(pagedResources);
     }
@@ -88,7 +96,6 @@ public class WorshipVideoController {
         Optional<WorshipVideo> optional = repository.findById(id);
         WorshipVideo worshipVideo = optional.orElseThrow(ArithmeticException::new);
 
-        // 로그인 유무 체크 후 로그인 했으면 update, delete url 넣어주기
         WorshipVideoResource resource = new WorshipVideoResource(worshipVideo);
         return ResponseEntity.ok(resource);
     }
