@@ -72,7 +72,7 @@ public class SummerNoteSingleton {
         return deleteGalleryFileList;
     }
     public List<String> getDeleteNoticeFileList() {
-        return noticeContentList;
+        return deleteNoticeFileList;
     }
     public int getUploadFileListCnt() {
         return uploadFileListCnt;

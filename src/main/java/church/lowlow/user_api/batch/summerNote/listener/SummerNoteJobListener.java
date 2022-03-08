@@ -42,13 +42,13 @@ public class SummerNoteJobListener implements JobExecutionListener {
         List<String> deleteGalleryFileList = instance.getDeleteGalleryFileList();
         List<String> deleteNoticeFileList = instance.getDeleteNoticeFileList();
 
-        if(deleteGalleryFileList != null && deleteGalleryFileList.size() != 0){
+        if(deleteGalleryFileList.size() != 0){
             deleteCnt += deleteGalleryFileList.size();
             deleteGalleryFileList.forEach(deleteFile -> {
                 System.err.println(">> [Parallel 2] 삭제된 파일 : " + deleteFile);
             });
         }
-        if(deleteNoticeFileList != null && deleteNoticeFileList.size() != 0){
+        if(deleteNoticeFileList.size() != 0){
             deleteCnt += deleteNoticeFileList.size();
             deleteNoticeFileList.forEach(deleteFile -> {
                 System.err.println(">> [Parallel 2] 삭제된 파일 : " + deleteFile);

@@ -70,7 +70,7 @@ public class SummerNoteImgController {
      *       DELETE API
      **************************/
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteMembers(@PathVariable Integer id){
+    public ResponseEntity deleteData(@PathVariable Integer id){
         Optional<SummerNoteImg> optional = repository.findById(id);
         SummerNoteImg summerNoteImg = optional.orElseThrow(IllegalStateException::new);
 

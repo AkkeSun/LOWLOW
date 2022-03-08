@@ -73,7 +73,7 @@ public class DefaultSummerNoteService implements SummerNoteService {
     @Override
     public SummerNoteVo getGalleryList() {
 
-        int galleryContentCnt = instance.getGalleryContentCnt();
+        int contentCnt = instance.getGalleryContentCnt();
 
         // Data Load
         Mono<Map> mono = webClient
@@ -96,7 +96,7 @@ public class DefaultSummerNoteService implements SummerNoteService {
 
             if(imgTag != null) {
                 imgTag.forEach(element-> {
-                    String src = element.attr("src").replace("/upload/", "");
+                    String src = element.attr("src").replace("/upload/summernote/", "");
                     returnList.add(SummerNoteVo.builder().uploadName(src).build());
                 });
             }
@@ -104,12 +104,12 @@ public class DefaultSummerNoteService implements SummerNoteService {
 
         // return
         SummerNoteVo summerNoteVo = null;
-        if(galleryContentCnt < returnList.size()){
-            summerNoteVo = returnList.get(galleryContentCnt);
-            galleryContentCnt++;
+        if(contentCnt < returnList.size()){
+            summerNoteVo = returnList.get(contentCnt);
+            contentCnt++;
         }
 
-        instance.setGalleryContentCnt(galleryContentCnt);
+        instance.setGalleryContentCnt(contentCnt);
 
         return summerNoteVo;
     }
@@ -118,7 +118,46 @@ public class DefaultSummerNoteService implements SummerNoteService {
 
     @Override
     public SummerNoteVo getNoticeList() {
-        return null;
+
+        int contentCnt = instance.getNoticeContentCnt();
+
+        // Data Load
+        Mono<Map> mono = webClient
+                .get()
+                .uri("/notices/list")
+                .retrieve()
+                .bodyToMono(Map.class);
+
+        Map<String, Object> resultMap = mono.block();
+        List<Map<String, Object>> bbsDataList = (List)resultMap.get("noticeList");
+
+
+        // Data Converting
+        List<SummerNoteVo> returnList = new ArrayList<>();
+        for (Map<String, Object> data : bbsDataList) {
+
+            Integer id = (Integer) data.get("id");
+            Document doc = Jsoup.parse((String) data.get("contents"));
+            Elements imgTag = doc.select("p img");
+
+            if(imgTag != null) {
+                imgTag.forEach(element-> {
+                    String src = element.attr("src").replace("/upload/summernote/", "");
+                    returnList.add(SummerNoteVo.builder().uploadName(src).build());
+                });
+            }
+        }
+
+        // return
+        SummerNoteVo summerNoteVo = null;
+        if(contentCnt < returnList.size()){
+            summerNoteVo = returnList.get(contentCnt);
+            contentCnt++;
+        }
+
+        instance.setGalleryContentCnt(contentCnt);
+
+        return summerNoteVo;
     }
 
 

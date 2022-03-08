@@ -3,10 +3,11 @@ package church.lowlow.user_api.batch.summerNote.config;
 
 import church.lowlow.user_api.batch.summerNote.chunk.FileUploadWriter;
 import church.lowlow.user_api.batch.summerNote.chunk.GalleryWriter;
+import church.lowlow.user_api.batch.summerNote.chunk.NoticeWriter;
 import church.lowlow.user_api.batch.summerNote.domain.SummerNoteVo;
-import church.lowlow.user_api.batch.summerNote.listener.SummerNoteStepListener;
 import church.lowlow.user_api.batch.summerNote.service.SummerNoteService;
 import church.lowlow.user_api.batch.summerNote.tasklet.GalleryTasklet;
+import church.lowlow.user_api.batch.summerNote.tasklet.NoticeTasklet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Step;
 
@@ -19,15 +20,24 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 
-
 @Configuration
 @RequiredArgsConstructor
-public class SummerNoteStepConfig {
+public class SummerNoteItemConfig {
+
     private final StepBuilderFactory stepBuilderFactory;
+
     private final FileUploadWriter fileUploadWriter;
+
     private final GalleryWriter galleryWriter;
+
+    private final NoticeWriter noticeWriter;
+
     private final SummerNoteService summerNoteService;
+
     private final GalleryTasklet galleryTasklet;
+
+    private final NoticeTasklet noticeTasklet;
+
     private int chunkSize = 5;
 
 
@@ -66,15 +76,41 @@ public class SummerNoteStepConfig {
     }
 
 
+    @Bean(name = "noticeContentFlow")
+    public Flow noticeContentFlow(){
+        ItemReaderAdapter adapter = new ItemReaderAdapter();
+        adapter.setTargetObject(summerNoteService);
+        adapter.setTargetMethod("getNoticeList");
+
+        TaskletStep noticeContentStep = stepBuilderFactory.get("noticeContentStep")
+                .<SummerNoteVo, SummerNoteVo>chunk(chunkSize)
+                .reader(adapter)
+                .writer(noticeWriter)
+                .build();
+        return new FlowBuilder<Flow>("noticeContentFlow")
+                .start(noticeContentStep).build();
+    }
+
+
 
     @Bean(name = "galleryTaskletFlow")
     public Flow galleryTaskletFlow(){
         TaskletStep galleryTaskletStep = stepBuilderFactory.get("galleryTaskletStep")
                                     .tasklet(galleryTasklet)
-                                    .listener(new SummerNoteStepListener())
                                     .build();
         return new FlowBuilder<Flow>("galleryTaskletFlow")
                 .start(galleryTaskletStep).build();
     }
+
+
+    @Bean(name = "noticeTaskletFlow")
+    public Flow noticeTaskletFlow(){
+        TaskletStep noticeTaskletStep = stepBuilderFactory.get("noticeTaskletStep")
+                                    .tasklet(noticeTasklet)
+                                    .build();
+        return new FlowBuilder<Flow>("noticeTaskletFlow")
+                .start(noticeTaskletStep).build();
+    }
+
 
 }

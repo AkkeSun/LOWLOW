@@ -3,6 +3,7 @@ package church.lowlow.rest_api.notice.controller;
 import church.lowlow.rest_api.common.aop.LogComponent;
 import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
+import church.lowlow.rest_api.gallery.db.Gallery;
 import church.lowlow.rest_api.notice.db.Notice;
 import church.lowlow.rest_api.notice.db.NoticeDto;
 import church.lowlow.rest_api.notice.repository.NoticeRepository;
@@ -22,6 +23,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static church.lowlow.rest_api.common.util.WriterUtil.getWriter;
@@ -84,6 +88,15 @@ public class NoticeController {
         Page<Notice> page = repository.getNoticePage(searchDto, pagingDto);
         var pagedResources = assembler.toResource(page, e -> new NoticeResource(e));
         return ResponseEntity.ok(pagedResources);
+    }
+    @GetMapping("/list")
+    public ResponseEntity getNoticeList(){
+
+        List<Notice> list = repository.findAll();
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("noticeList", list);
+
+        return ResponseEntity.ok().body(resultMap);
     }
 
     @GetMapping("{id}")

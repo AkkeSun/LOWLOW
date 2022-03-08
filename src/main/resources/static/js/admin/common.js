@@ -381,7 +381,7 @@ function datePickerSet(date) {
 
 
 // ================= 서머노트 사용함수 ====================
-function useSummernote() {
+function useSummernote(bbsType) {
     $('#contents').summernote({
         placeholder: '내용을 입력하세요',
         height: 500,
@@ -405,7 +405,7 @@ function useSummernote() {
         callbacks: {
             onImageUpload: function (files) {
                 for (var i = files.length - 1; i >= 0; i--) {
-                    uploadSummernoteImageFile(files[i], this);
+                    uploadSummernoteImageFile(files[i], this, bbsType);
                 }
             }
         }
@@ -414,7 +414,7 @@ function useSummernote() {
 
 
 // ================= 서머노트 파일 업로드 함수 ====================
-function uploadSummernoteImageFile(file, el) {
+function uploadSummernoteImageFile(file, el, bbsType) {
     data = new FormData();
     data.append("image", file);
     var csrfHeader  = $("#_csrf_header").attr('content');
@@ -427,7 +427,8 @@ function uploadSummernoteImageFile(file, el) {
         var ajaxData = {};
         ajaxData.uploadName = data.image.uploadName;
         ajaxData.originalName = data.image.originalName;
-        ajaxData.bbsType = "gallery";
+        //ajaxData.bbsType = "gallery";
+        ajaxData.bbsType = bbsType;
 
         ajaxComm("post", JSON.stringify(ajaxData), "/api/summerNote", 'true', csrfHeader, csrfToken);
     })

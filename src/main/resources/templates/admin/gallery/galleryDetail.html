@@ -7,7 +7,7 @@
 
 <script th:inline="javascript">
     $(document).ready(function(){
-        useSummernote();
+        useSummernote('gallery');
         $('#contents').summernote('code', [[${gallery.contents}]]);
         $("#editView").hide();
         $("#updateProcessBtn").hide();
