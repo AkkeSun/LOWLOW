@@ -31,6 +31,10 @@
     max-width: 150px;
 }
 
+.weeklyImg{
+    max-width: 55vw;
+}
+
 .note-frame {
     margin-left: 15px;
 }

@@ -52,16 +52,10 @@ function weeklyListLoad(nowPage){
 
 // ================= Weekly Update View Setting ====================
 function weeklyUpdateViewSetting() {
-    $("#name").removeAttr("disabled");
-    $("#phoneNumber").removeAttr("disabled");
-    $("#gender").removeAttr("disabled");
-    $("#birthDay").removeAttr("disabled");
-    $("#belong").removeAttr("disabled");
-    $("#name").removeAttr("disabled");
-    $("#regiDate").removeAttr("disabled");
-    $("#churchOfficer").removeAttr("disabled");
-    $("#datePicker").removeAttr("disabled");
-    $("#image").removeAttr("disabled");
+    $("#title").removeAttr("disabled");
+    $("#weeklyDate").removeAttr("disabled");
+    $("#imageDetailView").hide();
+    $("#imageEditView").show();
 };
 
 
@@ -255,20 +249,20 @@ function weeklyImageProcess(csrfHeader, csrfToken) {
         var fileUploadCallback = ajaxFileUpload(csrfHeader, csrfToken, new FormData($("#weeklyFrm")[0]), "weekly");
         fileUploadCallback.done( uploadData => {
             if(uploadData.image1 != undefined){
-                imageObject.image1_uploadName =  uploadData.image1.originalName;
-                imageObject.image1_originalName =  uploadData.image1.uploadName;
+                imageObject.image1_uploadName =  uploadData.image1.uploadName;
+                imageObject.image1_originalName =  uploadData.image1.originalName;
             }
             if(uploadData.image2 != undefined){
-                imageObject.image2_uploadName =  uploadData.image2.originalName;
-                imageObject.image2_originalName =  uploadData.image2.uploadName;
+                imageObject.image2_uploadName =  uploadData.image2.uploadName;
+                imageObject.image2_originalName =  uploadData.image2.originalName;
             }
             if(uploadData.image3!= undefined){
-                imageObject.image3_uploadName =  uploadData.image3.originalName;
-                imageObject.image3_originalName =  uploadData.image3.uploadName;
+                imageObject.image3_uploadName =  uploadData.image3.uploadName;
+                imageObject.image3_originalName =  uploadData.image3.originalName;
             }
             if(uploadData.image4 != undefined){
-                imageObject.image4_uploadName =  uploadData.image4.originalName;
-                imageObject.image4_originalName =  uploadData.image4.uploadName;
+                imageObject.image4_uploadName =  uploadData.image4.uploadName;
+                imageObject.image4_originalName =  uploadData.image4.originalName;
             }
         });
     }

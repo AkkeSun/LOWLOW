@@ -9,6 +9,7 @@ import church.lowlow.rest_api.weekly.db.WeeklyValidation;
 import church.lowlow.rest_api.weekly.repository.WeeklyRepository;
 import church.lowlow.rest_api.weekly.resource.WeeklyErrorsResource;
 import church.lowlow.rest_api.weekly.resource.WeeklyResource;
+import church.lowlow.user_api.admin.file.service.FileService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,6 +35,9 @@ public class WeeklyController {
 
     @Autowired
     private WeeklyRepository repository;
+
+    @Autowired
+    private FileService fileService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -140,10 +144,22 @@ public class WeeklyController {
             return ResponseEntity.notFound().build();
 
         // delete
+        fileDelete(optional.get());
         repository.deleteById(id);
 
         // return
         resource.add(linkTo(WeeklyController.class).withRel("index"));
         return ResponseEntity.ok(resource);
+    }
+
+    public void fileDelete(Weekly weekly){
+        if(weekly.getImg1() != null)
+            fileService.deleteFile(weekly.getImg1().getUploadName(), "weekly");
+        if(weekly.getImg2() != null)
+            fileService.deleteFile(weekly.getImg2().getUploadName(), "weekly");
+        if(weekly.getImg3() != null)
+            fileService.deleteFile(weekly.getImg3().getUploadName(), "weekly");
+        if(weekly.getImg4() != null)
+            fileService.deleteFile(weekly.getImg4().getUploadName(), "weekly");
     }
 }
