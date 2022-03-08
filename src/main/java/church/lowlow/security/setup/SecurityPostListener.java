@@ -63,15 +63,16 @@ public class SecurityPostListener implements ApplicationListener<ApplicationStar
 
         // SECURITY RESOURCE (URL)
         createResourceIfNotFound("/admin/security/**", "url", "ROLE_DEV", 0);
-        createResourceIfNotFound("/admin/basicInfo/**", "url", "ROLE_DEV", 1);
-        createResourceIfNotFound("/admin/members/**", "url", "ROLE_MST", 2);
-        createResourceIfNotFound("/admin/accounting/**", "url", "ROLE_GAF", 3);
-        createResourceIfNotFound("/admin/galleries/**", "url", "ROLE_ULD", 4);
-        createResourceIfNotFound("/admin/calendar/**", "url", "ROLE_ULD", 5);
-        createResourceIfNotFound("/admin/notice/**", "url", "ROLE_ULD", 6);
-        createResourceIfNotFound("/admin/weekly/**", "url", "ROLE_ULD", 7);
-        createResourceIfNotFound("/admin/worshipVideo/**", "url", "ROLE_ULD", 8);
-        createResourceIfNotFound("/admin/**", "url", "ROLE_LDR", 9);
+        createResourceIfNotFound("/batch/**", "url", "ROLE_DEV", 1);
+        createResourceIfNotFound("/admin/basicInfo/**", "url", "ROLE_DEV", 2);
+        createResourceIfNotFound("/admin/members/**", "url", "ROLE_MST", 3);
+        createResourceIfNotFound("/admin/accounting/**", "url", "ROLE_GAF", 4);
+        createResourceIfNotFound("/admin/galleries/**", "url", "ROLE_ULD", 5);
+        createResourceIfNotFound("/admin/calendar/**", "url", "ROLE_ULD", 6);
+        createResourceIfNotFound("/admin/notice/**", "url", "ROLE_ULD", 7);
+        createResourceIfNotFound("/admin/weekly/**", "url", "ROLE_ULD", 8);
+        createResourceIfNotFound("/admin/worshipVideo/**", "url", "ROLE_ULD", 9);
+        createResourceIfNotFound("/admin/**", "url", "ROLE_LDR", 10);
 
 
         // MEMBER

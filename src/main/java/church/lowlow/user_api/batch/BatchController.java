@@ -1,30 +1,32 @@
 package church.lowlow.user_api.batch;
 
+
 import church.lowlow.user_api.batch.summerNote.singleton.SummerNoteSingleton;
 import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.launch.JobInstanceAlreadyExistsException;
 import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.batch.core.launch.NoSuchJobException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-@Component
-public class BatchRunner {
+
+@RestController
+public class BatchController {
 
     @Autowired
     private JobOperator jobOperator;
 
 
-    @Scheduled(cron = "0 6 0 1 * *") // 매 월 1일 06시에 실행
-    public void summerNoteBatch() throws JobInstanceAlreadyExistsException, NoSuchJobException, JobParametersInvalidException {
+    @GetMapping("/batch/summernote")
+    public String summerNoteBatchStart() throws JobInstanceAlreadyExistsException, NoSuchJobException, JobParametersInvalidException {
         summerNoteSingletonInitialize();
         jobOperator.start("SummerNoteJob", "requestDate=" + new Date());
+        return "<script> alert('summernote 배치가 실행되었습니다'); location.href='/admin';</script>";
     }
-
 
     private void summerNoteSingletonInitialize(){
         SummerNoteSingleton instance = SummerNoteSingleton.getInstance();
