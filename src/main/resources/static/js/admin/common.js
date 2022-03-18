@@ -1,6 +1,6 @@
 // ================ 전역변수 ==============
 var totalPages = "";
-
+var mAttendCreatListCnt = "";
 
 // ================= Ajax 처리 함수 ====================
 function ajaxComm(type, data, url, async, csrfHeader, csrfToken) {
@@ -177,9 +177,9 @@ function commonInsertAndUpdate(pageName, type){
     // ajax
     var callback = ajaxComm(type, JSON.stringify(data), url, async, csrfHeader, csrfToken);
 
-    callback.done( data => ajaxCallbackProcess(isSecurity, data, type, redirectUrl) );
+    callback.done( function(data){ ajaxCallbackProcess(isSecurity, data, type, redirectUrl) } );
 
-    callback.fail ( (xhr, status, error) => {
+    callback.fail ( function(xhr, status, error) {
 
         // 업로드 파일 삭제
         if(data.uploadName)
@@ -212,7 +212,7 @@ function commonDelete(pageName){
 
         // ajax process
         var callback = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
-        callback.done(data => ajaxCallbackProcess(isSecurity, data, type, redirectUrl));
+        callback.done( function(data) { ajaxCallbackProcess(isSecurity, data, type, redirectUrl)});
     }
 }
 

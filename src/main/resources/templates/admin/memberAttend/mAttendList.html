@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+<head th:replace="admin/common/head"></head>
+
+<script th:inline="javascript">
+    $(document).ready(function(){
+        getM_AttendCreateTable(0)
+        datePickerSet($("#checkDate"));
+    });
+</script>
+
+<body>
+
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <div th:replace="admin/common/sidebar"></div>
+        <div class="col py-3">
+            <th:block th:replace="admin/memberAttend/fragment :: mAttendTitle"/>
+
+            <!-- Main Contents -->
+            <div class="container">
+                <form class="form-horizontal" id="mAttendFrm" enctype="multipart/form-data">
+                    <input type="hidden" name="belong" id="belong", th:value="${belong}">
+                    <div class="col-md-3 input-group-append mb-3">
+                        <input type="text" class="form-control input-group-lg" id="checkDate" placeholder="기준일">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">NO</th>
+                            <th scope="col">날짜</th>
+                            <th scope="col">출석인원</th>
+                            <th scope="col">결석인원</th>
+                            <th scope="col">총원</th>
+                        </tr>
+                        </thead>
+
+                        <!-- data append -->
+                        <tbody id="appendPath"></tbody>
+                        <!-- data append -->
+                    </table>
+
+                    <br>
+                    &nbsp;&nbsp;
+                    <button type="button" class="btn btn-outline-primary"  onclick="create_mAttendProcess()">신규 등록</button>
+                </form>
+            </div>
+            <br><br><br><br>
+            <!-- Main Contents -->
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

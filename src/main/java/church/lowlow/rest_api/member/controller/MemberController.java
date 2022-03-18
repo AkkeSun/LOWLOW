@@ -82,13 +82,13 @@ public class MemberController {
      **************************/
     @GetMapping
     public ResponseEntity getMembers(PagedResourcesAssembler<Member> assembler,
-                                     SearchDto searchDto, PagingDto pagingDto) {
+                                     SearchDto searchDto, PagingDto pagingDto, @RequestParam(required = false) String is_MAttend) {
 
         // request param logging
         logComponent.searchDtoLogging(searchDto);
         logComponent.pagingDtoLogging(pagingDto);
 
-        Page<Member> page = repository.getMemberPage(searchDto, pagingDto);
+        Page<Member> page = repository.getMemberPage(searchDto, pagingDto, is_MAttend);
 
         var pagedResources = assembler.toResource(page, e -> new MemberResource(e));
         return ResponseEntity.ok(pagedResources);

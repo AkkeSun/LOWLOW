@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import javax.transaction.Transactional;
+
 @Service
 public class DefaultWeeklyService implements WeeklyService{
 
@@ -12,6 +14,7 @@ public class DefaultWeeklyService implements WeeklyService{
     private WebClient webClient;
 
     @Override
+    @Transactional
     public Weekly getWeekly(Long id) {
         Weekly weekly = webClient.get()
                 .uri("/weekly/{id}", id)

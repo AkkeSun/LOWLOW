@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import javax.transaction.Transactional;
+
 @Service
 public class DefaultAdminMemberService implements AdminMemberService{
 
@@ -13,6 +15,7 @@ public class DefaultAdminMemberService implements AdminMemberService{
     private WebClient webClient;
 
     @Override
+    @Transactional
     public Member getMember(Long id) {
 
         Mono<Member> memberMono = webClient

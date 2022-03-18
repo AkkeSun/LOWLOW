@@ -5,8 +5,10 @@ import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.member.db.ChurchOfficer;
 import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.member.db.QMember;
+import church.lowlow.rest_api.memberAttend.db.MemberAttend;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -14,6 +16,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import javax.transaction.Transactional;
+
+import java.util.List;
 
 import static church.lowlow.rest_api.common.util.StringUtil.objNullToStr;
 
@@ -28,13 +32,12 @@ public class MemberDslImpl implements MemberDsl {
     private QMember q1 = new QMember("q1");
 
     @Transactional
-    public Page<Member> getMemberPage(SearchDto searchDto, PagingDto pagingDto){
-
-        QueryResults<Member> result = null;
+    public Page<Member> getMemberPage(SearchDto searchDto, PagingDto pagingDto, String is_MAttend){
 
         String key          = objNullToStr(searchDto.getSearchId());
         String val          = objNullToStr(searchDto.getSearchData());
         int nowPage         = pagingDto.getNowPage();
+        int pageSize        = 10;
 
         BooleanBuilder builder = new BooleanBuilder();
         builder.and((q1.name.ne("익명")));
@@ -49,12 +52,14 @@ public class MemberDslImpl implements MemberDsl {
             builder.and(q1.churchOfficer.eq(churchOfficerConverter((String)val)));
 
         // 교구 검색
-        else if(key.equals("belong"))
+        else if(key.equals("belong") && !val.equals(""))
             builder.and(q1.belong.eq((String)val));
 
+        if(is_MAttend != null && is_MAttend.equals(""))
+            pageSize=9999;
 
-        Pageable pageable = PageRequest.of(nowPage, 10);
 
+        Pageable pageable = PageRequest.of(nowPage, pageSize);
 
         QueryResults<Member> queryResults = jpaQueryFactory.selectFrom(q1)
                 .limit(pageable.getPageSize()) // 출력할 데이터 수

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import javax.transaction.Transactional;
+
 @Service
 public class DefaultAdminNoticeService implements AdminNoticeService {
 
@@ -15,6 +17,7 @@ public class DefaultAdminNoticeService implements AdminNoticeService {
     private WebClient webClient;
 
     @Override
+    @Transactional
     public Notice getNotice(Long id) {
 
         Mono<Notice> noticeMono = webClient

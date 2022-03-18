@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -107,5 +108,12 @@ public class AccountService implements UserDetailsService {
         account.setBlock(true);
         accountRepo.save(account);
     };
+
+    @Transactional
+    public String getLoginUserBelong(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        return accountRepo.findByUsername(userDetails.getUsername()).getBelong();
+    }
 
 }

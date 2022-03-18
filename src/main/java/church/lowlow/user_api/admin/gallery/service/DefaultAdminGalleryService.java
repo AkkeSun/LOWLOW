@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import javax.transaction.Transactional;
+
 @Service
 public class DefaultAdminGalleryService implements AdminGalleryService{
 
@@ -13,6 +15,7 @@ public class DefaultAdminGalleryService implements AdminGalleryService{
     private WebClient webClient;
 
     @Override
+    @Transactional
     public Gallery getGallery(Long id) {
 
         Mono<Gallery> galleryMono = webClient

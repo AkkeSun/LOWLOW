@@ -17,6 +17,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import javax.transaction.Transactional;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ public class DefaultBasicInfoService implements BasicInfoService{
 
 
     @Override
+    @Transactional
     public BasicInfoDto getBasicInfo() {
 
         Mono<ResponseEntity<Object>> responseEntityMono = webClient.get()
@@ -48,6 +50,7 @@ public class DefaultBasicInfoService implements BasicInfoService{
     }
 
     @Override
+    @Transactional
     public BasicInfoDto createBasicInfo(BasicInfoDto dto) {
 
         ResponseEntity<Object> block = webClient.post()
@@ -66,6 +69,7 @@ public class DefaultBasicInfoService implements BasicInfoService{
 
 
     @Override
+    @Transactional
     public BasicInfoDto updateBasicInfo(BasicInfoDto updateDto) {
 
         ResponseEntity<Object> block = webClient.put()
@@ -84,6 +88,7 @@ public class DefaultBasicInfoService implements BasicInfoService{
 
 
     @Override
+    @Transactional
     public void fileDtoSave(String key, FileDto fileDto, BasicInfoDto basicInfoDto) {
         switch(key) {
             case "infoImg1": basicInfoDto.setInfoImage1(fileDto); break;
@@ -105,6 +110,7 @@ public class DefaultBasicInfoService implements BasicInfoService{
     }
 
     @Override
+    @Transactional
     // api/basicInfo 는 csrf() 예외 처리를 하므로 username 을 불러올 수 없어서 dto로 처리
     public void setWriter(BasicInfoDto basicInfoDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

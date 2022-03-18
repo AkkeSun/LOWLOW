@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,6 +24,7 @@ public class DefaultFileService implements FileService{
 
 
     @Override
+    @Transactional
     public Map<String, FileDto> fileUpload(MultipartHttpServletRequest mRequest, String folder){
 
         // input type file 의 name 추출
@@ -46,6 +48,7 @@ public class DefaultFileService implements FileService{
 
 
     @Override
+    @Transactional
     public void deleteFile(String uploadFileName, String folder) {
 
         File deleteFile = new File(fileUploadPath + "/" + folder + "/" + uploadFileName);

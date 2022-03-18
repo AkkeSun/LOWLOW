@@ -1,7 +1,6 @@
-package church.lowlow.rest_api.MemberAttend.resource;
+package church.lowlow.rest_api.memberAttend.resource;
 
-import church.lowlow.rest_api.MemberAttend.controller.M_AttendController;
-import church.lowlow.rest_api.member.controller.MemberController;
+import church.lowlow.rest_api.memberAttend.controller.M_AttendController;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.validation.Errors;

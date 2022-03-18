@@ -1,6 +1,6 @@
 package church.lowlow.rest_api.common.aop;
 
-import church.lowlow.rest_api.MemberAttend.db.MemberAttendDto;
+import church.lowlow.rest_api.memberAttend.db.MemberAttendDto;
 import church.lowlow.rest_api.accounting.db.AccountingDto;
 import church.lowlow.rest_api.basicInfo.db.BasicInfoDto;
 import church.lowlow.rest_api.calendar.db.CalendarDto;
@@ -8,6 +8,7 @@ import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.gallery.db.GalleryDto;
 import church.lowlow.rest_api.member.db.MemberDto;
+import church.lowlow.rest_api.memberAttend.db.MemberAttendListDto;
 import church.lowlow.rest_api.notice.db.NoticeDto;
 import church.lowlow.rest_api.summerNote.db.SummerNoteImgDto;
 import church.lowlow.rest_api.weekly.db.WeeklyDto;
@@ -89,6 +90,7 @@ public class LogComponent {
         log.info("[REQUEST] memberId : \"" + dto.getMemberId() + "\"");
         log.info("[REQUEST] checkDate : \"" + dto.getCheckDate() + "\"");
         log.info("[REQUEST] attend : \"" + dto.isAttend() + "\"");
+        log.info("[REQUEST] note : \"" + dto.getNote() + "\"");
     }
 
     public void noticeDtoLogging(NoticeDto dto){

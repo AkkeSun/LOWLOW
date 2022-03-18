@@ -57,8 +57,8 @@ public class SecurityPostListener implements ApplicationListener<ApplicationStar
         createRoleIfNotFound("ROLE_LDR", "리더", 4);
 
         // SECURITY USER
-        createUserIfNotFound("lowlow", "1111", "ROLE_DEV");
-        createUserIfNotFound("leader", "1111", "ROLE_LDR");
+        createUserIfNotFound("lowlow", "1111", "ROLE_DEV", null);
+        createUserIfNotFound("leader", "1111", "ROLE_LDR", "1");
 
 
         // SECURITY RESOURCE (URL)
@@ -72,7 +72,8 @@ public class SecurityPostListener implements ApplicationListener<ApplicationStar
         createResourceIfNotFound("/admin/notice/**", "url", "ROLE_ULD", 7);
         createResourceIfNotFound("/admin/weekly/**", "url", "ROLE_ULD", 8);
         createResourceIfNotFound("/admin/worshipVideo/**", "url", "ROLE_ULD", 9);
-        createResourceIfNotFound("/admin/**", "url", "ROLE_LDR", 10);
+        createResourceIfNotFound("/admin/memberAttend/**", "url", "ROLE_LDR", 10);
+        createResourceIfNotFound("/admin/**", "url", "ROLE_LDR", 11);
 
 
         // MEMBER
@@ -97,7 +98,7 @@ public class SecurityPostListener implements ApplicationListener<ApplicationStar
     }
 
     @Transactional
-    public Account createUserIfNotFound(String userName, String password, String roleName) {
+    public Account createUserIfNotFound(String userName, String password, String roleName, String belong) {
 
         Account account = accountRepo.findByUsername(userName);
 
@@ -108,6 +109,7 @@ public class SecurityPostListener implements ApplicationListener<ApplicationStar
                     .username(userName)
                     .password(passwordEncoder.encode(password))
                     .userRole(role)
+                    .belong(belong)
                     .build();
         }
         return accountRepo.save(account);

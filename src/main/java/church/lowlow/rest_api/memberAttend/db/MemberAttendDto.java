@@ -1,4 +1,4 @@
-package church.lowlow.rest_api.MemberAttend.db;
+package church.lowlow.rest_api.memberAttend.db;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,5 +19,6 @@ public class MemberAttendDto {
     private Integer memberId;
     private LocalDate checkDate;
     private boolean isAttend;
+    private String note;
 
 }

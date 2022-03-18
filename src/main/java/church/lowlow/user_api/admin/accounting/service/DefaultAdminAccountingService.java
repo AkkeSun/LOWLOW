@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+
+import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
@@ -17,6 +19,7 @@ public class DefaultAdminAccountingService extends ExcelUtil implements AdminAcc
     private WebClient webClient;
 
     @Override
+    @Transactional
     public Accounting getAccounting(Long id) {
         Mono<Accounting> accountingMono = webClient
                 .get()
@@ -30,6 +33,7 @@ public class DefaultAdminAccountingService extends ExcelUtil implements AdminAcc
 
 
     @Override
+    @Transactional
     public List<LinkedHashMap<String, Object>> getAccountingList(SearchDto searchDto) {
 
         String searchId = searchDto.getSearchId();
@@ -52,6 +56,7 @@ public class DefaultAdminAccountingService extends ExcelUtil implements AdminAcc
 
 
     @Override
+    @Transactional
     public Map<String, Object> getStatisticsMap(SearchDto searchDto){
 
         String searchId = searchDto.getSearchId();
