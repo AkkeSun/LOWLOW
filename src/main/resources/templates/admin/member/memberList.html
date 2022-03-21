@@ -8,7 +8,7 @@
 <script th:inline="javascript">
     $(document).ready(function(){
         memberListLoad(0);
-        commonPagingProcess("members")
+        commonPagingProcess("members");
     });
 </script>
 
@@ -28,7 +28,7 @@
                 <div class="row" style="justify-content:left;">
                     &nbsp;&nbsp;
                     <select class="custom-select col-sm-3" id="searchId">
-                        <option th:value="name" th:text= "검색종류"/>
+                        <option th:value="name" th:text= "검색종류"></option>
                         <option th:value="name" th:text= "이름"/>
                         <option th:value="belong" th:text= "교구"/>
                         <option th:value="churchOfficer" th:text= "직분"/>

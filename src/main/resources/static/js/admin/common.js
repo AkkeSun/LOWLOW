@@ -230,6 +230,9 @@ function commonListLoad(pageName, nowPage){
         case 'notices'       : noticeListLoad(nowPage); break;
         case 'worshipVideos' : worshipVideoListLoad(nowPage); break;
         case 'weekly'        : weeklyListLoad(nowPage); break;
+        case 'mAttendList'   : getM_AttendList(nowPage); break;
+        case 'mAttendCreate' : getM_AttendCreateTable(nowPage); break;
+        case 'mAttendDetail' : getM_AttendUpdateTable(); break;
     }
 }
 
@@ -240,8 +243,8 @@ function commonListLoad(pageName, nowPage){
 function commonSearch(pageName){
     switch(pageName){
         case 'members' :
-            memberListLoad(0);
             commonPagingProcess('members');
+            memberListLoad(0);
             break;
         case 'accounting' :
             commonPagingProcess('accounting');
@@ -265,6 +268,7 @@ function commonSearch(pageName){
             break;
     }
 }
+
 
 
 

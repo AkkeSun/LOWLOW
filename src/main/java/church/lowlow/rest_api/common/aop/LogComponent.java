@@ -89,7 +89,7 @@ public class LogComponent {
     public void memberAttendDtoLogging(MemberAttendDto dto){
         log.info("[REQUEST] memberId : \"" + dto.getMemberId() + "\"");
         log.info("[REQUEST] checkDate : \"" + dto.getCheckDate() + "\"");
-        log.info("[REQUEST] attend : \"" + dto.isAttend() + "\"");
+        log.info("[REQUEST] isAttend : \"" + dto.getIsAttend() + "\"");
         log.info("[REQUEST] note : \"" + dto.getNote() + "\"");
     }
 
@@ -131,4 +131,11 @@ public class LogComponent {
         log.info("[REQUEST] PAGING_totalPages : \"" + dto.getTotalPages() + "\"");
     }
 
+
+    public void M_AttendListLogging (PagingDto pagingDto, SearchDto searchDto, String belong){
+        log.info("[REQUEST] searchId : \"" + searchDto.getSearchId() + "\"");
+        log.info("[REQUEST] searchData : \"" + searchDto.getSearchData() + "\"");
+        log.info("[REQUEST] nowPage : \"" + pagingDto.getNowPage() + "\"");
+        log.info("[REQUEST] belong : \"" + belong + "\"");
+    }
 }

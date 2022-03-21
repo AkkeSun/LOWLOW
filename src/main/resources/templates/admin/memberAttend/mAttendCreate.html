@@ -7,7 +7,7 @@
 
 <script th:inline="javascript">
     $(document).ready(function(){
-        getM_AttendCreateTable(0)
+        commonListLoad('mAttendCreate', 0);
         datePickerSet($("#checkDate"));
     });
 </script>
@@ -55,7 +55,7 @@
                     <br>
                     &nbsp;&nbsp;
                     <button type="button" class="btn btn-outline-primary"  onclick="create_mAttendProcess()">등록</button>
-                    <a class="btn btn-outline-primary" th:href="@{/admin/members}">목록 </a>
+                    <a class="btn btn-outline-primary" th:href="@{/admin/memberAttend}">목록 </a>
                 </form>
             </div>
             <br><br><br><br>

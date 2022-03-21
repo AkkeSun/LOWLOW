@@ -18,7 +18,7 @@ public class MemberAttendDto {
 
     private Integer memberId;
     private LocalDate checkDate;
-    private boolean isAttend;
+    private String isAttend;
     private String note;
 
 }

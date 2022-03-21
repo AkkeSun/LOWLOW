@@ -7,7 +7,8 @@
 
 <script th:inline="javascript">
     $(document).ready(function(){
-     //   getM_AttendDetailTable(0)
+        commonListLoad('mAttendDetail', 0);
+        datePickerSet($("#checkDate"));
     });
 </script>
 
@@ -22,8 +23,9 @@
             <!-- Main Contents -->
             <div class="container">
                 <form class="form-horizontal" id="mAttendFrm" enctype="multipart/form-data">
+                    <input type="hidden" name="belong" id="belong", th:value="${belong}">
                     <div class="col-md-3 input-group-append mb-3">
-                        <input type="text" class="form-control input-group-lg" id="checkDate" placeholder="기준일">
+                        <input type="text" class="form-control input-group-lg" id="checkDate" placeholder="기준일" th:value="${checkDate}" readonly>
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
 

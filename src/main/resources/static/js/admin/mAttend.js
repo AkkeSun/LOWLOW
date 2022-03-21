@@ -1,30 +1,22 @@
 
-// ==================== MemberAttend 전역변수 ================
-var requestData = {};
-
-
 
 // ================= getM_AttendList Data Load  ====================
 function getM_AttendList(nowPage){
 
-    requestData.searchId   = "checkDate";
-    requestData.searchData = $("#checkDate").val();
-    requestData.nowPage    = nowPage;
-    requestData.belong     = $("#belong").val();
-
     // param setting
     var type        = "get";
-    var data        = requestData.serialize();
+    var data        = `searchId=checkDate&searchData=${$("#checkDate").val()}&nowPage=${nowPage}&belong=&${$("#belong").val()}`;
     var url         = "/api/memberAttend";
     var csrfHeader  = $("#_csrf_header").attr('content');
     var csrfToken   = $("#_csrf").attr('content');
-    var async       = true;
+    var async       = false;
     var callback    = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
 
     callback.done( (data) => {
 
         var appendData = "";
         if( data.memberAttendList ) {
+            totalPages = data.page.totalPages;
 
             var list = data.memberAttendList;
 
@@ -41,16 +33,13 @@ function getM_AttendList(nowPage){
                                         </a>
                                     </td>
                                     <td style="text-align: left;">
-                                       ${data.name}
+                                       ${data.isAttendTrue}
                                     </td>
                                     <td style="text-align: left;">
-                                        ${data.phoneNumber}
+                                        ${data.isAttendFalse}
                                     </td>
-                                    <th style="test-align:center;">
-                                    </th>
-                                    <th style="test-align:center;">
-                                    </th>
-                                     <td style="text-align: left;">
+                                    <td style="text-align: left;">
+                                        ${data.total}
                                     </td>
                                 </tr>
                                 `
@@ -73,15 +62,10 @@ function getM_AttendList(nowPage){
 // ================= getM_AttendCreateTable Data Load  ====================
 function getM_AttendCreateTable(nowPage){
 
-    requestData.searchId   = "belong";
-    requestData.searchData = $("#belong").val();
-    requestData.nowPage    = nowPage;
-    requestData.is_MAttend = true;
-
     // param setting
+    var url         = '/api/members'
     var type        = "get";
-    var data        = requestData.serialize();
-    var url         = "/api/members";
+    var data        = `searchId=belong&searchData=${$("#belong").val()}&nowPage=${nowPage}&is_MAttend=true`;
     var csrfHeader  = $("#_csrf_header").attr('content');
     var csrfToken   = $("#_csrf").attr('content');
     var async       = true;
@@ -141,6 +125,75 @@ function getM_AttendCreateTable(nowPage){
 
 
 
+
+// ================= getM_AttendUpdateTable Data Load  ====================
+function getM_AttendUpdateTable(){
+
+    // param setting
+    var url         = `/api/memberAttend/${$('#checkDate').val()}`
+    var type        = "get";
+    var data        = `belong=${$('#belong').val()}`;
+    var csrfHeader  = $("#_csrf_header").attr('content');
+    var csrfToken   = $("#_csrf").attr('content');
+    var async       = true;
+    var callback    = ajaxComm(type, data, url, async, csrfHeader, csrfToken);
+
+    callback.done( (data) => {
+
+        var appendData = "";
+        var idData = "";
+
+        console.log(data);
+
+        if( data.memberAttendList ) {
+
+            var list = data.memberAttendList;
+            mAttendCreatListCnt = list.length;
+
+            list.forEach(function (data, index) {
+                var churchOfficer = churchOfficerChangeToKor(data.member.churchOfficer);
+                var isAttendData =  getIsAttendData(`${index+1}_isAttend`, data.attend);
+
+                idData     += `<input type='hidden' id='${index+1}_id' value='${data.member.id}'>`
+                appendData += `
+                               <tr id="appendItem">
+                                    <td style="text-align: left;">
+                                        ${index+1}
+                                    </td>
+                                    <td style="text-align: left;">
+                                        ${data.member.belong}
+                                    </td>
+                                    <td style="text-align: left;">
+                                       ${data.member.name}
+                                    </td>
+                                    <td style="text-align: left;">
+                                        ${data.member.phoneNumber}
+                                    </td>
+                                    <td style="text-align: left;">
+                                        ${churchOfficer}
+                                    </td>
+                                    ${isAttendData}
+                                     <td style="text-align: left;">
+                                         <input type="text" id= "${index+1}_note" value="${data.note}">
+                                    </td>
+                                </tr>
+                                `
+            });
+        }
+        $("tr").remove("#appendItem");  // 기존 데이터 삭제
+        $("#appendPath").append(appendData);   // data append
+        $("#appendIdPath").append(idData);     // data append
+
+    });
+};
+
+
+
+
+
+
+
+
 function create_mAttendProcess(){
     if(mAttendValidation()){
         create_mAttend();
@@ -169,8 +222,6 @@ function create_mAttend() {
     var url         = "/api/memberAttend";
     var async       = true;
     var type        = 'post';
-    var checkNum    = 0;
-    var mAttendList = [];
 
     for(var i=0; i < mAttendCreatListCnt; i++) {
         var memberAttend = {};
@@ -184,26 +235,36 @@ function create_mAttend() {
         memberAttend.note      = $("#"+note).val();
         memberAttend.checkDate = $("#checkDate").val();
 
-        var callback = ajaxComm(type, JSON.stringify(memberAttend), url, async, csrfHeader, csrfToken);
-        callback.done( function(data){
-            console.log(data);
-        //    mAttendList.push(data);
-        });
+        ajaxComm(type, JSON.stringify(memberAttend), url, async, csrfHeader, csrfToken);
     }
+
+    alert('성공적으로 등록되었습니다');
+    location.href = '/admin/memberAttend';
 }
 
 
-// ================= Member Update View Setting ====================
-function memberUpdateViewSetting() {
-    $("#name").removeAttr("disabled");
-    $("#phoneNumber").removeAttr("disabled");
-    $("#gender").removeAttr("disabled");
-    $("#birthDay").removeAttr("disabled");
-    $("#belong").removeAttr("disabled");
-    $("#name").removeAttr("disabled");
-    $("#regiDate").removeAttr("disabled");
-    $("#churchOfficer").removeAttr("disabled");
-    $("#datePicker").removeAttr("disabled");
-    $("#image").removeAttr("disabled");
-};
 
+
+
+// ========== isAttend 처리 ===============
+function getIsAttendData(name, data){
+    var returnData = '';
+
+    if(data == true) {
+        returnData = `<th style="test-align:center;">
+                        <input type="radio" name="${name}" value="true" checked>
+                      </th>
+                      <th style="test-align:center;">
+                        <input type="radio" name="${name}" value="false">
+                      </th>`
+    } else {
+        returnData = `<th style="test-align:center;">
+                        <input type="radio" name="${name}" value="true">
+                      </th>
+                      <th style="test-align:center;">
+                        <input type="radio" name="${name}" value="false" checked>
+                      </th>`
+    }
+
+    return returnData;
+}

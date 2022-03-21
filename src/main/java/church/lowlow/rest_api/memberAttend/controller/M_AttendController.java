@@ -4,17 +4,16 @@ import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.memberAttend.db.MemberAttend;
 import church.lowlow.rest_api.memberAttend.db.MemberAttendDto;
+import church.lowlow.rest_api.memberAttend.db.MemberAttendListDto;
 import church.lowlow.rest_api.memberAttend.repository.M_AttendRepository;
-import church.lowlow.rest_api.memberAttend.resource.M_AttendResource;
 import church.lowlow.rest_api.common.aop.LogComponent;
-import church.lowlow.rest_api.member.controller.MemberController;
 import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.member.repository.MemberRepository;
 import church.lowlow.rest_api.memberAttend.service.M_attendService;
-import com.querydsl.core.Tuple;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,10 +63,10 @@ public class M_AttendController {
         m_attend.setWriter( getWriter() );
         
         // update 유무 체크
-        MemberAttend updateCheck = m_attendRepository.findByMemberAndCheckDate(member, dto.getCheckDate()).get();
+        Optional<MemberAttend> updateCheck = m_attendRepository.findByMemberAndCheckDate(member, dto.getCheckDate());
 
-        if(updateCheck != null)
-            return service.updateProcess(m_attend, updateCheck.getId());
+        if(!updateCheck.isEmpty())
+            return service.updateProcess(m_attend, updateCheck.get().getId());
         else
             return service.createProcess(m_attend);
     }
@@ -81,13 +80,16 @@ public class M_AttendController {
     @GetMapping
     public ResponseEntity getMemberAttendList(PagingDto pagingDto, SearchDto searchDto, String belong){
 
+        // logging
+        logComponent.M_AttendListLogging(pagingDto, searchDto, belong);
+
         // get DB Data
-        Page<Tuple> tuplePage = m_attendRepository.getMemberAttendList(searchDto, pagingDto, belong);
+        Map<String, Object> dbMap = m_attendRepository.getMemberAttendList(searchDto, pagingDto, belong);
 
-        // convert
-        Map<String, Object> resultMap = service.memberAttendListConvertor(tuplePage, pagingDto);
+        // data convert
+        Map<String, Object> returnMap = service.memberAttendListConvertor(dbMap, pagingDto);
 
-        return ResponseEntity.ok().body(resultMap);
+        return ResponseEntity.ok().body(returnMap);
     }
 
 
@@ -106,8 +108,5 @@ public class M_AttendController {
         resultMap.put("links", Arrays.asList(index));
         return ResponseEntity.ok().body(resultMap);
     }
-
-
-
 
 }

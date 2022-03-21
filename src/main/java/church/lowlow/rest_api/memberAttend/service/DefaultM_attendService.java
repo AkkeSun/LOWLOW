@@ -1,16 +1,11 @@
 package church.lowlow.rest_api.memberAttend.service;
 
 import church.lowlow.rest_api.common.entity.PagingDto;
-import church.lowlow.rest_api.member.controller.MemberController;
-import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.memberAttend.controller.M_AttendController;
 import church.lowlow.rest_api.memberAttend.db.MemberAttend;
-import church.lowlow.rest_api.memberAttend.db.MemberAttendDto;
 import church.lowlow.rest_api.memberAttend.db.MemberAttendListDto;
 import church.lowlow.rest_api.memberAttend.repository.M_AttendRepository;
 import church.lowlow.rest_api.memberAttend.resource.M_AttendResource;
-import com.querydsl.core.Tuple;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.net.URI;
-import java.time.LocalDate;
 import java.util.*;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -31,17 +25,14 @@ public class DefaultM_attendService implements  M_attendService {
     private M_AttendRepository m_attendRepository;
 
 
-    // Page<Tuple> 데이터를 Map<String,Object> 타입으로 컨버팅
     @Transactional
-    public Map<String, Object> memberAttendListConvertor( Page<Tuple> memberAttendListData, PagingDto pagingDto ) {
+    public Map<String, Object> memberAttendListConvertor(Map<String, Object> map, PagingDto pagingDto) {
 
-        List<Tuple> content = memberAttendListData.getContent();
-        Pageable pageable = memberAttendListData.getPageable();
+        ArrayList<MemberAttendListDto> content = (ArrayList) map.get("memberAttendList");
+        int totalContentCnt = (int)map.get("totalContentCnt");
+        PagingDto pageData = getPageData(content, totalContentCnt, pagingDto);
 
-        List<MemberAttendListDto> maList = getMemberAttendList(content);
-        PagingDto pageData = getPageData(pageable, pagingDto, maList);
-
-        return getResultMap(maList, pageData);
+        return getResultMap(content, pageData);
     }
 
     @Transactional
@@ -72,30 +63,9 @@ public class DefaultM_attendService implements  M_attendService {
 
 
 
+    private PagingDto getPageData(List<MemberAttendListDto> content, int totalContentCnt, PagingDto pagingDto ) {
 
-
-
-    private List<MemberAttendListDto> getMemberAttendList (List<Tuple> content) {
-
-        List<MemberAttendListDto> maList = new ArrayList<>();
-        for(Tuple tuple : content) {
-            Object [] obj = tuple.toArray();
-            MemberAttendListDto listDto = MemberAttendListDto.builder()
-                    .total((Long)obj[0])
-                    .checkDate((LocalDate)obj[1])
-                    .isAttendTrue((Long)obj[2])
-                    .isAttendFalse((Long) obj[3])
-                    .build();
-            maList.add(listDto);
-        }
-        return maList;
-    }
-
-
-
-    private PagingDto getPageData(Pageable pageable, PagingDto pagingDto, List<MemberAttendListDto> content) {
-
-        int totalPages = (content.size()-1) / ( (int)pageable.getPageSize() ) + 1;
+        int totalPages = (totalContentCnt-1) / 10 + 1;
         return PagingDto.builder().nowPage(pagingDto.getNowPage()).totalPages(totalPages).build();
 
     }

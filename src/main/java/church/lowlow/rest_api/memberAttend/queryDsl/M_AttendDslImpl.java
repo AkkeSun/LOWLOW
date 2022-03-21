@@ -1,29 +1,18 @@
 package church.lowlow.rest_api.memberAttend.queryDsl;
 
-import church.lowlow.rest_api.accounting.db.Accounting;
-import church.lowlow.rest_api.accounting.db.OfferingKind;
-import church.lowlow.rest_api.accounting.db.QAccounting;
-import church.lowlow.rest_api.common.converter.LocalDateConverter;
 import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
-import church.lowlow.rest_api.member.db.ChurchOfficer;
-import church.lowlow.rest_api.member.db.QMember;
 import church.lowlow.rest_api.memberAttend.db.MemberAttend;
+import church.lowlow.rest_api.memberAttend.db.MemberAttendListDto;
 import church.lowlow.rest_api.memberAttend.db.QMemberAttend;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.QueryResults;
-import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import javax.transaction.Transactional;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 
 import static church.lowlow.rest_api.common.util.StringUtil.objNullToStr;
 
@@ -40,7 +29,7 @@ public class M_AttendDslImpl implements M_AttendDsl {
 
     @Transactional
     //======================= 출석관리 리스트 로드 =======================
-    public Page<Tuple> getMemberAttendList(SearchDto searchDto, PagingDto pagingDto, String belong) {
+    public Map<String, Object> getMemberAttendList(SearchDto searchDto, PagingDto pagingDto, String belong) {
 
         String val          = objNullToStr(searchDto.getSearchData());
         int nowPage         = pagingDto.getNowPage();
@@ -57,25 +46,34 @@ public class M_AttendDslImpl implements M_AttendDsl {
 
         Pageable pageable = PageRequest.of(nowPage, 10);
 
+        // List setting
+        List<LocalDate> dates = jpaQueryFactory.select(q1.checkDate)
+                                                .from(q1)
+                                                .where(builder)
+                                                .groupBy(q1.checkDate)
+                                                .limit(pageable.getPageSize())
+                                                .offset(pageable.getOffset())
+                                                .fetch();
+        Collections.sort(dates, Collections.reverseOrder());
+        List<MemberAttendListDto> returnList = new ArrayList<>();
 
-        QueryResults<Tuple> queryResults = jpaQueryFactory.select(
-                                                            q1.count(),
-                                                            q1.checkDate,
-                                                            jpaQueryFactory.select(q1.count())
-                                                                            .from(q1)
-                                                                            .where(q1.isAttend.eq(true)),
-                                                            jpaQueryFactory.select(q1.count())
-                                                                            .from(q1)
-                                                                            .where(q1.isAttend.eq(false))
-                                                             )
-                                                            .from(q1)
-                                                            .where(builder)
-                                                            .limit(pageable.getPageSize())
-                                                            .offset(pageable.getOffset())
-                                                            .orderBy(q1.modifiedDate.desc())
-                                                            .fetchResults();
+        dates.forEach( date ->{
+            Long trueCount  = jpaQueryFactory.select(q1.count()).from(q1).where((q1.checkDate.eq(date)), q1.isAttend.eq(true)).fetchOne();
+            Long falseCount = jpaQueryFactory.select(q1.count()).from(q1).where((q1.checkDate.eq(date)), q1.isAttend.eq(false)).fetchOne();
+            MemberAttendListDto build = MemberAttendListDto.builder().checkDate(date).isAttendTrue(trueCount).isAttendFalse(falseCount).total(trueCount + falseCount).build();
+            returnList.add(build);
+        });
 
-        return new PageImpl<>(queryResults.getResults(), pageable, queryResults.getTotal());
+
+        // totalContentCnt Setting
+        int totalContentCnt = jpaQueryFactory.select(q1.count()).from(q1).groupBy(q1.checkDate).where(builder).fetch().size();
+
+        // return
+        Map<String, Object> returnMap = new HashMap<>();
+        returnMap.put("memberAttendList", returnList);
+        returnMap.put("totalContentCnt", totalContentCnt);
+
+        return returnMap;
     }
 
 
@@ -84,7 +82,7 @@ public class M_AttendDslImpl implements M_AttendDsl {
 
     @Transactional
     //======================= 출석괸리 디테일 =======================
-    public List<MemberAttend> getMemberAttendDetail(String belong, String checkDate) {
+    public List<MemberAttend> getMemberAttendDetail (String belong, String checkDate) {
 
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -98,8 +96,8 @@ public class M_AttendDslImpl implements M_AttendDsl {
         }
 
         List<MemberAttend> memberAttendList = jpaQueryFactory.selectFrom(q1)
-                                            .where(builder)
-                                            .orderBy(q1.modifiedDate.desc()).fetch();
+                                              .where(builder)
+                                              .orderBy(q1.modifiedDate.asc()).fetch();
         return memberAttendList;
     }
 
