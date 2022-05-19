@@ -6,6 +6,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -23,11 +24,13 @@ public class DefaultSummerNoteService implements SummerNoteService {
     @Autowired
     private WebClient webClient;
 
-
-
     private SummerNoteSingleton instance = SummerNoteSingleton.getInstance();
 
+    @Value("${cloud.aws.cloud_front.file_url_format}")
+    private String awsUrl;
+
     @Override
+    // 업로드된 이미지 정보가 들어있는 데이터 로드
     public SummerNoteVo getUploadFileList() {
 
         int uploadFileListCnt = instance.getUploadFileListCnt();
@@ -71,6 +74,7 @@ public class DefaultSummerNoteService implements SummerNoteService {
 
 
     @Override
+    // gallery summernote 본문에 삽입된 파일명 추출
     public SummerNoteVo getGalleryList() {
 
         int contentCnt = instance.getGalleryContentCnt();
@@ -85,22 +89,8 @@ public class DefaultSummerNoteService implements SummerNoteService {
         Map<String, Object> resultMap = mono.block();
         List<Map<String, Object>> bbsDataList = (List)resultMap.get("galleryList");
 
-
-        // Data Converting
-        List<SummerNoteVo> returnList = new ArrayList<>();
-        for (Map<String, Object> data : bbsDataList) {
-
-            Integer id = (Integer) data.get("id");
-            Document doc = Jsoup.parse((String) data.get("contents"));
-            Elements imgTag = doc.select("p img");
-
-            if(imgTag != null) {
-                imgTag.forEach(element-> {
-                    String src = element.attr("src").replace("/upload/summernote/", "");
-                    returnList.add(SummerNoteVo.builder().uploadName(src).build());
-                });
-            }
-        }
+        // data converting
+        List<SummerNoteVo> returnList = getSummerNoteImgName(bbsDataList);
 
         // return
         SummerNoteVo summerNoteVo = null;
@@ -117,6 +107,7 @@ public class DefaultSummerNoteService implements SummerNoteService {
 
 
     @Override
+    // notice summernote 본문에 삽입된 파일명 추출
     public SummerNoteVo getNoticeList() {
 
         int contentCnt = instance.getNoticeContentCnt();
@@ -131,22 +122,8 @@ public class DefaultSummerNoteService implements SummerNoteService {
         Map<String, Object> resultMap = mono.block();
         List<Map<String, Object>> bbsDataList = (List)resultMap.get("noticeList");
 
-
-        // Data Converting
-        List<SummerNoteVo> returnList = new ArrayList<>();
-        for (Map<String, Object> data : bbsDataList) {
-
-            Integer id = (Integer) data.get("id");
-            Document doc = Jsoup.parse((String) data.get("contents"));
-            Elements imgTag = doc.select("p img");
-
-            if(imgTag != null) {
-                imgTag.forEach(element-> {
-                    String src = element.attr("src").replace("/upload/summernote/", "");
-                    returnList.add(SummerNoteVo.builder().uploadName(src).build());
-                });
-            }
-        }
+        // 본문에서 이미지 파일명만 추출
+        List<SummerNoteVo> returnList = getSummerNoteImgName(bbsDataList);
 
         // return
         SummerNoteVo summerNoteVo = null;
@@ -172,4 +149,30 @@ public class DefaultSummerNoteService implements SummerNoteService {
                 .bodyToMono(Void.class)
                 .block();
     }
+
+
+
+
+    // 본문에 삽입된 내용 중 이미지명만 추출하는 함수
+    private List<SummerNoteVo> getSummerNoteImgName( List<Map<String, Object>> bbsDataList) {
+
+        List<SummerNoteVo> returnList = new ArrayList<>();
+
+        for (Map<String, Object> data : bbsDataList) {
+
+            Document doc = Jsoup.parse((String) data.get("contents"));
+            Elements imgTag = doc.select("p img");
+
+            if(imgTag.size() > 0)
+            {
+                imgTag.forEach(element-> {
+                    String src = element.attr("src").replace("/upload/summernote/", "")      // 일반 업로드 타입의 path 삭제
+                                                              .replace(awsUrl + "/summernote/", "");   // aws client front path 삭제
+                    returnList.add(SummerNoteVo.builder().uploadName(src).build());
+                });
+            }
+        }
+        return returnList;
+    }
+
 }

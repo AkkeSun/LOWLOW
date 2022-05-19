@@ -1,6 +1,6 @@
 package church.lowlow.user_api.batch.summerNote.tasklet;
 
-import church.lowlow.user_api.fileProcess.service.basic.FileService;
+import church.lowlow.user_api.fileProcess.service.CommonFileService;
 import church.lowlow.user_api.batch.summerNote.domain.SummerNoteVo;
 import church.lowlow.user_api.batch.summerNote.service.SummerNoteService;
 import church.lowlow.user_api.batch.summerNote.singleton.SummerNoteSingleton;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GalleryTasklet implements Tasklet {
 
-    private final FileService fileService;
+    private final CommonFileService fileService;
     private final SummerNoteService summerNoteService;
     private boolean isFileExist = false;
 
@@ -66,7 +66,7 @@ public class GalleryTasklet implements Tasklet {
     }
     
 
-    public void fileDeleteProcess(SummerNoteVo summerNoteVo) {
+    private void fileDeleteProcess(SummerNoteVo summerNoteVo) {
         summerNoteService.deleteData(summerNoteVo.getId());
         fileService.deleteFile(summerNoteVo.getUploadName(), "summernote");
     }
