@@ -1,6 +1,6 @@
 package church.lowlow.user_api.batch.summerNote.tasklet;
 
-import church.lowlow.user_api.admin.file.service.FileService;
+import church.lowlow.user_api.fileProcess.service.basic.FileService;
 import church.lowlow.user_api.batch.summerNote.domain.SummerNoteVo;
 import church.lowlow.user_api.batch.summerNote.service.SummerNoteService;
 import church.lowlow.user_api.batch.summerNote.singleton.SummerNoteSingleton;

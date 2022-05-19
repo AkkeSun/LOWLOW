@@ -120,20 +120,14 @@ function commonInsertAndUpdate(pageName, type){
     var async       = true;
     var isSecurity  = false;
     var data        = "";
-    var img1 = {};
-    var img2 = {};
-    var img3 = {};
-    var img4 = {};
 
 
     // data setting
     switch(pageName){
         case "members" :
             data = objToJson($('#memberFrm').serializeArray());
-            var imageObject = memberImageProcess(csrfHeader, csrfToken);
-            img1.uploadName = imageObject.uploadName;
-            img1.originalName = imageObject.originalName;
-            data.image = img1;
+            var imageObject   = memberImageProcess(csrfHeader, csrfToken);
+            data.image = imageObject;
             break;
         case "accounting" :
             data = objToJson($('#accountingForm').serializeArray());
@@ -150,18 +144,10 @@ function commonInsertAndUpdate(pageName, type){
         case "weekly" :
             data = objToJson($('#weeklyFrm').serializeArray());
             var imageObject = weeklyImageProcess(csrfHeader, csrfToken);
-            img1.originalName = imageObject.image1_originalName;
-            img1.uploadName = imageObject.image1_uploadName;
-            img2.originalName=imageObject.image2_originalName;
-            img2.uploadName=imageObject.image2_uploadName;
-            img3.originalName=imageObject.image3_originalName;
-            img3.uploadName=imageObject.image3_uploadName;
-            img4.originalName=imageObject.image4_originalName;
-            img4.uploadName=imageObject.image4_uploadName;
-            data.img1 = img1;
-            data.img2 = img2;
-            data.img3 = img3;
-            data.img4 = img4;
+            data.img1 = imageObject.img1;
+            data.img2 = imageObject.img2;
+            data.img3 = imageObject.img3;
+            data.img4 = imageObject.img4;
             break;
         case "worshipVideos" :
             data = objToJson($('#worshipVideoFrm').serializeArray());
@@ -320,11 +306,6 @@ function commonSearchInitialize(pageName){
 
 
 
-
-
-
-
-
 // ================= 파일 업로드 처리함수 ====================
 function ajaxFileUpload (csrfHeader, csrfToken, data, folder){
     var callback =
@@ -378,12 +359,6 @@ function datePickerSet(date) {
 
 
 
-
-
-
-
-
-
 // ================= 서머노트 사용함수 ====================
 function useSummernote(bbsType) {
     $('#contents').summernote({
@@ -426,12 +401,23 @@ function uploadSummernoteImageFile(file, el, bbsType) {
     var callback = ajaxFileUpload(csrfHeader, csrfToken, data, "summernote");
 
     callback.done(data => {
-        $('#contents').summernote("insertImage", "/upload/summernote/"+data.image.uploadName);
 
+        // aws s3 upload 인 경우
+       if(data.image.fullUrl)
+        {
+            var image = $('<img>').attr('src', '' + data.image.fullUrl);
+            $('#contents').summernote("insertNode", image[0]);
+        }
+        // 배포 서버에 업로드한 경우
+        else
+        {
+            $('#contents').summernote("insertImage", "/upload/summernote/"+data.image.uploadName);
+        }
+
+        // 후에 SummerNote 에서 사용하지 않는 이미지를 삭제하는 batch 를 위해 DB에 저장
         var ajaxData = {};
         ajaxData.uploadName = data.image.uploadName;
         ajaxData.originalName = data.image.originalName;
-        //ajaxData.bbsType = "gallery";
         ajaxData.bbsType = bbsType;
 
         ajaxComm("post", JSON.stringify(ajaxData), "/api/summerNote", 'true', csrfHeader, csrfToken);

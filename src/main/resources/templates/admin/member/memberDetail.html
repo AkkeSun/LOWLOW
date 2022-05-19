@@ -90,9 +90,12 @@
 
                         <div th:if="${member.image} != null">
                             <input type="hidden" id="savedOriginalName" th:value="${member.image.originalName}">
-                            <input type="hidden" id="savedUploadName" th:value="${member.image.uploadName}">
+                            <input type="hidden" id="savedUploadName"   th:value="${member.image.uploadName}">
+                            <input type="hidden" id="savedFileDir"      th:value="${member.image.fileDir}">
+                            <input type="hidden" id="savedFullUrl"      th:value="${member.image.fullUrl}">
                             <label for="image">
-                                &nbsp;&nbsp;<img class="imgSample" id="imageView" th:src="@{/upload/member/} + ${member.image.uploadName}">
+                                &nbsp;&nbsp;<img th:if="${member.image.fileDir} == null" class="imgSample" id="imageView" th:src="@{/upload/member/} + ${member.image.uploadName}">
+                                &nbsp;&nbsp;<img th:if="${member.image.fileDir} != null" class="imgSample" id="imageView" th:src="${member.image.fullUrl}">
                             </label>
                         </div>
                         <div th:if="${member.image} == null">

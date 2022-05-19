@@ -43,7 +43,6 @@ public class AdminGalleryController {
         model.addAttribute("gallery", gallery);
 
         return "admin/gallery/galleryDetail";
-
     }
 
 

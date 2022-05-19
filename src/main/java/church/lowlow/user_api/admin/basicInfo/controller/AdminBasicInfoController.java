@@ -4,7 +4,7 @@ import church.lowlow.rest_api.basicInfo.db.BasicInfoDto;
 import church.lowlow.rest_api.basicInfo.db.BasicInfoValidation;
 import church.lowlow.rest_api.common.entity.FileDto;
 import church.lowlow.user_api.admin.basicInfo.service.BasicInfoService;
-import church.lowlow.user_api.admin.file.service.FileService;
+import church.lowlow.user_api.fileProcess.service.CommonFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,7 +29,7 @@ public class AdminBasicInfoController {
     private BasicInfoValidation validation;
 
     @Autowired
-    private FileService fileService;
+    private CommonFileService fileService;
 
 
     @GetMapping

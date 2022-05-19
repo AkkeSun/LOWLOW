@@ -73,6 +73,8 @@ public class BasicInfo extends BaseTimeEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Info1_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Info1_UploadName")),
+            @AttributeOverride(name = "fileDir",      column = @Column(name = "Info1_fildDir")),
+            @AttributeOverride(name = "fullUrl",      column = @Column(name = "Info1_fullUrl")),
     })
     private FileDto infoImage1;
 
@@ -80,6 +82,8 @@ public class BasicInfo extends BaseTimeEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Info2_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Info2_UploadName")),
+            @AttributeOverride(name = "fileDir",      column = @Column(name = "Info2_fildDir")),
+            @AttributeOverride(name = "fullUrl",      column = @Column(name = "Info2_fullUrl")),
     })
     private FileDto infoImage2;
 
@@ -87,6 +91,8 @@ public class BasicInfo extends BaseTimeEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Info3_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Info3_UploadName")),
+            @AttributeOverride(name = "fileDir",      column = @Column(name = "Info3_fildDir")),
+            @AttributeOverride(name = "fullUrl",      column = @Column(name = "Info3_fullUrl")),
     })
     private FileDto infoImage3;
 
@@ -94,6 +100,8 @@ public class BasicInfo extends BaseTimeEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Info4_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Info4_UploadName")),
+            @AttributeOverride(name = "fileDir",      column = @Column(name = "Info4_fildDir")),
+            @AttributeOverride(name = "fullUrl",      column = @Column(name = "Info4_fullUrl")),
     })
     private FileDto infoImage4;
 
@@ -101,6 +109,8 @@ public class BasicInfo extends BaseTimeEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Info5_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Info5_UploadName")),
+            @AttributeOverride(name = "fileDir",      column = @Column(name = "Info5_fildDir")),
+            @AttributeOverride(name = "fullUrl",      column = @Column(name = "Info5_fullUrl")),
     })
     private FileDto infoImage5;
 
@@ -108,6 +118,8 @@ public class BasicInfo extends BaseTimeEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Info6_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Info6_UploadName")),
+            @AttributeOverride(name = "fileDir",      column = @Column(name = "Info6_fildDir")),
+            @AttributeOverride(name = "fullUrl",      column = @Column(name = "Info6_fullUrl")),
     })
     private FileDto infoImage6;
 
@@ -115,6 +127,8 @@ public class BasicInfo extends BaseTimeEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Car1_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Car1_UploadName")),
+            @AttributeOverride(name = "fileDir",      column = @Column(name = "Car1_fildDir")),
+            @AttributeOverride(name = "fullUrl",      column = @Column(name = "Car1_fullUrl")),
     })
     private FileDto carouselImg1;
 
@@ -122,6 +136,8 @@ public class BasicInfo extends BaseTimeEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Car2_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Car2_UploadName")),
+            @AttributeOverride(name = "fileDir",      column = @Column(name = "Car2_fildDir")),
+            @AttributeOverride(name = "fullUrl",      column = @Column(name = "Car2_fullUrl")),
     })
     private FileDto carouselImg2;
 
@@ -129,6 +145,8 @@ public class BasicInfo extends BaseTimeEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Car3_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Car3_UploadName")),
+            @AttributeOverride(name = "fileDir",      column = @Column(name = "Car3_fildDir")),
+            @AttributeOverride(name = "fullUrl",      column = @Column(name = "Car3_fullUrl")),
     })
     private FileDto carouselImg3;
 
@@ -136,6 +154,8 @@ public class BasicInfo extends BaseTimeEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Car4_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Car4_UploadName")),
+            @AttributeOverride(name = "fileDir",      column = @Column(name = "Car4_fildDir")),
+            @AttributeOverride(name = "fullUrl",      column = @Column(name = "Car4_fullUrl")),
     })
     private FileDto carouselImg4;
 
@@ -143,6 +163,8 @@ public class BasicInfo extends BaseTimeEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Car5_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Car5_UploadName")),
+            @AttributeOverride(name = "fileDir",      column = @Column(name = "Car5_fildDir")),
+            @AttributeOverride(name = "fullUrl",      column = @Column(name = "Car5_fullUrl")),
     })
     private FileDto carouselImg5;
 
@@ -150,6 +172,8 @@ public class BasicInfo extends BaseTimeEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Car6_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Car6_UploadName")),
+            @AttributeOverride(name = "fileDir",      column = @Column(name = "Car6_fildDir")),
+            @AttributeOverride(name = "fullUrl",      column = @Column(name = "Car6_fullUrl")),
     })
     private FileDto carouselImg6;
 
@@ -157,6 +181,8 @@ public class BasicInfo extends BaseTimeEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Chart1_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Chart1_UploadName")),
+            @AttributeOverride(name = "fileDir",      column = @Column(name = "Chart1_fildDir")),
+            @AttributeOverride(name = "fullUrl",      column = @Column(name = "Chart1_fullUrl")),
     })
     private FileDto organizationChart1;
 
@@ -164,6 +190,8 @@ public class BasicInfo extends BaseTimeEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Chart2_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Chart2_UploadName")),
+            @AttributeOverride(name = "fileDir",      column = @Column(name = "Chart2_fildDir")),
+            @AttributeOverride(name = "fullUrl",      column = @Column(name = "Chart2_fullUrl")),
     })
     private FileDto organizationChart2;
 
@@ -171,6 +199,8 @@ public class BasicInfo extends BaseTimeEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "Chart3_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "Chart3_UploadName")),
+            @AttributeOverride(name = "fileDir",      column = @Column(name = "Chart3_fildDir")),
+            @AttributeOverride(name = "fullUrl",      column = @Column(name = "Chart3_fullUrl")),
     })
     private FileDto organizationChart3;
 }

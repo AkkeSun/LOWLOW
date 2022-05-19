@@ -9,11 +9,10 @@ import church.lowlow.rest_api.weekly.db.WeeklyValidation;
 import church.lowlow.rest_api.weekly.repository.WeeklyRepository;
 import church.lowlow.rest_api.weekly.resource.WeeklyErrorsResource;
 import church.lowlow.rest_api.weekly.resource.WeeklyResource;
-import church.lowlow.user_api.admin.file.service.FileService;
+import church.lowlow.user_api.fileProcess.service.basic.FileService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
@@ -21,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 

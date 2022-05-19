@@ -35,6 +35,8 @@ public class Weekly extends BaseTimeEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "img1_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "img1_UploadName")),
+            @AttributeOverride(name = "fileDir",      column = @Column(name = "img1_fildDir")),
+            @AttributeOverride(name = "fullUrl",      column = @Column(name = "img1_fullUrl")),
     })
     private FileDto img1;
 
@@ -42,6 +44,8 @@ public class Weekly extends BaseTimeEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "img2_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "img2_UploadName")),
+            @AttributeOverride(name = "fileDir",      column = @Column(name = "img2_fildDir")),
+            @AttributeOverride(name = "fullUrl",      column = @Column(name = "img2_fullUrl")),
     })
     private FileDto img2;
 
@@ -49,6 +53,8 @@ public class Weekly extends BaseTimeEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "img3_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "img3_UploadName")),
+            @AttributeOverride(name = "fileDir",      column = @Column(name = "img3_fildDir")),
+            @AttributeOverride(name = "fullUrl",      column = @Column(name = "img3_fullUrl")),
     })
     private FileDto img3;
 
@@ -56,6 +62,8 @@ public class Weekly extends BaseTimeEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "originalName", column = @Column(name = "img4_OriginalName")),
             @AttributeOverride(name = "uploadName",   column = @Column(name = "img4_UploadName")),
+            @AttributeOverride(name = "fileDir",      column = @Column(name = "img4_fildDir")),
+            @AttributeOverride(name = "fullUrl",      column = @Column(name = "img4_fullUrl")),
     })
     private FileDto img4;
 }

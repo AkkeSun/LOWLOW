@@ -98,7 +98,7 @@ function memberUpdateViewSetting() {
 
 
 
-// ================= 파일 사이즈 체크 ====================
+// ================= 이미지 파일 체크 ====================
 function memberFileCheck(e){
 
     let files = e.target.files;
@@ -148,22 +148,27 @@ function memberFileCheck(e){
 
 // ================= Member Image Upload Process ====================
 function memberImageProcess(csrfHeader, csrfToken) {
-    imageObject = {};
+    var imageObject = {};
 
     // Create : 이미지를 업로드하는 경우
-    if($("#image").val()){
+    if($("#image").val()) {
         var fileUploadCallback = ajaxFileUpload(csrfHeader, csrfToken, new FormData($("#memberFrm")[0]), "member");
         fileUploadCallback.done( uploadData => {
-            imageObject.uploadName =  uploadData.image.uploadName;
+            imageObject.uploadName   =  uploadData.image.uploadName;
             imageObject.originalName =  uploadData.image.originalName;
+            imageObject.fileDir      =  uploadData.image.fileDir;
+            imageObject.fullUrl      =  uploadData.image.fullUrl;
         });
     }
 
     // Update : 이미지를 수정하지 않는 경우
     if($("#image").val() == "" && $("#savedOriginalName").val()){
-        imageObject.uploadName  = $("#savedUploadName").val();
-        imageObject.originalName  = $("#savedOriginalName").val();
+        imageObject.uploadName   = $("#savedUploadName").val();
+        imageObject.originalName = $("#savedOriginalName").val();
+        imageObject.fileDir      =  $("#savedFileDir").val();
+        imageObject.fullUrl      =  $("#savedFullUrl").val();
     }
+
     return imageObject;
 }
 

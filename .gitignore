@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+#### security ####
+/src/main/resources/application-security.properties

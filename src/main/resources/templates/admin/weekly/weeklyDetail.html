@@ -47,27 +47,39 @@
                     <div id="imageDetailView">
                         <div th:if="${weekly.img1} != null" class="form-group">
                             <input type="hidden" id="image1_savedOriginalName" th:value="${weekly.img1.originalName}">
-                            <input type="hidden" id="image1_savedUploadName" th:value="${weekly.img1.uploadName}">
+                            <input type="hidden" id="image1_savedUploadName"   th:value="${weekly.img1.uploadName}">
+                            <input type="hidden" id="image1_savedFileDir"      th:value="${weekly.img1.fileDir}">
+                            <input type="hidden" id="image1_savedFullUrl"      th:value="${weekly.img1.fullUrl}">
                             &nbsp;&nbsp;
-                            <img class="weeklyImg" id="img1" th:src="@{/upload/weekly/} + ${weekly.img1.uploadName}">
+                            <img th:if="${weekly.img1.fileDir} == null" class="weeklyImg" id="img1" th:src="@{/upload/weekly/} + ${weekly.img1.uploadName}">
+                            <img th:if="${weekly.img1.fileDir} != null" class="weeklyImg" id="img1" th:src="${weekly.img1.fullUrl}">
                         </div>
                         <div th:if="${weekly.img2} != null" class="form-group">
                             <input type="hidden" id="image2_savedOriginalName" th:value="${weekly.img2.originalName}">
-                            <input type="hidden" id="image2_savedUploadName" th:value="${weekly.img2.uploadName}">
+                            <input type="hidden" id="image2_savedUploadName"   th:value="${weekly.img2.uploadName}">
+                            <input type="hidden" id="image2_savedFileDir"      th:value="${weekly.img2.fileDir}">
+                            <input type="hidden" id="image2_savedFullUrl"      th:value="${weekly.img2.fullUrl}">
                             &nbsp;&nbsp;
-                            <img class="weeklyImg" id="img2" th:src="@{/upload/weekly/} + ${weekly.img2.uploadName}">
+                            <img th:if="${weekly.img2.fileDir} == null" class="weeklyImg" id="img2" th:src="@{/upload/weekly/} + ${weekly.img2.uploadName}">
+                            <img th:if="${weekly.img2.fileDir} != null" class="weeklyImg" id="img2" th:src="${weekly.img2.fullUrl}">
                         </div>
                         <div th:if="${weekly.img3} != null" class="form-group">
                             <input type="hidden" id="image3_savedOriginalName" th:value="${weekly.img3.originalName}">
-                            <input type="hidden" id="image3_savedUploadName" th:value="${weekly.img3.uploadName}">
+                            <input type="hidden" id="image3_savedUploadName"   th:value="${weekly.img3.uploadName}">
+                            <input type="hidden" id="image3_savedFileDir"      th:value="${weekly.img3.fileDir}">
+                            <input type="hidden" id="image3_savedFullUrl"      th:value="${weekly.img3.fullUrl}">
                             &nbsp;&nbsp;
-                            <img class="weeklyImg" id="img3" th:src="@{/upload/weekly/} + ${weekly.img3.uploadName}">
+                            <img th:if="${weekly.img3.fileDir} == null" class="weeklyImg" id="img3" th:src="@{/upload/weekly/} + ${weekly.img3.uploadName}">
+                            <img th:if="${weekly.img3.fileDir} != null" class="weeklyImg" id="img3" th:src="${weekly.img3.fullUrl}">
                         </div>
                         <div th:if="${weekly.img4} != null" class="form-group">
                             <input type="hidden" id="image4_savedOriginalName" th:value="${weekly.img4.originalName}">
-                            <input type="hidden" id="image4_savedUploadName" th:value="${weekly.img4.uploadName}">
+                            <input type="hidden" id="image4_savedUploadName"   th:value="${weekly.img4.uploadName}">
+                            <input type="hidden" id="image4_savedFileDir"      th:value="${weekly.img4.fileDir}">
+                            <input type="hidden" id="image4_savedFullUrl"      th:value="${weekly.img4.fullUrl}">
                             &nbsp;&nbsp;
-                            <img class="weeklyImg" id="img4" th:src="@{/upload/weekly/} + ${weekly.img4.uploadName}">
+                            <img th:if="${weekly.img4.fileDir} == null" class="weeklyImg" id="img4" th:src="@{/upload/weekly/} + ${weekly.img4.uploadName}">
+                            <img th:if="${weekly.img4.fileDir} != null" class="weeklyImg" id="img4" th:src="${weekly.img4.fullUrl}">
                         </div>
                     </div>
 
@@ -76,14 +88,15 @@
                         <div class="form-group">
                             <input type="file" class="form-control-file input-large" id="image1" name="image1" style="display: none">
                             &nbsp;
-                            <div th:if="${weekly.img1} != null">
-                                <label for="image1">
-                                    &nbsp;&nbsp;<img class="weeklyImg" id="imageView1" th:src="@{/upload/weekly/} + ${weekly.img1.uploadName}">
+                            <div>
+                                <label th:if="${weekly.img1} == null" for="image1" >
+                                    &nbsp;&nbsp;
+                                    <img class="imgSample" id="imageView1" src="/image/uploadSample.png">
                                 </label>
-                            </div>
-                            <div th:if="${weekly.img1} == null">
-                                <label for="image1">
-                                    &nbsp;&nbsp;<img class="imgSample" id="imageView1" src="/image/uploadSample.png">
+                                <label th:if="${weekly.img1} != null" for="image1">
+                                    &nbsp;&nbsp;
+                                    <img th:if="${weekly.img1.fileDir} == null" class="weeklyImg" id="imageView1" th:src="@{/upload/weekly/} + ${weekly.img1.uploadName}">
+                                    <img th:if="${weekly.img1.fileDir} != null" class="weeklyImg" id="imageView1" th:src="${weekly.img1.fullUrl}">
                                 </label>
                             </div>
                         </div>
@@ -91,42 +104,45 @@
                             <input type="file" class="form-control-file input-large" id="image2" name="image2" style="display: none">
                             <br>
                             &nbsp;
-                            <div th:if="${weekly.img2} != null">
-                                <label for="image2">
-                                    &nbsp;&nbsp;<img class="weeklyImg" id="imageView2" th:src="@{/upload/weekly/} + ${weekly.img2.uploadName}">
+                            <div>
+                                <label th:if="${weekly.img2} == null" for="image2" >
+                                    &nbsp;&nbsp;
+                                    <img class="imgSample" id="imageView2" src="/image/uploadSample.png">
                                 </label>
-                            </div>
-                            <div th:if="${weekly.img2} == null">
-                                <label for="image2">
-                                    &nbsp;&nbsp;<img class="imgSample" id="imageView2" src="/image/uploadSample.png">
+                                <label th:if="${weekly.img2} != null" for="image2">
+                                    &nbsp;&nbsp;
+                                    <img th:if="${weekly.img2.fileDir} == null" class="weeklyImg" id="imageView2" th:src="@{/upload/weekly/} + ${weekly.img2.uploadName}">
+                                    <img th:if="${weekly.img2.fileDir} != null" class="weeklyImg" id="imageView2" th:src="${weekly.img2.fullUrl}">
                                 </label>
                             </div>
                         </div>
                         <div class="form-group">
                             <input type="file" class="form-control-file input-large" id="image3" name="image3" style="display: none">
                             &nbsp;
-                            <div th:if="${weekly.img3} != null">
-                                <label for="image3">
-                                    &nbsp;&nbsp;<img class="weeklyImg" id="imageView3" th:src="@{/upload/weekly/} + ${weekly.img3.uploadName}">
+                            <div>
+                                <label th:if="${weekly.img3} == null" for="image3" >
+                                    &nbsp;&nbsp;
+                                    <img class="imgSample" id="imageView3" src="/image/uploadSample.png">
                                 </label>
-                            </div>
-                            <div th:if="${weekly.img3} == null">
-                                <label for="image3">
-                                    &nbsp;&nbsp;<img class="imgSample" id="imageView3" src="/image/uploadSample.png">
+                                <label th:if="${weekly.img3} != null" for="image3">
+                                    &nbsp;&nbsp;
+                                    <img th:if="${weekly.img3.fileDir} == null" class="weeklyImg" id="imageView3" th:src="@{/upload/weekly/} + ${weekly.img3.uploadName}">
+                                    <img th:if="${weekly.img3.fileDir} != null" class="weeklyImg" id="imageView3" th:src="${weekly.img3.fullUrl}">
                                 </label>
                             </div>
                         </div>
                         <div class="form-group">
                             <input type="file" class="form-control-file input-large" id="image4" name="image4" style="display: none">
                             &nbsp;
-                            <div th:if="${weekly.img4} != null">
-                                <label for="image4">
-                                    &nbsp;&nbsp;<img class="weeklyImg" id="imageView4" th:src="@{/upload/weekly/} + ${weekly.img4.uploadName}">
+                            <div>
+                                <label th:if="${weekly.img4} == null" for="image4" >
+                                    &nbsp;&nbsp;
+                                    <img class="imgSample" id="imageView4" src="/image/uploadSample.png">
                                 </label>
-                            </div>
-                            <div th:if="${weekly.img4} == null">
-                                <label for="image4">
-                                    &nbsp;&nbsp;<img class="imgSample" id="imageView4" src="/image/uploadSample.png">
+                                <label th:if="${weekly.img4} != null" for="image4">
+                                    &nbsp;&nbsp;
+                                    <img th:if="${weekly.img4.fileDir} == null" class="weeklyImg" id="imageView4" th:src="@{/upload/weekly/} + ${weekly.img4.uploadName}">
+                                    <img th:if="${weekly.img4.fileDir} != null" class="weeklyImg" id="imageView4" th:src="${weekly.img4.fullUrl}">
                                 </label>
                             </div>
                         </div>

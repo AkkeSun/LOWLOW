@@ -1,8 +1,6 @@
 package church.lowlow.user_api.admin.weekly.controller;
 
-import church.lowlow.rest_api.common.entity.FileDto;
 import church.lowlow.rest_api.weekly.db.Weekly;
-import church.lowlow.user_api.admin.file.service.FileService;
 import church.lowlow.user_api.admin.weekly.service.WeeklyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

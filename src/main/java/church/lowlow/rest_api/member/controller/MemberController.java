@@ -1,7 +1,6 @@
 package church.lowlow.rest_api.member.controller;
 
 import church.lowlow.rest_api.common.aop.LogComponent;
-import church.lowlow.rest_api.common.entity.FileDto;
 import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.member.db.MemberValidation;
@@ -10,7 +9,7 @@ import church.lowlow.rest_api.member.resource.MemberErrorsResource;
 import church.lowlow.rest_api.member.resource.MemberResource;
 import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.member.db.MemberDto;
-import church.lowlow.user_api.admin.file.service.FileService;
+import church.lowlow.user_api.fileProcess.service.basic.FileService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
