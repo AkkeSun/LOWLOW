@@ -211,8 +211,8 @@ public class AccountingController {
     public Map<String, Object> getStatisticsMap(SearchDto searchDto){
 
         // data load
-        List<Tuple> offeringStatistics = accountingRepository.getAccountingStatistics(searchDto, "offeringKind");
-        List<Tuple> memberStatistics = accountingRepository.getAccountingStatistics(searchDto, "member");
+        List<Tuple> offeringStatistics = accountingRepository.getAccountingStatistics(searchDto, "offeringKind"); // 헌금 종류별 통계
+        List<Tuple> memberStatistics = accountingRepository.getAccountingStatistics(searchDto, "member");         // 이름별 통계
 
 
         // data List

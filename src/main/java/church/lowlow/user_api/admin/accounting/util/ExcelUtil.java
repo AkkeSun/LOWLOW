@@ -1,6 +1,7 @@
 package church.lowlow.user_api.admin.accounting.util;
 
 import church.lowlow.rest_api.common.entity.SearchDto;
+import lombok.extern.log4j.Log4j2;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -12,12 +13,17 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
 
 import static church.lowlow.rest_api.common.util.StringUtil.objNullToStr;
 
+@Log4j2
 public class ExcelUtil {
 
     /**
@@ -35,12 +41,10 @@ public class ExcelUtil {
      *  4. 하나의 row 에 여러개의 cell 을 생성한다. (= 하나의 행에 여러 열을 생성한다)
      */
 
-    @Value("${fileUploadPath}")
-    public String filePath;
 
     public String fileNm = "accounting.xlsx";
 
-    public void accountingExcelCreate(SearchDto searchDto, List<LinkedHashMap<String, Object>> accountingList, Map<String ,Object> statisticsMap){
+    public File accountingExcelCreate(SearchDto searchDto, List<LinkedHashMap<String, Object>> accountingList, Map<String ,Object> statisticsMap){
 
         //============= Workbook & Sheet 생성 ===============
         XSSFWorkbook workbook = new XSSFWorkbook();
@@ -75,19 +79,35 @@ public class ExcelUtil {
         accountingListExcelCreate(basicSheet, accountingList, mainTitleStyle, tableStyle, searchDto);
         accountingStatisticsExcelCreate(statisticsSheet, statisticsMap, mainTitleStyle, tableStyle);
 
+        // 생성된 엑셀 파일로 추출
+        File excelFile = new File(fileNm);
+
         try {
-            // 생성된 엑셀 파일로 추출
-            FileOutputStream out = new FileOutputStream(new File(filePath + "/excel", fileNm));
+            FileOutputStream out = new FileOutputStream(excelFile);
             workbook.write(out);
             out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return excelFile;
     }
 
 
 
+    protected void removeLocalFile(File targetFile) {
 
+        try {
+            Files.delete(Paths.get(targetFile.getPath()));
+            log.info("[LOCAL FILE DELETE SUCCESS]");
+        } catch (NoSuchFileException e) {
+            System.out.println("[LOCAL FILE DELETE FAIL] File not Found");
+        } catch (DirectoryNotEmptyException e) {
+            System.out.println("[LOCAL FILE DELETE FAIL] Directory is not Empty");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 

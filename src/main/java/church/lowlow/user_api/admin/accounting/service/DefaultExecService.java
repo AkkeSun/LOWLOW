@@ -2,7 +2,9 @@ package church.lowlow.user_api.admin.accounting.service;
 
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.user_api.admin.accounting.util.ExcelUtil;
+import church.lowlow.user_api.fileProcess.service.CommonFileService;
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -18,6 +20,9 @@ public class DefaultExecService extends ExcelUtil implements ExcelService {
     private final String fileDownloadPath;
     private final AdminAccountingService accountingService;
 
+    @Autowired
+    private CommonFileService fileService;
+
     public DefaultExecService(String fileDownloadPath, AdminAccountingService accountingService) {
         this.fileDownloadPath = fileDownloadPath;
         this.accountingService = accountingService;
@@ -30,12 +35,11 @@ public class DefaultExecService extends ExcelUtil implements ExcelService {
         List<LinkedHashMap<String, Object>> accountingList = accountingService.getAccountingList(searchDto);
         Map<String, Object> statisticsMap = accountingService.getStatisticsMap(searchDto);
 
-        // 엑셀파일 생성
-        accountingExcelCreate(searchDto, accountingList, statisticsMap);
+        // 서버에 엑셀파일 생성
+        File excelFile = accountingExcelCreate(searchDto, accountingList, statisticsMap);
 
         // 다운로드
-        String fileName = "accounting.xlsx";
-        byte[] fileByte = FileUtils.readFileToByteArray(new File(fileDownloadPath + fileName));
+        byte[] fileByte = FileUtils.readFileToByteArray(excelFile);
 
         response.setContentType("application/octet-stream");
         response.setHeader("Content-Disposition", "attachment; fileName=\"" + URLEncoder.encode(LocalDate.now() + ".xlsx", "UTF-8")+"\";");
@@ -44,5 +48,10 @@ public class DefaultExecService extends ExcelUtil implements ExcelService {
         response.getOutputStream().write(fileByte);
         response.getOutputStream().flush();
         response.getOutputStream().close();
+
+        // 로컬에 생성한 파일 삭제
+        // removeLocalFile(excelFile);
+
     }
+
 }
