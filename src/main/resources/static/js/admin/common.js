@@ -119,7 +119,7 @@ function commonInsertAndUpdate(pageName, type){
     var redirectUrl = `/admin/${pageName}`;
     var async       = true;
     var isSecurity  = false;
-    var data        = "";
+    var data        = {};
 
 
     // data setting
@@ -144,10 +144,12 @@ function commonInsertAndUpdate(pageName, type){
         case "weekly" :
             data = objToJson($('#weeklyFrm').serializeArray());
             var imageObject = weeklyImageProcess(csrfHeader, csrfToken);
-            data.img1 = imageObject.img1;
-            data.img2 = imageObject.img2;
-            data.img3 = imageObject.img3;
-            data.img4 = imageObject.img4;
+            alert(JSON.stringify(imageObject));
+            data.img1 = imageObject.image1;
+            data.img2 = imageObject.image2;
+            data.img3 = imageObject.image3;
+            data.img4 = imageObject.image4;
+            alert(JSON.stringify(data));
             break;
         case "worshipVideos" :
             data = objToJson($('#worshipVideoFrm').serializeArray());

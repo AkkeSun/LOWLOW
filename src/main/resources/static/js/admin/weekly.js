@@ -242,65 +242,54 @@ function weeklyFileCheck4(e){
 // ================= weekly Image Upload Process ====================
 function weeklyImageProcess(csrfHeader, csrfToken) {
 
-    imageObject = {};
+    var imageObject = {image1:{}, image2:{}, image3:{}, image4:{}};
 
     // Create : 이미지를 업로드하는 경우
-    if( $("#image1").val() || $("#image2").val() || $("#image3").val() || $("#image4").val() ){
+    if( $("#image1").val() || $("#image2").val() || $("#image3").val() || $("#image4").val() )
+    {
         var fileUploadCallback = ajaxFileUpload(csrfHeader, csrfToken, new FormData($("#weeklyFrm")[0]), "weekly");
-        fileUploadCallback.done( uploadData => {
-            if(uploadData.image1 != undefined){
-                imageObject.image1.uploadName =  uploadData.image1.uploadName;
-                imageObject.image1.originalName =  uploadData.image1.originalName;
-                imageObject.image1.fileDir =  uploadData.image1.fileDir;
-                imageObject.image1.fullUrl =  uploadData.image1.fullUrl;
-            }
-            if(uploadData.image2 != undefined){
-                imageObject.image2.uploadName =  uploadData.image2.uploadName;
-                imageObject.image2.originalName =  uploadData.image2.originalName;
-                imageObject.image2.fileDir =  uploadData.image2.fileDir;
-                imageObject.image2.fullUrl =  uploadData.image2.fullUrl;
-            }
-            if(uploadData.image3 != undefined){
-                imageObject.image3.uploadName =  uploadData.image3.uploadName;
-                imageObject.image3.originalName =  uploadData.image3.originalName;
-                imageObject.image3.fileDir =  uploadData.image3.fileDir;
-                imageObject.image3.fullUrl =  uploadData.image3.fullUrl;
-            }
-            if(uploadData.image4 != undefined){
-                imageObject.image4.uploadName =  uploadData.image4.uploadName;
-                imageObject.image4.originalName =  uploadData.image4.originalName;
-                imageObject.image4.fileDir =  uploadData.image4.fileDir;
-                imageObject.image4.fullUrl =  uploadData.image4.fullUrl;
-            }
+        fileUploadCallback.done( uploadData =>
+        {
+            alert(JSON.stringify(uploadData.image3));
+            if(uploadData.image1 != undefined)
+                imageObject.image1 = uploadData.image1;
+            if(uploadData.image2 != undefined)
+                imageObject.image2 = uploadData.image2;
+            if(uploadData.image3 != undefined)
+                imageObject.image3 = uploadData.image3;
+            if(uploadData.image4 != undefined)
+                imageObject.image4 = uploadData.image4;
         });
     }
-
 
     // Update : 이미지를 수정하지 않는 경우
     if($("#image1").val() == "" && $("#image1_savedOriginalName").val()){
         imageObject.image1.uploadName   = $("#image1_savedUploadName").val();
         imageObject.image1.originalName = $("#image1_savedOriginalName").val();
         imageObject.image1.fileDir      = $("#image1_savedFileDir").val();
-        imageObject.image1.fullUrl      = $("#image1_savedFullUr").val();
+        imageObject.image1.fullUrl      = $("#image1_savedFullUrl").val();
     }
     if($("#image2").val() == "" && $("#image2_savedOriginalName").val()){
         imageObject.image2.uploadName   = $("#image2_savedUploadName").val();
         imageObject.image2.originalName = $("#image2_savedOriginalName").val();
         imageObject.image2.fileDir      = $("#image2_savedFileDir").val();
-        imageObject.image2.fullUrl      = $("#image2_savedFullUr").val();
+        imageObject.image2.fullUrl      = $("#image1_savedFullUrl").val();
     }
     if($("#image3").val() == "" && $("#image3_savedOriginalName").val()){
         imageObject.image3.uploadName   = $("#image3_savedUploadName").val();
         imageObject.image3.originalName = $("#image3_savedOriginalName").val();
         imageObject.image3.fileDir      = $("#image3_savedFileDir").val();
-        imageObject.image3.fullUrl      = $("#image3_savedFullUr").val();
+        imageObject.image3.fullUrl      = $("#image1_savedFullUrl").val();
     }
     if($("#image4").val() == "" && $("#image2_savedOriginalName").val()){
         imageObject.image4.uploadName   = $("#image4_savedUploadName").val();
         imageObject.image4.originalName = $("#image4_savedOriginalName").val();
         imageObject.image4.fileDir      = $("#image4_savedFileDir").val();
-        imageObject.image4.fullUrl      = $("#image4_savedFullUr").val();
+        imageObject.image4.fullUrl      = $("#image1_savedFullUrl").val();
+        
     }
+
+
     return imageObject;
 }
 
