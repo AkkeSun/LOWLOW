@@ -396,6 +396,23 @@ function useSummernote(bbsType) {
 
 // ================= 서머노트 파일 업로드 함수 ====================
 function uploadSummernoteImageFile(file, el, bbsType) {
+
+    //========= 파일 사이즈 체크 =========
+    var maxSize = 5 * 1024 * 1024; // 5MB
+    var browser=navigator.appName;
+
+    if (browser == "Microsoft Internet Explorer") {
+        var oas = new ActiveXObject("Scripting.FileSystemObject");
+        fileSize = oas.getFile(f.value).size;
+    }
+    else
+        fileSize = file.size;
+
+    if (fileSize > maxSize) {
+        alert("첨부파일 사이즈는 5MB 이내로 등록 가능합니다.");
+        return;
+    }
+
     data = new FormData();
     data.append("image", file);
     var csrfHeader  = $("#_csrf_header").attr('content');

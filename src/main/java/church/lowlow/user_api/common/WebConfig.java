@@ -17,8 +17,6 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class WebConfig implements WebMvcConfigurer{
 
-
-
     @Value("${fileUploadPath}")
     private String fileUploadPath;
 
@@ -59,7 +57,7 @@ public class WebConfig implements WebMvcConfigurer{
 
 
     @Bean
-    public WebClient webClient(){
+    public WebClient webClient() {
         return WebClient.builder()
                 .baseUrl(restApiBaseUrl)
                 .build();

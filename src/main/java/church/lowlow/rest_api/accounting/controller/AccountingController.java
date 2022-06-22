@@ -117,7 +117,7 @@ public class AccountingController {
 
 
     // ======================== one data ========================
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity getAccounting(@PathVariable Integer id){
 
         Optional<Accounting> optional = accountingRepository.findById(id);
