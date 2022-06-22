@@ -48,8 +48,8 @@ public class AdminAccountingController {
     @GetMapping("/{id}")
     public String getAccountingDetailView(@PathVariable Long id, Model model) {
 
-        Accounting accounting = accountingService.getAccounting(id);
-        model.addAttribute("accounting",accounting);
+        //Accounting accounting = accountingService.getAccounting(id);
+        model.addAttribute("userId", id);
 
         return "admin/accounting/accountingDetail";
 

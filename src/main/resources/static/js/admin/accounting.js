@@ -109,6 +109,24 @@ function accountingListLoad(nowPage){
 
 };
 
+// ================= Detail Data Load====================
+function getAccountDetail(userId){
+    let csrfHeader  = $("#_csrf_header").attr('content');
+    let csrfToken   = $("#_csrf").attr('content');
+
+    let callback =
+        ajaxComm("get", "", `/api/accounting/${userId}`,csrfHeader, csrfToken);
+
+    callback.done((data) => {
+        $("#memberId").val(data.member.id);
+        $("#nameCheck").val(data.member.name);
+        $("#money").val(data.money);
+        $("#offeringKind").val(data.offeringKind);
+        $("#offeringDate").val(data.offeringDate);
+    });
+}
+
+
 
 
 // ================= 통계 분석 데이터 로드 ====================
@@ -150,7 +168,7 @@ function accountingStatisticsDataLoad(){
         }
 
         // 헌금 종류별 통계 데이터
-        if( data.offeringKind) {
+        if( data.offeringKind ) {
             var offeringKindList = data.offeringKind;
             offeringKindList.forEach(function (data, index) {
 
@@ -192,7 +210,7 @@ function accountingStatisticsDataLoad(){
 
 // ================ 회계분석 클릭 ================
 function showStatisticsBtn(){
-    $("#statisticsData").show();
+    $("#statisticsData").removeAttr("style");
     $("#statisticBtn").hide();
     $("#listBtn").show();
     $("#listData").hide();
@@ -201,7 +219,7 @@ function showStatisticsBtn(){
 
 // ================ 전체 리스트 버튼 클릭 ================
 function showListBtn(){
-    $("#statisticsData").hide();
+    $("#statisticsData").attr("style", "display: none");
     $("#statisticBtn").show();
     $("#listBtn").hide();
     $("#listData").show();
