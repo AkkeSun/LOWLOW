@@ -1,25 +1,26 @@
 package church.lowlow.user_api.admin.weekly.service;
 
 import church.lowlow.rest_api.weekly.db.Weekly;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 
 @Service
 public class DefaultWeeklyService implements WeeklyService{
 
-    @Autowired
-    private WebClient webClient;
+    @Value("${restApiBaseUrl}")
+    private String REST_API_URL;
+
+    private RestTemplate restTemplate = new RestTemplate();
+
 
     @Override
     @Transactional
     public Weekly getWeekly(Long id) {
-        Weekly weekly = webClient.get()
-                .uri("/weekly/{id}", id)
-                .retrieve().bodyToMono(Weekly.class)
-                .block();
-        return weekly;
+
+        return restTemplate.exchange(REST_API_URL + "/weekly/" + id, HttpMethod.GET, null, Weekly.class).getBody();
     }
 }

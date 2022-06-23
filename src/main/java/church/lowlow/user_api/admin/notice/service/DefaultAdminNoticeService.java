@@ -1,34 +1,27 @@
 package church.lowlow.user_api.admin.notice.service;
 
-import church.lowlow.rest_api.gallery.db.Gallery;
 import church.lowlow.rest_api.notice.db.Notice;
-import church.lowlow.user_api.admin.gallery.service.AdminGalleryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 
 @Service
 public class DefaultAdminNoticeService implements AdminNoticeService {
 
-    @Autowired
-    private WebClient webClient;
+    @Value("${restApiBaseUrl}")
+    private String REST_API_URL;
+
+    private RestTemplate restTemplate = new RestTemplate();
 
     @Override
     @Transactional
     public Notice getNotice(Long id) {
 
-        Mono<Notice> noticeMono = webClient
-                .get()
-                .uri("/notices/{id}", id)
-                .retrieve()
-                .bodyToMono(Notice.class);
+        return restTemplate.exchange(REST_API_URL + "/notices/" + id, HttpMethod.GET, null, Notice.class).getBody();
 
-        Notice notice = noticeMono.block();
-
-        return notice;
     }
 
 }

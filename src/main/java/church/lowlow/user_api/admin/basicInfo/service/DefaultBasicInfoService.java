@@ -4,66 +4,61 @@ import church.lowlow.rest_api.basicInfo.db.BasicInfoDto;
 import church.lowlow.rest_api.common.entity.FileDto;
 import church.lowlow.rest_api.common.entity.Writer;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Service
 public class DefaultBasicInfoService implements BasicInfoService{
 
-    @Autowired
-    private WebClient webClient;
+    @Value("${restApiBaseUrl}")
+    private String REST_API_URL;
+
+    private RestTemplate restTemplate = new RestTemplate();
 
 
     @Override
     @Transactional
     public BasicInfoDto getBasicInfo() {
 
-        Mono<ResponseEntity<Object>> responseEntityMono = webClient.get()
-                .uri("/basicInfo/list")
-                .exchange()
-                .flatMap(clientResponse -> clientResponse.toEntity(Object.class));
+        ResponseEntity<Map> resultMap =
+                restTemplate.exchange(REST_API_URL + "/basicInfo/list", HttpMethod.GET,null, Map.class);
 
-        ResponseEntity<Object> block = responseEntityMono.block();
-        Map<String, Object> body = (Map<String, Object>) block.getBody();
-        List <LinkedHashMap<String, Object>> basicInfoList = (List<LinkedHashMap<String, Object>>) body.get("basicInfoList");
+        ArrayList<BasicInfoDto> basicInfoList = getObjectList(resultMap);
 
         if (basicInfoList.size() == 0)
             return null;
 
-        return basicInfoBuilder(basicInfoList.get(0));
+        return basicInfoList.get(0);
     }
 
     @Override
     @Transactional
     public BasicInfoDto createBasicInfo(BasicInfoDto dto) {
 
-        ResponseEntity<Object> block = webClient.post()
-                .uri("/basicInfo")
-                .body(BodyInserters.fromObject(dto))
-                .exchange()
-                .flatMap(clientResponse -> clientResponse.toEntity(Object.class)).block();
+        HttpEntity<BasicInfoDto> entity = new HttpEntity<>(dto);
+        BasicInfoDto basicInfoDto = null;
 
-        if(!block.getStatusCode().is2xxSuccessful())
+        try {
+            basicInfoDto = restTemplate.exchange(REST_API_URL + "/basicInfo", HttpMethod.POST, entity, BasicInfoDto.class).getBody();
+        } catch (Exception e) {
             return null;
+        }
 
-        Map<String, Object> body = (Map<String, Object>) block.getBody();
-        return basicInfoBuilder(body);
+
+        return basicInfoDto;
     }
 
 
@@ -72,17 +67,16 @@ public class DefaultBasicInfoService implements BasicInfoService{
     @Transactional
     public BasicInfoDto updateBasicInfo(BasicInfoDto updateDto) {
 
-        ResponseEntity<Object> block = webClient.put()
-                .uri("/basicInfo/{id}", updateDto.getId())
-                .body(BodyInserters.fromObject(updateDto))
-                .exchange()
-                .flatMap(clientResponse -> clientResponse.toEntity(Object.class)).block();
+        HttpEntity<BasicInfoDto> entity = new HttpEntity<>(updateDto);
+        BasicInfoDto basicInfoDto = null;
 
-        if(!block.getStatusCode().is2xxSuccessful())
+        try {
+            basicInfoDto = restTemplate.exchange(REST_API_URL + "/basicInfo/" + updateDto.getId(), HttpMethod.PUT, entity, BasicInfoDto.class).getBody();
+        } catch(Exception e) {
             return null;
+        }
 
-        Map<String, Object> body = (Map<String, Object>) block.getBody();
-        return basicInfoBuilder(body);
+        return basicInfoDto;
     }
 
 
@@ -111,7 +105,7 @@ public class DefaultBasicInfoService implements BasicInfoService{
 
     @Override
     @Transactional
-    // api/basicInfo 는 csrf() 예외 처리를 하므로 username 을 불러올 수 없어서 dto로 처리
+    // api/basicInfo 는 csrf() 예외 처리를 하므로 username 을 불러올 수 없어서 dto 로 처리
     public void setWriter(BasicInfoDto basicInfoDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -186,6 +180,20 @@ public class DefaultBasicInfoService implements BasicInfoService{
         if(imageMap == null)
             return null;
         return FileDto.builder().originalName((String)imageMap.get("originalName")).uploadName((String)imageMap.get("uploadName")).build();
+    }
+
+    private ArrayList<BasicInfoDto> getObjectList(ResponseEntity<Map> resultMap){
+
+        LinkedHashMap lm = (LinkedHashMap) resultMap.getBody();
+        ArrayList<Map> list = (ArrayList<Map>) lm.get("basicInfoList");
+
+        ArrayList<BasicInfoDto> returnList = new ArrayList<>();
+
+        for(int i=0; i<list.size(); i++){
+            BasicInfoDto basicInfoDto = basicInfoBuilder(list.get(i));
+            returnList.add(basicInfoDto);
+        }
+        return returnList;
     }
 
 }

@@ -1,3 +1,4 @@
+
 //==================== for basicInfoAlert ======================
 function e1Exception() {
     var check = confirm('등록된 교회정보가 없습니다. 신규 등록하시겠습니까?');
@@ -45,8 +46,6 @@ function addressSearch() {
         }
     }).open();
 }
-
-
 
 
 function goChapter1(){

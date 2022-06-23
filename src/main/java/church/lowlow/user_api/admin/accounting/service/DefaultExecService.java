@@ -11,8 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.time.LocalDate;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class DefaultExecService extends ExcelUtil implements ExcelService {
@@ -32,7 +31,7 @@ public class DefaultExecService extends ExcelUtil implements ExcelService {
     public void excelFileDownload(SearchDto searchDto, HttpServletResponse response) throws IOException {
 
         // 엑셀에 들어갈 데이터 로드
-        List<LinkedHashMap<String, Object>> accountingList = accountingService.getAccountingList(searchDto);
+        ArrayList<Map> accountingList = accountingService.getAccountingList(searchDto);
         Map<String, Object> statisticsMap = accountingService.getStatisticsMap(searchDto);
 
         // 서버에 엑셀파일 생성
@@ -50,7 +49,7 @@ public class DefaultExecService extends ExcelUtil implements ExcelService {
         response.getOutputStream().close();
 
         // 로컬에 생성한 파일 삭제
-        // removeLocalFile(excelFile);
+        removeLocalFile(excelFile);
 
     }
 

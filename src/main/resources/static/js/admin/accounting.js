@@ -109,24 +109,6 @@ function accountingListLoad(nowPage){
 
 };
 
-// ================= Detail Data Load====================
-function getAccountDetail(userId){
-    let csrfHeader  = $("#_csrf_header").attr('content');
-    let csrfToken   = $("#_csrf").attr('content');
-
-    let callback =
-        ajaxComm("get", "", `/api/accounting/${userId}`,csrfHeader, csrfToken);
-
-    callback.done((data) => {
-        $("#memberId").val(data.member.id);
-        $("#nameCheck").val(data.member.name);
-        $("#money").val(data.money);
-        $("#offeringKind").val(data.offeringKind);
-        $("#offeringDate").val(data.offeringDate);
-    });
-}
-
-
 
 
 // ================= 통계 분석 데이터 로드 ====================

@@ -44,7 +44,7 @@ public class ExcelUtil {
 
     public String fileNm = "accounting.xlsx";
 
-    public File accountingExcelCreate(SearchDto searchDto, List<LinkedHashMap<String, Object>> accountingList, Map<String ,Object> statisticsMap){
+    public File accountingExcelCreate(SearchDto searchDto, ArrayList<Map> accountingList, Map<String ,Object> statisticsMap){
 
         //============= Workbook & Sheet 생성 ===============
         XSSFWorkbook workbook = new XSSFWorkbook();
@@ -117,7 +117,7 @@ public class ExcelUtil {
     /**************************************
      *      전체 리스트 엑셀 데이터 입력
      **************************************/
-    public void accountingListExcelCreate(XSSFSheet xssfSheet, List<LinkedHashMap<String, Object>> accountingList,
+    public void accountingListExcelCreate(XSSFSheet xssfSheet, ArrayList<Map> accountingList,
                                                  CellStyle mainTitleStyle, CellStyle tableStyle,
                                                  SearchDto searchDto){
 

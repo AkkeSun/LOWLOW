@@ -11,7 +11,6 @@
         $("#accountingNameCheck").hide();
         $("#accountingNameUpdate").hide();
         $("#updateProcessBtn").hide();
-        getAccountDetail([[${userId}]]);
     });
 </script>
 
@@ -25,13 +24,13 @@
 
             <!-- Main Contents -->
             <div class="container">
-                <form class="form-horizontal" id="accountingForm" enctype="multipart/form-data">
-                    <input type="hidden" class="form-control input-large" id="id" th:value="${userId}">
+                <form class="form-horizontal" id="accountingForm" th:object="${accounting}" enctype="multipart/form-data">
+                    <input type="hidden" class="form-control input-large" th:field="*{id}">
                     <div class="form-group">
                         <label for="nameCheck" class="col control-label">이름</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control input-large" id="nameCheck" placeholder="익명의 경우 '익명' 입력" disabled="disabled">
-                            <input type="hidden" class="form-control input-large" id="memberId" name="memberId">
+                            <input type="text" class="form-control input-large" id="nameCheck" placeholder="익명의 경우 '익명' 입력" disabled="disabled" th:value="*{member.name}">
+                            <input type="hidden" class="form-control input-large" id="memberId" name="memberId" th:value="*{member.id}">
                             <button type="button" class="btn btn-outline-primary" id='accountingNameCheck' onclick='nameCheckFunc()'>확인</button>
                             <button type="button" class="btn btn-outline-primary" id='accountingNameUpdate' onclick='nameUpdateFunc()'>수정</button>
                         </div>
@@ -39,13 +38,13 @@
                     <div class="form-group">
                         <label for="money" class="col-sm-2 control-label">금액</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control input-large" id="money" name="money" disabled="disabled">
+                            <input type="text" class="form-control input-large" id="money" th:field="*{money}" disabled="disabled">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="offeringKind" class="col-sm-2 control-label">종류</label>
                         <div class="col-sm-10">
-                            <select class="custom-select" id="offeringKind" name="offeringKind" disabled="disabled">
+                            <select class="custom-select" th:field="*{offeringKind}" id="offeringKind" disabled="disabled">
                                 <option th:value="SUNDAY" th:text="주정헌금">
                                 <option th:value="THANKSGIVING" th:text="감사헌금"/>
                                 <option th:value="BUILDING" th:text="건축헌금"/>
@@ -60,7 +59,7 @@
                     <div class="form-group">
                         <label for="offeringDate" class="col-sm-2 control-label">헌금일</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control input-large" id="offeringDate" name="offeringDate" disabled="disabled">
+                            <input type="text" class="form-control input-large" id="offeringDate" name="offeringDate" th:value="*{offeringDate}" disabled="disabled">
                         </div>
                     </div>
 

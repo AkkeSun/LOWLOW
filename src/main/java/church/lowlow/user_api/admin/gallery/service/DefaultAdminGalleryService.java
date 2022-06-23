@@ -1,32 +1,26 @@
 package church.lowlow.user_api.admin.gallery.service;
 
 import church.lowlow.rest_api.gallery.db.Gallery;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 
 @Service
 public class DefaultAdminGalleryService implements AdminGalleryService{
 
-    @Autowired
-    private WebClient webClient;
+    @Value("${restApiBaseUrl}")
+    private String REST_API_URL;
+
+    private RestTemplate restTemplate = new RestTemplate();
 
     @Override
     @Transactional
     public Gallery getGallery(Long id) {
 
-        Mono<Gallery> galleryMono = webClient
-                .get()
-                .uri("/galleries/{id}", id)
-                .retrieve()
-                .bodyToMono(Gallery.class);
-
-        Gallery gallery = galleryMono.block();
-
-        return gallery;
+        return restTemplate.exchange(REST_API_URL + "/galleries/" + id, HttpMethod.GET, null, Gallery.class).getBody();
     }
 
 }

@@ -1,5 +1,6 @@
 package church.lowlow.user_api.batch.summerNote.service;
 
+import church.lowlow.rest_api.accounting.db.Accounting;
 import church.lowlow.user_api.batch.summerNote.domain.SummerNoteVo;
 import church.lowlow.user_api.batch.summerNote.singleton.SummerNoteSingleton;
 import org.jsoup.Jsoup;
@@ -7,7 +8,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -21,13 +24,16 @@ import java.util.Map;
 @Service
 public class DefaultSummerNoteService implements SummerNoteService {
 
-    @Autowired
-    private WebClient webClient;
+    @Value("${cloud.aws.cloud_front.file_url_format}")
+    private String awsUrl;
+
+    @Value("${restApiBaseUrl}")
+    private String REST_API_URL;
+
+    private RestTemplate restTemplate = new RestTemplate();
 
     private SummerNoteSingleton instance = SummerNoteSingleton.getInstance();
 
-    @Value("${cloud.aws.cloud_front.file_url_format}")
-    private String awsUrl;
 
     @Override
     // 업로드된 이미지 정보가 들어있는 데이터 로드
@@ -35,13 +41,7 @@ public class DefaultSummerNoteService implements SummerNoteService {
 
         int uploadFileListCnt = instance.getUploadFileListCnt();
 
-        // Data Load
-        Mono<Map> mono = webClient
-                .get()
-                .uri("/summerNote")
-                .retrieve()
-                .bodyToMono(Map.class);
-        Map<String, Object> resultMap = mono.block();
+        Map resultMap = restTemplate.exchange(REST_API_URL + "/summerNote", HttpMethod.GET, null, Map.class).getBody();
 
         List<Map<String, Object>> summernoteImgList = (List)resultMap.get("summernoteImgList");
 
@@ -79,14 +79,7 @@ public class DefaultSummerNoteService implements SummerNoteService {
 
         int contentCnt = instance.getGalleryContentCnt();
 
-        // Data Load
-        Mono<Map> mono = webClient
-                .get()
-                .uri("/galleries/list")
-                .retrieve()
-                .bodyToMono(Map.class);
-
-        Map<String, Object> resultMap = mono.block();
+        Map resultMap = restTemplate.exchange(REST_API_URL + "/galleries/list", HttpMethod.GET, null, Map.class).getBody();
         List<Map<String, Object>> bbsDataList = (List)resultMap.get("galleryList");
 
         // data converting
@@ -112,14 +105,7 @@ public class DefaultSummerNoteService implements SummerNoteService {
 
         int contentCnt = instance.getNoticeContentCnt();
 
-        // Data Load
-        Mono<Map> mono = webClient
-                .get()
-                .uri("/notices/list")
-                .retrieve()
-                .bodyToMono(Map.class);
-
-        Map<String, Object> resultMap = mono.block();
+        Map resultMap = restTemplate.exchange(REST_API_URL + "/notices/list", HttpMethod.GET, null, Map.class).getBody();
         List<Map<String, Object>> bbsDataList = (List)resultMap.get("noticeList");
 
         // 본문에서 이미지 파일명만 추출
@@ -142,12 +128,7 @@ public class DefaultSummerNoteService implements SummerNoteService {
 
     @Override
     public void deleteData(Integer id) {
-
-        webClient.delete()
-                .uri("/summerNote/{id}", id)
-                .retrieve()
-                .bodyToMono(Void.class)
-                .block();
+        restTemplate.exchange(REST_API_URL + "/summerNote/" + id, HttpMethod.DELETE, null, Map.class);
     }
 
 

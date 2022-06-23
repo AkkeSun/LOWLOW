@@ -3,11 +3,11 @@ package church.lowlow.user_api.admin.accounting.service;
 import church.lowlow.rest_api.accounting.db.Accounting;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.user_api.admin.accounting.util.ExcelUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 import java.util.*;
@@ -15,42 +15,33 @@ import java.util.*;
 @Service
 public class DefaultAdminAccountingService extends ExcelUtil implements AdminAccountingService {
 
-    @Autowired
-    private WebClient webClient;
+    @Value("${restApiBaseUrl}")
+    private String REST_API_URL;
+
+    private RestTemplate restTemplate = new RestTemplate();
 
     @Override
     @Transactional
     public Accounting getAccounting(Long id) {
-        Mono<Accounting> accountingMono = webClient
-                .get()
-                .uri("/accounting/{id}", id)
-                .retrieve()
-                .bodyToMono(Accounting.class);
 
-        return accountingMono.block();
+        return restTemplate.exchange(REST_API_URL + "/accounting/" + id, HttpMethod.GET, null, Accounting.class).getBody();
     }
-
 
 
     @Override
     @Transactional
-    public List<LinkedHashMap<String, Object>> getAccountingList(SearchDto searchDto) {
+    public ArrayList<Map> getAccountingList(SearchDto searchDto) {
 
         String searchId = searchDto.getSearchId();
         String searchData = searchDto.getSearchData();
+        String URL = REST_API_URL + "/accounting?searchId=" + searchId + "&searchData=" + searchData + "&nowPage=0&totalPages=9999";
 
-        Mono<ResponseEntity<Object>> mono = webClient
-                .get()
-                .uri("/accounting?searchId=" + searchId + "&searchData=" + searchData
-                        + "&nowPage=0&totalPages=9999")
-                .exchange()
-                .flatMap(clientResponse -> clientResponse.toEntity(Object.class));
+        ResponseEntity<Map> resultMap
+                = restTemplate.exchange(URL, HttpMethod.GET, null, Map.class);
 
-        ResponseEntity<Object> block = mono.block();
-        Map<String, Object> body = (Map<String, Object>) block.getBody();
-        List<LinkedHashMap<String, Object>> accountingList = (List<LinkedHashMap<String, Object>>) ((Map<String, Object>) body.get("_embedded")).get("accountingList");
+        LinkedHashMap lm = (LinkedHashMap) resultMap.getBody().get("_embedded");
 
-        return accountingList;
+        return (ArrayList<Map>) lm.get("accountingList");
     }
 
 
@@ -61,14 +52,9 @@ public class DefaultAdminAccountingService extends ExcelUtil implements AdminAcc
 
         String searchId = searchDto.getSearchId();
         String searchData = searchDto.getSearchData();
+        String URL = REST_API_URL + "/accounting/statistics?searchId="+searchId+"&searchData="+searchData;
 
-        Mono<Map> mono = webClient
-                .get()
-                .uri("/accounting/statistics?searchId="+searchId+"&searchData="+searchData)
-                .retrieve()
-                .bodyToMono(Map.class);
-
-        return mono.block();
+        return restTemplate.exchange(URL, HttpMethod.GET, null, Map.class).getBody();
     }
 
 }

@@ -14,7 +14,12 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Service
@@ -185,7 +190,7 @@ public class DefaultAwsS3Service implements AwsS3Service {
 
     //================== 생성한 로컬 파일을 삭제하는 함수 ====================
     private void removeLocalFile(File targetFile) {
-        /*
+
         try {
             Files.delete(Paths.get(targetFile.getPath()));
             log.info("[LOCAL FILE DELETE SUCCESS]");
@@ -196,8 +201,6 @@ public class DefaultAwsS3Service implements AwsS3Service {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-         */
     }
 
 }

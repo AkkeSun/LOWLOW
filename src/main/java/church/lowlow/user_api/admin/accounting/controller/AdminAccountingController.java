@@ -47,12 +47,9 @@ public class AdminAccountingController {
     // ========== Detail (Update) View ==========
     @GetMapping("/{id}")
     public String getAccountingDetailView(@PathVariable Long id, Model model) {
-
-        //Accounting accounting = accountingService.getAccounting(id);
-        model.addAttribute("userId", id);
-
+        Accounting accounting = accountingService.getAccounting(id);
+        model.addAttribute("accounting", accounting);
         return "admin/accounting/accountingDetail";
-
     }
 
 
@@ -62,7 +59,5 @@ public class AdminAccountingController {
         ExcelService excelService = new DefaultExecService(fileUploadPath + "/excel/", accountingService);
         excelService.excelFileDownload(searchDto, response);
     }
-
-
 
 }
