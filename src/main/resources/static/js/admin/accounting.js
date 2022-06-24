@@ -16,6 +16,8 @@ var savedSearchId;    // 검색목록
 var savedSearchData;  // 검색어
 var startDate;        // 검색 시작일
 var endDate;          // 검색 종료일
+var accountingList;   // 헌금 리스트
+var statisticsMap;    // 통계 정보 맵
 
 // ================= 리스트 & 회계분석 데이터 로드 ====================
 function accountingDataLoad(nowPage){
@@ -52,7 +54,7 @@ function accountingListLoad(nowPage){
         var appendData = "";
         if( data._embedded ) {
             totalPages = data.page.totalPages;
-            var accountingList = data._embedded.accountingList;
+            accountingList = data._embedded.accountingList;
 
             accountingList.forEach(function (data, index) {
                 var offeringKind = offeringKindConverter( data.offeringKind );
@@ -128,6 +130,7 @@ function accountingStatisticsDataLoad(){
 
         var nameAppendData = "";
         var offeringKindAppendData = "";
+        statisticsMap = data;
 
         // 이름별 통계 데이터 
         if( data.member ) {
@@ -142,7 +145,7 @@ function accountingStatisticsDataLoad(){
                                             ${data.name}
                                         </td>
                                         <td style="text-align: left;">
-                                                ${data.money}
+                                             ${data.money}
                                         </td>
                                     </tr>
                                     `
@@ -189,6 +192,24 @@ function accountingStatisticsDataLoad(){
 
 
 
+// ================= Detail Data Load====================
+function getAccountDetail(userId){
+    let csrfHeader  = $("#_csrf_header").attr('content');
+    let csrfToken   = $("#_csrf").attr('content');
+
+    let callback =
+        ajaxComm("get", "", `/api/accounting/${userId}`,csrfHeader, csrfToken);
+
+    callback.done((data) => {
+        $("#memberId").val(data.member.id);
+        $("#nameCheck").val(data.member.name);
+        $("#money").val(data.money);
+        $("#offeringKind").val(data.offeringKind);
+        $("#offeringDate").val(data.offeringDate);
+    });
+}
+
+
 
 // ================ 회계분석 클릭 ================
 function showStatisticsBtn(){
@@ -210,7 +231,22 @@ function showListBtn(){
 
 // ================= 액셀파일 다운로드 ====================
 function accountingExelDown(){
-    location.href = `/admin/accounting/excelDown?searchId=${savedSearchId}&searchData=${savedSearchData}&startDate=${startDate}&endDate=${endDate}`;
+
+    // param setting
+    var type        = "post";
+    var data        = { "accountingList" : accountingList, "statisticsMap" : statisticsMap,
+                        "searchId" : savedSearchId, "searchData": savedSearchData,
+                        "startDate":startDate, "endDate":endDate };
+    var url         = "/admin/accounting/excelDown";
+    var csrfHeader  = $("#_csrf_header").attr('content');
+    var csrfToken   = $("#_csrf").attr('content');
+    var async       = true;
+    var callback    = ajaxComm(type, JSON.stringify(data), url, async, csrfHeader, csrfToken);
+
+    callback.done((data) => {
+        location.href = "/admin/accounting/down/" + data.fileName;
+    })
+
 }
 
 

@@ -8,6 +8,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.awt.*;
 import java.io.File;
@@ -21,9 +22,11 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
 
+import static church.lowlow.rest_api.common.util.DateUtil.localDateFormatter;
 import static church.lowlow.rest_api.common.util.StringUtil.objNullToStr;
 
 @Log4j2
+@Component
 public class ExcelUtil {
 
     /**
@@ -42,7 +45,11 @@ public class ExcelUtil {
      */
 
 
-    public String fileNm = "accounting.xlsx";
+    @Value("${fileUploadPath}")
+    private String fileUploadPath;
+
+    private String fileNm = UUID.randomUUID().toString().replaceAll("-", "") + ".xlsx";
+
 
     public File accountingExcelCreate(SearchDto searchDto, ArrayList<Map> accountingList, Map<String ,Object> statisticsMap){
 
@@ -79,8 +86,11 @@ public class ExcelUtil {
         accountingListExcelCreate(basicSheet, accountingList, mainTitleStyle, tableStyle, searchDto);
         accountingStatisticsExcelCreate(statisticsSheet, statisticsMap, mainTitleStyle, tableStyle);
 
+        // 폴더 셋팅
+        uploadFolderSetting();
+
         // 생성된 엑셀 파일로 추출
-        File excelFile = new File(fileNm);
+        File excelFile = new File( fileUploadPath + "/excel/" + fileNm);
 
         try {
             FileOutputStream out = new FileOutputStream(excelFile);
@@ -108,6 +118,7 @@ public class ExcelUtil {
             e.printStackTrace();
         }
     }
+
 
 
 
@@ -356,4 +367,23 @@ public class ExcelUtil {
 
         return returnDate;
     }
+
+    private void uploadFolderSetting (){
+        File folder = new File(fileUploadPath + "/excel");
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+    }
+
+
+    public SearchDto makeSearchDto (HashMap<String, Object> map) {
+
+        return SearchDto.builder().searchId((String) map.get("searchId"))
+                .searchData((String) map.get("searchData"))
+                .startDate(localDateFormatter((String) map.get("startDate")))
+                .endDate(localDateFormatter((String) map.get("endDate")))
+                .build();
+    }
+
+
 }

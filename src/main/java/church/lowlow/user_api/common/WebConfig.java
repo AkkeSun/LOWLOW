@@ -38,6 +38,9 @@ public class WebConfig implements WebMvcConfigurer{
         registry.addResourceHandler("/upload/notice/**")
                 .addResourceLocations("file:" + fileUploadPath + "/notice/")
                 .setCacheControl(CacheControl.maxAge(10, TimeUnit.MINUTES));
+        registry.addResourceHandler("/upload/excel/**")
+                .addResourceLocations("file:" + fileUploadPath + "/excel/")
+                .setCacheControl(CacheControl.maxAge(10, TimeUnit.MINUTES));
     }
 
     @Override

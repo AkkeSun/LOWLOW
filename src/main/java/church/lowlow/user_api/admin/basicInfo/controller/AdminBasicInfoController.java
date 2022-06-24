@@ -33,20 +33,10 @@ public class AdminBasicInfoController {
 
 
     @GetMapping
-    public String getBasicInfo(Model model, HttpSession session) {
+    public String getBasicInfo() {
 
-        BasicInfoDto dto = basicInfoService.getBasicInfo();
-
-        // DB에 저장된 데이터가 없다면
-        if(dto == null){
-            model.addAttribute("code", "E1");
-            return "admin/basicInfo/basicInfoAlert";
-        }
-
-        // DB에 저장된 데이터가 있다면
-        session.setAttribute("update", true);
-        model.addAttribute("basicInfo", dto);
         return "admin/basicInfo/basicInfoView1";
+
     }
 
 

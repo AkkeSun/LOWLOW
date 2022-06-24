@@ -173,6 +173,21 @@ public class DateUtil {
     }
 
 
+    /**
+     * 문자열 날짜 타입을 LocalDate로 컨버팅
+     * @param date
+     * @return
+     */
+    public static LocalDate localDateFormatter(String date) {
+
+        if("".equals(date))
+            return null;
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(date, formatter);
+    }
+
+
 
 
 }

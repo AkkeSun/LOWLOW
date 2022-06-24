@@ -1,6 +1,8 @@
 // ================ 전역변수 ==============
-var totalPages = "";
-var mAttendCreatListCnt = "";
+let totalPages = "";
+let mAttendCreatListCnt = "";
+let REST_API_URL = "http://localhost:8080/api"
+
 
 // ================= Ajax 처리 함수 ====================
 function ajaxComm(type, data, url, async, csrfHeader, csrfToken) {
