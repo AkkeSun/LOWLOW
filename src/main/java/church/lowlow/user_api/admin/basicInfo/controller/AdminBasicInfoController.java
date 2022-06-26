@@ -32,12 +32,16 @@ public class AdminBasicInfoController {
     private CommonFileService fileService;
 
 
-    @GetMapping
+    @GetMapping("/1")
     public String getBasicInfo() {
-
         return "admin/basicInfo/basicInfoView1";
-
     }
+
+    @GetMapping("/2")
+    public String getBasicInfoView1() {
+        return "admin/basicInfo/basicInfoView2";
+    }
+
 
 
     @GetMapping("/create/chapter1")
@@ -45,6 +49,9 @@ public class AdminBasicInfoController {
         model.addAttribute("basicInfo", new BasicInfoDto());
         return "admin/basicInfo/basicInfoView1";
     }
+
+
+
 
 
     @PostMapping("/create/chapter2")

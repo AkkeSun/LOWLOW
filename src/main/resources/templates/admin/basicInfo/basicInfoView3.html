@@ -4,6 +4,12 @@
 <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
 <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
 <head th:replace="admin/common/head"></head>
+
+<script>
+    $(function (){
+        setBasicInfoView3();
+    })
+</script>
 <body>
 
 <div class="container-fluid">
@@ -14,7 +20,7 @@
 
             <!-- Main Contents -->
             <div class="container">
-                <form class="form-horizontal" id="basicInfoFrm3" th:object="${basicInfo}" th:action="@{/admin/basicInfo/create}" th:method="post" enctype="multipart/form-data" >
+                <form class="form-horizontal" th:method="post" enctype="multipart/form-data" id="basicInfoFrm3">
                     <input type="hidden" name="_method" id="method">
                     <div class="mb-3">
                         <label for="infoImg1" class="form-label">교회 소개글 이미지 1 (사이즈 = 100 * 100)</label>
@@ -79,10 +85,10 @@
                     </div>
                     <br>
                     &nbsp;&nbsp;
-                    <button type="button" class="btn btn-outline-primary" onclick="goChapter2()">이전</button>
-                    <button th:unless="${session.update} == true" th:onclick="basicInfoSave()" class="btn btn-outline-primary">저장</button>
-                    <button th:if="${session.update} == true" th:onclick="basicInfoUpdate()" class="btn btn-outline-primary">수정</button>
-                    <a class="btn btn-outline-primary" th:unless="${session.update} == true" th:href="@{/admin}">취소</a>
+                    <button type="button" class="btn btn-outline-primary" onclick="goView2(3)">이전</button>
+                    <button id='saveBtn' onclick="basicInfoProcess(get)" class="btn btn-outline-primary">저장</button>
+                    <button id='updateBtn' onclick="basicInfoProcess(put)" class="btn btn-outline-primary hide">수정</button>
+                    <a id='goAdminBtn' class="btn btn-outline-primary hide" onclick="goIndex()">취소</a>
                 </form>
             </div>
             <br><br><br><br>

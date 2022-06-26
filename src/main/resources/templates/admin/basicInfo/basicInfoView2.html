@@ -7,8 +7,7 @@
 <script th:inline="javascript">
     $(document).ready(function(){
         useSummernote();
-        if([[${basicInfo.detailInfo}]] != null)
-            $('#contents').summernote('code', [[${basicInfo.detailInfo}]]);
+        setBasicInfoView2();
     });
 </script>
 
@@ -22,26 +21,26 @@
 
             <!-- Main Contents -->
             <div class="container">
-                <form class="form-horizontal" id="basicInfoFrm2" th:object="${basicInfo}" th:action="@{/admin/basicInfo/create/chapter3}" th:method="post">
+                <form class="form-horizontal">
                     <div class="form-group">
-                        <label for="basicInfo" th:if="${#fields.hasErrors('basicInfo')}"  th:errors="*{basicInfo}" class="control-label label-margin-left" style="color: red"></label>
-                        <label for="basicInfo" th:unless="${#fields.hasErrors('basicInfo')}"class="control-label label-margin-left" >기본 소개글</label>
+                        <label for="basicInfo" id="basicInfoLabel1" class="control-label label-margin-left hide" style="color: red">기본 소개글은 비워둘 수 없습니다</label>
+                        <label for="basicInfo" id="basicInfoLabel2" class="control-label label-margin-left" >기본 소개글</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control input-large" id="basicInfo" name="basicInfo" placeholder="메인 페이지에 노출되는 교회 기본 소개글을 작성해주세요 (한 문장)"  th:value="*{basicInfo}">
                         </div>
                     </div>
                     <br>
                     <div class="form-group">
-                        <label for="contents" th:if="${#fields.hasErrors('detailInfo')}"  th:errors="*{detailInfo}" class="control-label label-margin-left" style="color: red"></label>
-                        <label for="contents" th:unless="${#fields.hasErrors('detailInfo')}" class="control-label label-margin-left" >상세 소개글</label>
+                        <label for="contents" id="detailInfoLabel1" class="control-label label-margin-left hide" style="color: red">상세 소개글은 비워둘 수 없습니다</label>
+                        <label for="contents" id="detailInfoLabel2" class="control-label label-margin-left" >상세 소개글</label>
                         <textarea id="contents" name="detailInfo"></textarea>
                     </div>
 
                     <br>
                     &nbsp;&nbsp;
-                    <button type="button" class="btn btn-outline-primary" onclick="goChapter1()">이전</button>
-                    <button type="submit" class="btn btn-outline-primary">다음</button>
-                    <a class="btn btn-outline-primary" th:href="@{/admin}">취소</a>
+                    <button type="button" class="btn btn-outline-primary" onclick="goView1()">이전</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="goView3()">다음</button>
+                    <a class="btn btn-outline-primary" onclick="goIndex()">취소</a>
 
                 </form>
             </div>
