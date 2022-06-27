@@ -77,6 +77,7 @@ public class BasicInfoController {
 
         // save
         BasicInfo info = modelMapper.map(dto, BasicInfo.class);
+        info.setWriter(getWriter());
         BasicInfo newInfo = repository.save(info);
         URI createdUri = linkTo(BasicInfoController.class).slash(newInfo.getId()).toUri();
 

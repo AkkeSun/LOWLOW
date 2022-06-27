@@ -13,17 +13,17 @@ function goBasicInfo() {
         if(data.basicInfoList.length == 0) {
             e1Exception();
         } else {
+            localStorage.clear();
             localStorage.setItem('basicInfo', JSON.stringify(data.basicInfoList[0]));
             localStorage.setItem('isUpdate', 'true');
-            localStorage.removeItem('basicInfoView1Save');
-            localStorage.removeItem('basicInfoView2Save');
-            localStorage.removeItem('basicInfoView3Save');
             location.href = "/admin/basicInfo/1";
         }
     })
 }
 
 
+
+// set View ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function setBasicInfoView1 () {
 
     let isUpdate = localStorage.isUpdate;
@@ -58,7 +58,6 @@ function setBasicInfoView1 () {
     }
 }
 
-
 function setBasicInfoView2 () {
 
     let isUpdate = localStorage.isUpdate;
@@ -88,6 +87,9 @@ function setBasicInfoView3 () {
 }
 
 
+
+
+// validation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function view1Validation () {
     let result = true;
     if($("#name").val() == "") {
@@ -153,6 +155,9 @@ function view2Validation () {
     return result;
 }
 
+
+
+// move Method ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function goView1 (){
     if( view2Validation() ) {
         let newBasicInfo = JSON.parse(localStorage.newBasicInfo);
@@ -214,7 +219,6 @@ function goView2(prePage){
     }
 }
 
-
 function goView3(){
 
     if(view2Validation ()) {
@@ -234,47 +238,44 @@ function goIndex() {
 }
 
 
+
+// create & update process ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function basicInfoProcess (type) {
 
-    // 파일 업로드
+    let cfm = confirm("저장하시겠습니까");
+    if(cfm) {
 
+        let csrfHeader  = $("#_csrf_header").attr('content');
+        let csrfToken   = $("#_csrf").attr('content');
+        let url = '/api/basicInfo'
 
+        // file Upload
+        let fileUploadCallback = ajaxFileUpload(csrfHeader, csrfToken,  new FormData($("#basicInfoFrm3")[0]), "basicInfo");
+        fileUploadCallback.done(data => {
 
-    let newBasicInfo = JSON.parse(localStorage.newBasicInfo);
-    newBasicInfo.detailInfo = newBasicInfo.contents;
+            let saveData = setBasicInfoImg(type, data, JSON.parse(localStorage.newBasicInfo));
+            saveData.detailInfo = saveData.contents;
 
+            if(type == 'put')
+                url = '/api/basicInfo/' + saveData.id;
 
-
-    // localstorage 비우기
-}
-
-
-
-
-
-function e1Exception() {
-    let check = confirm('등록된 교회정보가 없습니다. 신규 등록하시겠습니까?');
-    if(check){
-        location.href="/admin/basicInfo/1";
-    }else{
-        location.href="/admin";
+            let callback = ajaxComm(type, JSON.stringify(saveData), url, true, csrfHeader, csrfToken);
+            callback.done( () => {
+                alert("성공적으로 등록되었습니다");
+                localStorage.clear();
+                location.href="/admin/basicInfo/1";
+            });
+            callback.fail( (err) => {
+                console.log(err);
+                alert("등록 중 에러가 발생하였습니다.");
+                localStorage.clear();
+                location.href="/admin";
+            });
+        });
     }
 }
 
-function e2Exception() {
-    alert("등록 중 오류가 발생했습니다");
-    location.href="/admin";
-}
 
-function createSuccess() {
-    alert("성공적으로 등록되었습니다");
-    location.href="/admin/basicInfo";
-}
-
-function updateSuccess() {
-    alert("성공적으로 수정되었습니다");
-    location.href="/admin/basicInfo";
-}
 
 
 
@@ -300,28 +301,68 @@ function addressSearch() {
 }
 
 
-function goChapter1(){
-    $("#basicInfoFrm2").attr("action", "/admin/basicInfo/create/chapter1/reload");
-    $("#basicInfoFrm2").submit();
+function setBasicInfoImg (type, data, newBasicInfoData) {
+
+    newBasicInfoData.infoImage1 = data.infoImg1;
+    newBasicInfoData.infoImage2 = data.infoImg2;
+    newBasicInfoData.infoImage3 = data.infoImg3;
+    newBasicInfoData.infoImage4 = data.infoImg4;
+    newBasicInfoData.infoImage5 = data.infoImg5;
+    newBasicInfoData.infoImage6 = data.infoImg6;
+    newBasicInfoData.carouselImg1 = data.carImg1;
+    newBasicInfoData.carouselImg2 = data.carImg2;
+    newBasicInfoData.carouselImg3 = data.carImg3;
+    newBasicInfoData.carouselImg4 = data.carImg4;
+    newBasicInfoData.carouselImg5 = data.carImg5;
+    newBasicInfoData.carouselImg6 = data.carImg6;
+    newBasicInfoData.organizationChart1 = data.chartImg1;
+    newBasicInfoData.organizationChart2 = data.chartImg2;
+    newBasicInfoData.organizationChart3 = data.chartImg3;
+
+    if(type == 'put') {
+        let preData = JSON.parse(localStorage.basicInfo);
+
+        if (!data.infoImg1)
+            newBasicInfoData.infoImage1 = preData.infoImage1;
+        if (!data.infoImg2)
+            newBasicInfoData.infoImage2 = preData.infoImage2;
+        if (!data.infoImage3)
+            newBasicInfoData.infoImage3 = preData.infoImage3;
+        if (!data.infoImage4)
+            newBasicInfoData.infoImage4 = preData.infoImage4;
+        if (!data.infoImage5)
+            newBasicInfoData.infoImage5 = preData.infoImage5;
+        if (!data.infoImage6)
+            newBasicInfoData.infoImage6 = preData.infoImage6;
+        if (!data.carImg1)
+            newBasicInfoData.carouselImg1 = preData.carouselImg1;
+        if (!data.carImg2)
+            newBasicInfoData.carouselImg2 = preData.carouselImg2;
+        if (!data.carImg3)
+            newBasicInfoData.carouselImg3 = preData.carouselImg3;
+        if (!data.carImg4)
+            newBasicInfoData.carouselImg4 = preData.carouselImg4;
+        if (!data.carImg5)
+            newBasicInfoData.carouselImg5 = preData.carouselImg5;
+        if (!data.carImg6)
+            newBasicInfoData.carouselImg6 = preData.carouselImg6;
+        if (!data.chartImg1)
+            newBasicInfoData.organizationChart1 = preData.organizationChart1;
+        if (!data.chartImg2)
+            newBasicInfoData.organizationChart2 = preData.organizationChart2;
+        if (!data.chartImg3)
+            newBasicInfoData.organizationChart3 = preData.organizationChart3;
+    }
+
+    return newBasicInfoData;
 }
 
 
-function cancelBtn(){
-    var cfm =confirm("정말 취소하시겠습니까")
-    if(cfm)
+function e1Exception() {
+    let check = confirm('등록된 교회정보가 없습니다. 신규 등록하시겠습니까?');
+    if(check){
+        location.href="/admin/basicInfo/1";
+    }else{
         location.href="/admin";
-}
-
-function basicInfoSave() {
-    var cfm = confirm("저장하시겠습니까")
-    if(cfm)
-        $("#basicInfoFrm3").submit();
-}
-
-function basicInfoUpdate() {
-    var cfm = confirm("수정하시겠습니까")
-    if(cfm){
-        $("#method").val("PUT");
-        $("#basicInfoFrm3").attr('action', "/admin/basicInfo/update").submit();
     }
 }

@@ -44,8 +44,6 @@ public class LogComponent {
         log.info("[REQUEST] youtubeURL : \"" + dto.getYoutubeURL() + "\"");
         log.info("[REQUEST] instagram : \"" + dto.getInstagram() + "\"");
         log.info("[REQUEST] blog : \"" + dto.getBlog() + "\"");
-        log.info("[REQUEST] writer : \"" + dto.getWriter().getWriter() + "\"");
-        log.info("[REQUEST] ip : \"" + dto.getWriter().getIp() + "\"");
         log.info("[REQUEST] infoImage1 : \"" + dto.getInfoImage1() + "\"");
         log.info("[REQUEST] infoImage2 : \"" + dto.getInfoImage2() + "\"");
         log.info("[REQUEST] infoImage3 : \"" + dto.getInfoImage3() + "\"");

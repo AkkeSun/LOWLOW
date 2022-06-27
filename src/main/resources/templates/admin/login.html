@@ -7,7 +7,7 @@
 
 <script>
 function login() {
-
+     localStorage.clear();
      let data = {"username":$("#username").val(), "password":$("#password").val()};
      let csrfHeader = $("#_csrf_header").attr('content');
      let csrfToken = $("#_csrf").attr('content');

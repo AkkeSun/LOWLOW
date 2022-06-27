@@ -50,6 +50,7 @@ public class BasicInfo extends BaseTimeEntity {
 
     private String callNumber;
 
+    @Column(columnDefinition = "LONGTEXT")
     private String basicInfo;
     
     private String detailInfo;

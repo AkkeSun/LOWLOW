@@ -20,8 +20,7 @@
 
             <!-- Main Contents -->
             <div class="container">
-                <form class="form-horizontal" th:method="post" enctype="multipart/form-data" id="basicInfoFrm3">
-                    <input type="hidden" name="_method" id="method">
+                <form class="form-horizontal" th:method="post" id="basicInfoFrm3">
                     <div class="mb-3">
                         <label for="infoImg1" class="form-label">교회 소개글 이미지 1 (사이즈 = 100 * 100)</label>
                         <input class="form-control-file" type="file" id="infoImg1" name="infoImg1">
@@ -86,8 +85,8 @@
                     <br>
                     &nbsp;&nbsp;
                     <button type="button" class="btn btn-outline-primary" onclick="goView2(3)">이전</button>
-                    <button id='saveBtn' onclick="basicInfoProcess(get)" class="btn btn-outline-primary">저장</button>
-                    <button id='updateBtn' onclick="basicInfoProcess(put)" class="btn btn-outline-primary hide">수정</button>
+                    <input type="button" id='saveBtn' onclick="basicInfoProcess('post')" class="btn btn-outline-primary" value="저장">
+                    <input type="button" id='updateBtn' onclick="basicInfoProcess('put')" class="btn btn-outline-primary hide" value="수정">
                     <a id='goAdminBtn' class="btn btn-outline-primary hide" onclick="goIndex()">취소</a>
                 </form>
             </div>

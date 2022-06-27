@@ -33,15 +33,19 @@ public class AdminBasicInfoController {
 
 
     @GetMapping("/1")
-    public String getBasicInfo() {
+    public String getBasicInfoView1() {
         return "admin/basicInfo/basicInfoView1";
     }
 
     @GetMapping("/2")
-    public String getBasicInfoView1() {
+    public String getBasicInfoView2() {
         return "admin/basicInfo/basicInfoView2";
     }
 
+    @GetMapping("/3")
+    public String getBasicInfoView3() {
+        return "admin/basicInfo/basicInfoView3";
+    }
 
 
     @GetMapping("/create/chapter1")

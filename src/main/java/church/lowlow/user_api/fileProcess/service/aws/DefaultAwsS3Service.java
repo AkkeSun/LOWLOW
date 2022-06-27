@@ -190,7 +190,7 @@ public class DefaultAwsS3Service implements AwsS3Service {
 
     //================== 생성한 로컬 파일을 삭제하는 함수 ====================
     private void removeLocalFile(File targetFile) {
-
+        /*
         try {
             Files.delete(Paths.get(targetFile.getPath()));
             log.info("[LOCAL FILE DELETE SUCCESS]");
@@ -201,6 +201,8 @@ public class DefaultAwsS3Service implements AwsS3Service {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+         */
     }
 
 }
