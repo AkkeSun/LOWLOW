@@ -262,8 +262,7 @@ function basicInfoProcess (type) {
             let callback = ajaxComm(type, JSON.stringify(saveData), url, true, csrfHeader, csrfToken);
             callback.done( () => {
                 alert("성공적으로 등록되었습니다");
-                localStorage.clear();
-                location.href="/admin/basicInfo/1";
+                goBasicInfo();
             });
             callback.fail( (err) => {
                 console.log(err);

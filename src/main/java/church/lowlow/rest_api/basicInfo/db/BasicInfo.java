@@ -50,9 +50,9 @@ public class BasicInfo extends BaseTimeEntity {
 
     private String callNumber;
 
-    @Column(columnDefinition = "LONGTEXT")
     private String basicInfo;
-    
+
+    @Column(columnDefinition = "LONGTEXT")
     private String detailInfo;
 
     private String basicAddress;
