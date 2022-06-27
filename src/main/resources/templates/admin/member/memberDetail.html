@@ -9,6 +9,7 @@
     $(document).ready(function(){
         datePickerSet($("#regiDate"));
         datePickerSet($("#birthDay"));
+        getMemberDetail([[${id}]]);
         $("#updateProcessBtn").hide();
         $("#image").on("change", memberFileCheck);
     });
@@ -24,25 +25,24 @@
 
             <!-- Main Contents -->
             <div class="container">
-                <form class="form-horizontal" id="memberFrm" th:object="${member}" enctype="multipart/form-data">
-                    <input type="hidden" id="id" th:value="*{id}">
-                    <input type="hidden" id="createdDate" th:value="*{createdDate}">
+                <form class="form-horizontal" id="memberFrm" enctype="multipart/form-data">
+                    <input type="hidden" id="id" name="id">
                     <div class="form-group">
                         <label for="name" class="col-sm-2 control-label">이름</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control input-large" id="name" name="name" placeholder="이름"  th:value="*{name}" disabled="disabled">
+                            <input type="text" class="form-control input-large" id="name" name="name" placeholder="이름"  disabled="disabled">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="phoneNumber" class="col-sm-2 control-label">전화번호</label>
                         <div class="col-sm-10">
-                            <input type="text" maxlength="13" class="form-control input-large" id="phoneNumber" name="phoneNumber" placeholder="000-0000-0000"  th:value="*{phoneNumber}" disabled="disabled">
+                            <input type="text" maxlength="13" class="form-control input-large" id="phoneNumber" name="phoneNumber" placeholder="000-0000-0000"  disabled="disabled">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="gender" class="col-sm-2 control-label">성별</label>
                         <div class="col-sm-10">
-                            <select class="custom-select" id="gender" th:field="*{gender}" disabled="disabled">
+                            <select class="custom-select" id="gender" name="gender" disabled="disabled">
                                 <option th:value="MALE" th:text= "남자"/>
                                 <option th:value="FEMALE" th:text= "여자"/>
                             </select>
@@ -51,19 +51,19 @@
                     <div class="form-group">
                         <label for="birthDay" class="col-sm-2 control-label">생년월일</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control input-large" id="birthDay" name="birthDay" th:value="*{birthDay}" disabled="disabled">
+                            <input type="text" class="form-control input-large" id="birthDay" name="birthDay" disabled="disabled">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="belong" class="col-sm-2 control-label">교구(목장)</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control input-large" id="belong" placeholder="교구(목장)" th:field="*{belong}" disabled="disabled">
+                            <input type="text" class="form-control input-large" id="belong" name="belong" placeholder="교구(목장)" disabled="disabled">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="gender" class="col-sm-2 control-label">직분</label>
                         <div class="col-sm-10">
-                            <select class="custom-select" id="churchOfficer" th:field="*{churchOfficer}" disabled="disabled">
+                            <select class="custom-select" id="churchOfficer" name="churchOfficer" disabled="disabled">
                                 <option th:value="LAYMAN" th:text="평신도">
                                 <option th:value="DEACON" th:text="집사"/>
                                 <option th:value="ORDAINED_DEACON" th:text="안수집사"/>
@@ -79,7 +79,7 @@
                     <div class="form-group">
                         <label for="regiDate" class="col-sm-2 control-label">등록일</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control input-large" id="regiDate" name="regiDate" th:value="*{regiDate}" disabled="disabled">
+                            <input type="text" class="form-control input-large" id="regiDate" name="regiDate" disabled="disabled">
                         </div>
                     </div>
 
@@ -88,22 +88,9 @@
                         <input type="file" class="form-control-file input-large" id="image" name="image" style="display: none" disabled="disabled">
                         <br>
 
-                        <div th:if="${member.image} != null">
-                            <input type="hidden" id="savedOriginalName" th:value="${member.image.originalName}">
-                            <input type="hidden" id="savedUploadName"   th:value="${member.image.uploadName}">
-                            <input type="hidden" id="savedFileDir"      th:value="${member.image.fileDir}">
-                            <input type="hidden" id="savedFullUrl"      th:value="${member.image.fullUrl}">
-                            <label for="image">
-                                &nbsp;&nbsp;<img th:if="${member.image.fileDir} == null" class="imgSample" id="imageView" th:src="@{/upload/member/} + ${member.image.uploadName}">
-                                &nbsp;&nbsp;<img th:if="${member.image.fileDir} != null" class="imgSample" id="imageView" th:src="${member.image.fullUrl}">
-                            </label>
-                        </div>
-                        <div th:if="${member.image} == null">
-                            <label for="image">
-                                &nbsp;&nbsp;<img class="imgSample" id="imageView" src="/image/uploadSample.png">
-                            </label>
-                        </div>
-
+                        <!--image Append -->
+                        <div id="memberImg"></div>
+                        <!--image Append -->
                     </div>
 
                     <br>

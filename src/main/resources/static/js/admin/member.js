@@ -77,6 +77,59 @@ function memberListLoad(nowPage){
 
 
 
+// ================= Member Detail Data ====================
+function getMemberDetail(id) {
+
+    var type        = "get";
+    var url         = "/api/members/"+id;
+    var csrfHeader  = $("#_csrf_header").attr('content');
+    var csrfToken   = $("#_csrf").attr('content');
+    var async       = true;
+    var callback    = ajaxComm(type, null, url, async, csrfHeader, csrfToken);
+
+    callback.done((data) => {
+        $("#id").val(data.id);
+        $("#name").val(data.name);
+        $("#phoneNumber").val(data.phoneNumber);
+        $("#gender").val(data.gender);
+        $("#birthDay").val(data.birthDay);
+        $('#churchOfficer').val(data.churchOfficer);
+        $('#regiDate').val(data.regiDate);
+
+        if(data.image != null)
+        {
+            let HTML   = `<input type="hidden" id="savedOriginalName" value="${data.image.originalName}">`;
+                HTML  += `<input type="hidden" id="savedUploadName"   value="${data.image.uploadName}">`;
+                HTML  += `<input type="hidden" id="savedFileDir"      value="${data.image.fileDir}">`;
+                HTML  += `<input type="hidden" id="savedFullUrl"      value="${data.image.fullUrl}">`;
+                HTML  += `<label for="image">`;
+
+            if(data.image.fileDir == null)
+                HTML  += `<img class="imgSample" id="imageView" src="{/upload/member/} + ${data.image.uploadName}">`;
+            if(data.image.fileDir != null)
+                HTML  += `<img class="imgSample" id="imageView" src="${data.image.fullUrl}">`;
+
+                HTML  += `</label>`;
+                HTML  += `<label for="image">`;
+                HTML  += `<label for="image">`;
+                HTML  += `<label for="image">`;
+                HTML  += `<label for="image">`;
+                HTML  += `<label for="image">`;
+
+            $("#memberImg").append(HTML);
+        }
+        else
+        {
+            let HTML   = `<label for="image">`;
+                HTML  += ` &nbsp;&nbsp;<img class="imgSample" id="imageView" src="/image/uploadSample.png">`;
+                HTML  += `</label>`;
+            $("#memberImg").append(HTML);
+
+        }
+    });
+}
+
+
 
 
 // ================= Member Update View Setting ====================

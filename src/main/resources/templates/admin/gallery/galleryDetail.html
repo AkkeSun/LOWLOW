@@ -8,8 +8,7 @@
 <script th:inline="javascript">
     $(document).ready(function(){
         useSummernote('gallery');
-        $('#contents').summernote('code', [[${gallery.contents}]]);
-        $("#editView").hide();
+        getGalleryDetail([[${id}]]);
         $("#updateProcessBtn").hide();
     });
 </script>
@@ -24,22 +23,22 @@
 
             <!-- Main Contents -->
             <div class="container">
-                <form class="form-horizontal" id="galleryFrm" th:object="${gallery}" enctype="multipart/form-data">
+                <form class="form-horizontal" id="galleryFrm">
 
                     <!--========== preView ============-->
                     <div id="preView">
                         <hr>
-                        <h2 th:text="*{title}"></h2>
-                        <div th:utext="*{contents}"></div>
+                        <h2 id="preViewTitle"></h2>
+                        <div id="preViewContents"></div>
                     </div>
 
                     <!-- ========== editView ============ -->
-                    <div id="editView">
-                        <input type="hidden" id="id" th:value="*{id}">
+                    <div id="editView" class="hide">
+                        <input type="hidden" id="id">
                         <div class="form-group">
                             <label for="title" class="col-sm-2 control-label">제목</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control input-large" id="title" name="title" placeholder="제목"  th:value="*{title}">
+                                <input type="text" class="form-control input-large" id="title" name="title" placeholder="제목">
                             </div>
                         </div>
                         <textarea maxlength="13" class="form-control input-large" id="contents" name="contents"></textarea>
@@ -49,7 +48,7 @@
 
                     <!-- ========== button ============ -->
                     <button type="button" class="btn btn-outline-primary" id="updateViewBtn" onclick="commonUpdateViewSetting('galleries')">수정</button>
-                    <button type="button" class="btn btn-outline-primary" id="updateProcessBtn" onclick="commonInsertAndUpdate('galleries', 'put')">수정완료</button>
+                    <button type="button" class="btn btn-outline-primary hide" id="updateProcessBtn" onclick="commonInsertAndUpdate('galleries', 'put')">수정완료</button>
                     <button type="button" class="btn btn-outline-primary" id="deleteBtn" onclick="commonDelete('galleries')">삭제</button>
                     <a class="btn btn-outline-primary" th:href="@{/admin/galleries}">목록 </a>
                 </form>

@@ -51,11 +51,32 @@ function galleryListLoad(nowPage){
     });
 };
 
+// ================= gallery Detail Data ====================
+function getGalleryDetail(id) {
+
+    var type        = "get";
+    var url         = "/api/galleries/"+id;
+    var csrfHeader  = $("#_csrf_header").attr('content');
+    var csrfToken   = $("#_csrf").attr('content');
+    var async       = true;
+    var callback    = ajaxComm(type, null, url, async, csrfHeader, csrfToken);
+
+    callback.done((data) => {
+        $("#preViewTitle").append(data.title);
+        $("#preViewContents").append(data.contents);
+        $("#id").val(data.id);
+        $("#title").val(data.title);
+        $('#contents').summernote('code', data.contents);
+    });
+}
+
 
 
 // ================= gallery Update View Setting  ====================
 function galleryUpdateViewSetting() {
-    $("#preView").hide();
-    $("#editView").show();
+    $("#preView").addClass('hide')
+    $("#deleteBtn").addClass('hide');
+    $("#editView").removeClass('hide');
+    $("#updateProcessBtn").removeClass('hide');
 }
 

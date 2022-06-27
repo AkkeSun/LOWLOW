@@ -103,7 +103,7 @@ public class GalleryController {
         return ResponseEntity.ok().body(resultMap);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity getGallery(@PathVariable Integer id){
 
         Optional<Gallery> optional = repository.findById(id);
