@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -51,9 +50,6 @@ public class DefaultSummerNoteService implements SummerNoteService {
 
     @Autowired
     private NoticeRepository noticeRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
 
     private SummerNoteSingleton instance = SummerNoteSingleton.getInstance();
 
@@ -137,7 +133,7 @@ public class DefaultSummerNoteService implements SummerNoteService {
             contentCnt++;
         }
 
-        instance.setGalleryContentCnt(contentCnt);
+        instance.setNoticeContentCnt(contentCnt);
 
         return summerNoteVo;
     }
