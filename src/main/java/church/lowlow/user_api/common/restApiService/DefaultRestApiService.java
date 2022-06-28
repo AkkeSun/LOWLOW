@@ -52,7 +52,7 @@ public class DefaultRestApiService implements RestApiService {
 
                 conn.setRequestMethod(method); // 메소드 타입
                 conn.setDoOutput(true);        // 통신 후 데이터를 출력할 수 있도록 설정
-                conn.setConnectTimeout(5000);  // 연결 제한시간 (5초)
+                conn.setConnectTimeout(10000); // 연결 제한시간 (10초)
                 conn.setRequestProperty("Content-Type", "application/json; utf-8"); // 요청 타입
                 conn.setRequestProperty("Accept", "application/hal+json; utf-8");   // 응답 타입
 

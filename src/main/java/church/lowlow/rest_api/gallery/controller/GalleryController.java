@@ -10,6 +10,9 @@ import church.lowlow.rest_api.gallery.repository.GalleryRepository;
 import church.lowlow.rest_api.gallery.resource.GalleryErrorsResource;
 import church.lowlow.rest_api.gallery.resource.GalleryResource;
 import church.lowlow.rest_api.weekly.db.WeeklyDto;
+import church.lowlow.user_api.batch.summerNote.domain.SummerNoteVo;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +25,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -162,4 +166,23 @@ public class GalleryController {
         resource.add(linkTo(GalleryController.class).withRel("index"));
         return ResponseEntity.ok(resource);
     }
+
+    @GetMapping("/test")
+    public void test () {
+        ObjectMapper om = new ObjectMapper();
+        List<Gallery> list = repository.findAll();
+        List<Map<String, Object>> convertList = null;
+
+        try {
+            String jsonString = om.writeValueAsString(list);
+            convertList = om.readValue(jsonString, new TypeReference<List<Map<String, Object>>>(){});
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(convertList);
+    }
+
+
 }
