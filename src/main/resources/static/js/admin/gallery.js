@@ -27,7 +27,7 @@ function galleryListLoad(nowPage){
                 appendData += `
                                <tr id="appendItem">
                                     <td style="text-align: left;">
-                                        ${index+1}
+                                        ${data.id}
                                     </td>
                                     <td style="text-align: left;">
                                         <a href='/admin/galleries/${data.id}'>

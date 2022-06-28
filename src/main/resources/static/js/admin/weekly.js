@@ -21,11 +21,11 @@ function weeklyListLoad(nowPage){
             totalPages = data.page.totalPages;
 
             var list = data._embedded.weeklyList;
-            list.forEach(function (data, index) {
+            list.forEach(function (data) {
                 appendData += `
                                <tr id="appendItem">
                                     <td style="text-align: left;">
-                                        ${index+1}
+                                        ${data.id}
                                     </td>
                                     <td style="text-align: left;">
                                         <a href='/admin/weekly/${data.id}'>
@@ -48,17 +48,196 @@ function weeklyListLoad(nowPage){
 
 
 
+// ================= Weekly Detail Data ====================
+function getWeeklyDetail(id) {
+
+    let type        = "get";
+    let url         = "/api/weekly/"+id;
+    let csrfHeader  = $("#_csrf_header").attr('content');
+    let csrfToken   = $("#_csrf").attr('content');
+    let async       = true;
+    let callback    = ajaxComm(type, null, url, async, csrfHeader, csrfToken);
+
+    callback.done((data) => {
+        $("#title").val(data.title);
+        $("#weeklyDate").val(data.weeklyDate);
+        $("#id").val(data.id);
+        $("#imageDetailView").append(makeImageDetailView(data));
+        $("#imageEditView").append(makeImageEditView(data));
+
+        fileCheckProcess();
+    });
+}
+
+
+
+
+
+// ================= make ImageDetail View ====================
+function makeImageDetailView(data) {
+    let HTML = "";
+
+    if(data.img1)
+    {
+        HTML += `<div class="form-group">`;
+        HTML += `<input type="hidden" id="image1_savedOriginalName" value="${data.img1.originalName}">`;
+        HTML += `<input type="hidden" id="image1_savedUploadName"   value="${data.img1.uploadName}">`;
+        HTML += `<input type="hidden" id="image1_savedFileDir"      value="${data.img1.fileDir}">`;
+        HTML += `<input type="hidden" id="image1_savedFullUrl"      value="${data.img1.fullUrl}">`;
+        if(data.img1.fileDir)
+            HTML +=  `<img class="weeklyImg" id="img1" src="${data.img1.fullUrl}">`;
+        else
+            HTML +=  `<img class="weeklyImg" id="img1" src="/upload/weekly/${data.img1.uploadName}">`;
+        HTML += `</div>`;
+    }
+    if(data.img2)
+    {
+        HTML += `<div class="form-group">`;
+        HTML += `<input type="hidden" id="image2_savedOriginalName" value="${data.img2.originalName}">`;
+        HTML += `<input type="hidden" id="image2_savedUploadName"   value="${data.img2.uploadName}">`;
+        HTML += `<input type="hidden" id="image2_savedFileDir"      value="${data.img2.fileDir}">`;
+        HTML += `<input type="hidden" id="image2_savedFullUrl"      value="${data.img2.fullUrl}">`;
+        if(data.img2.fileDir)
+            HTML +=  `<img class="weeklyImg" id="img2" src="${data.img2.fullUrl}">`;
+        else
+            HTML +=  `<img class="weeklyImg" id="img2" src="/upload/weekly/${data.img2.uploadName}">`;
+        HTML += `</div>`;
+    }
+    if(data.img3)
+    {
+        HTML += `<div class="form-group">`;
+        HTML += `<input type="hidden" id="image3_savedOriginalName" value="${data.img3.originalName}">`;
+        HTML += `<input type="hidden" id="image3_savedUploadName"   value="${data.img3.uploadName}">`;
+        HTML += `<input type="hidden" id="image3_savedFileDir"      value="${data.img3.fileDir}">`;
+        HTML += `<input type="hidden" id="image3_savedFullUrl"      value="${data.img3.fullUrl}">`;
+        if(data.img3.fileDir)
+            HTML +=  `<img class="weeklyImg" id="img3" src="${data.img3.fullUrl}">`;
+        else
+            HTML +=  `<img class="weeklyImg" id="img3" src="/upload/weekly/${data.img3.uploadName}">`;
+        HTML += `</div>`;
+    }
+    if(data.img4)
+    {
+        HTML += `<div class="form-group">`;
+        HTML += `<input type="hidden" id="image4_savedOriginalName" value="${data.img4.originalName}">`;
+        HTML += `<input type="hidden" id="image4_savedUploadName"   value="${data.img4.uploadName}">`;
+        HTML += `<input type="hidden" id="image4_savedFileDir"      value="${data.img4.fileDir}">`;
+        HTML += `<input type="hidden" id="image4_savedFullUrl"      value="${data.img4.fullUrl}">`;
+        if (data.img4.fileDir)
+            HTML += `<img class="weeklyImg" id="img4" src="${data.img4.fullUrl}">`;
+        else
+            HTML += `<img class="weeklyImg" id="img4" src="/upload/weekly/${data.img4.uploadName}">`;
+        HTML += `</div>`;
+    }
+
+    return HTML;
+
+}
+
+// ================= make Edit View ====================
+function makeImageEditView(data) {
+    let HTML = "";
+
+    // ~~~~~~~~~~~~~~~ image 1 ~~~~~~~~~~~~~~~~
+    HTML += `<div class="form-group">`;
+    HTML += `<input type="file" class="form-control-file input-large" id="image1" name="image1" style="display: none"> &nbsp;`;
+    HTML += `<div>`;
+    HTML += `<label for="image1">&nbsp;&nbsp;`;
+    if(data.img1)
+    {
+        if(data.img1.fileDir)
+            HTML += `<img class="weeklyImg" id="imageView1" src="${data.img1.fullUrl}">`;
+        else
+            HTML += `<img class="weeklyImg" id="imageView1" src="/upload/weekly/${data.img1.uploadName}">`;
+    }
+    else
+        HTML += `<img class="imgSample" id="imageView1" src="/image/uploadSample.png">`;
+    HTML += `</label>`;
+    HTML += `</div>`;
+    HTML += `</div>`;
+
+
+    // ~~~~~~~~~~~~~~~ image 2 ~~~~~~~~~~~~~~~~
+    HTML += `<div class="form-group">`;
+    HTML += `<input type="file" class="form-control-file input-large" id="image2" name="image2" style="display: none"> &nbsp;`;
+    HTML += `<div>`;
+    HTML += `<label for="image2">&nbsp;&nbsp;`;
+    if(data.img2)
+    {
+        if(data.img2.fileDir)
+            HTML += `<img class="weeklyImg" id="imageView2" src="${data.img2.fullUrl}">`;
+        else
+            HTML += `<img class="weeklyImg" id="imageView2" src="/upload/weekly/${data.img2.uploadName}">`;
+    }
+    else
+        HTML += `<img class="imgSample" id="imageView2" src="/image/uploadSample.png">`;
+    HTML += `        </label>`;
+    HTML += `    </div>`;
+    HTML += `</div>`;
+
+
+    // ~~~~~~~~~~~~~~~ image 3 ~~~~~~~~~~~~~~~~
+    HTML += `<div class="form-group">`;
+    HTML += `<input type="file" class="form-control-file input-large" id="image3" name="image3" style="display: none"> &nbsp;`;
+    HTML += `<div>`;
+    HTML += `<label for="image3">&nbsp;&nbsp;`;
+    if(data.img3)
+    {
+        if(data.img3.fileDir)
+            HTML += `<img class="weeklyImg" id="imageView3" src="${data.img3.fullUrl}">`;
+        else
+            HTML += `<img class="weeklyImg" id="imageView3" src="/upload/weekly/${data.img3.uploadName}">`;
+    }
+    else
+        HTML += `<img class="imgSample" id="imageView3" src="/image/uploadSample.png">`;
+    HTML += `</label>`;
+    HTML += `</div>`;
+    HTML += `</div>`;
+
+
+    // ~~~~~~~~~~~~~~~ image 4 ~~~~~~~~~~~~~~~~
+    HTML += `<div class="form-group">`;
+    HTML += `<input type="file" class="form-control-file input-large" id="image4" name="image4" style="display: none"> &nbsp;`;
+    HTML += `<div>`;
+    HTML += `<label for="image4">&nbsp;&nbsp;`;
+    if(data.img4)
+    {
+        if(data.img4.fileDir)
+            HTML += `<img class="weeklyImg" id="imageView4" src="${data.img4.fullUrl}">`;
+        else
+            HTML += `<img class="weeklyImg" id="imageView4" src="/upload/weekly/${data.img4.uploadName}">`;
+    }
+    else
+        HTML += `<img class="imgSample" id="imageView4" src="/image/uploadSample.png">`;
+    HTML += `</label>`;
+    HTML += `</div>`;
+    HTML += `</div>`;
+
+    return HTML;
+}
+
+
+
 
 
 // ================= Weekly Update View Setting ====================
 function weeklyUpdateViewSetting() {
     $("#title").removeAttr("disabled");
     $("#weeklyDate").removeAttr("disabled");
-    $("#imageDetailView").hide();
-    $("#imageEditView").show();
+    $("#imageEditView").removeClass('hide');
+    $("#imageDetailView").addClass('hide');
 };
 
 
+
+
+// ================= 파일 사이즈 체크 ====================
+function fileCheckProcess () {
+    $("#image1").on("change", weeklyFileCheck1);
+    $("#image2").on("change", weeklyFileCheck2);
+    $("#image3").on("change", weeklyFileCheck3);
+    $("#image4").on("change", weeklyFileCheck4);
+}
 
 
 // ================= 파일 사이즈 체크 1 ====================
@@ -250,7 +429,6 @@ function weeklyImageProcess(csrfHeader, csrfToken) {
         var fileUploadCallback = ajaxFileUpload(csrfHeader, csrfToken, new FormData($("#weeklyFrm")[0]), "weekly");
         fileUploadCallback.done( uploadData =>
         {
-            alert(JSON.stringify(uploadData.image3));
             if(uploadData.image1 != undefined)
                 imageObject.image1 = uploadData.image1;
             if(uploadData.image2 != undefined)

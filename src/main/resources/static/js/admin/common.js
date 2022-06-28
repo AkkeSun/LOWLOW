@@ -146,12 +146,10 @@ function commonInsertAndUpdate(pageName, type){
         case "weekly" :
             data = objToJson($('#weeklyFrm').serializeArray());
             var imageObject = weeklyImageProcess(csrfHeader, csrfToken);
-            alert(JSON.stringify(imageObject));
             data.img1 = imageObject.image1;
             data.img2 = imageObject.image2;
             data.img3 = imageObject.image3;
             data.img4 = imageObject.image4;
-            alert(JSON.stringify(data));
             break;
         case "worshipVideos" :
             data = objToJson($('#worshipVideoFrm').serializeArray());

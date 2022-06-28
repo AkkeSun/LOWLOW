@@ -27,7 +27,7 @@ function noticeListLoad(nowPage){
                 appendData += `
                                <tr id="appendItem">
                                     <td style="text-align: left;">
-                                        ${index+1}
+                                        ${data.id}
                                     </td>
                                     <td style="text-align: left;">
                                         <a href='/admin/notices/${data.id}'>
@@ -52,10 +52,33 @@ function noticeListLoad(nowPage){
 };
 
 
+// ================= Notice Detail Data ====================
+function getNoticeDetail(id) {
+
+    var type        = "get";
+    var url         = "/api/notices/"+id;
+    var csrfHeader  = $("#_csrf_header").attr('content');
+    var csrfToken   = $("#_csrf").attr('content');
+    var async       = true;
+    var callback    = ajaxComm(type, null, url, async, csrfHeader, csrfToken);
+
+    callback.done((data) => {
+        $("#preViewTitle").append(data.title);
+        $("#preViewContents").append(data.contents);
+        $("#id").val(data.id);
+        $("#title").val(data.title);
+        $('#contents').summernote('code', data.contents);
+    });
+}
+
+
+
 
 // ================= Notice Update View Setting  ====================
 function noticeUpdateViewSetting() {
-    $("#preView").hide();
-    $("#editView").show();
+    $("#preView").addClass('hide')
+    $("#deleteBtn").addClass('hide');
+    $("#editView").removeClass('hide');
+    $("#updateProcessBtn").removeClass('hide');
 }
 

@@ -65,7 +65,7 @@ function accountingListLoad(nowPage){
                 appendData += `
                            <tr id="appendItem">
                                 <td style="text-align: left;">
-                                    ${index+1}
+                                    ${data.id}
                                 </td>
                                 <td style="text-align: left;">
                                     ${belong}

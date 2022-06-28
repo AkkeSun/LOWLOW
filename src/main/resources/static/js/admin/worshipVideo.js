@@ -27,7 +27,7 @@ function worshipVideoListLoad(nowPage){
                 appendData += `
                                <tr id="appendItem">
                                     <td style="text-align: left;">
-                                        ${index+1}
+                                        ${data.id}
                                     </td>
                                     <td style="text-align: left;">
                                         <a href='/admin/worshipVideos/${data.id}'>
@@ -50,22 +50,41 @@ function worshipVideoListLoad(nowPage){
 
 
 
+// ================= Video Detail Data ====================
+function getVideoDetail(id) {
+
+    var type        = "get";
+    var url         = "/api/worshipVideos/"+id;
+    var csrfHeader  = $("#_csrf_header").attr('content');
+    var csrfToken   = $("#_csrf").attr('content');
+    var async       = true;
+    var callback    = ajaxComm(type, null, url, async, csrfHeader, csrfToken);
+
+    callback.done((data) => {
+        $("#id").val(data.id);
+        $("#title").val(data.title);
+        $("#link").val(data.link);
+        $("#previewLink").attr('src', data.link);
+    });
+}
+
+
 
 
 // ================= WorshipVideo Update View Setting ====================
 function worshipVideoUpdateViewSetting() {
     $("#title").removeAttr("disabled");
-    $("#videoUpdateView").show();
-    $("#videoPreView").hide();
+    $("#videoPreView").addClass('hide')
+    $("#videoUpdateView").removeClass('hide');
 };
-
 
 
 //================= youtube link converter ==========================
 function youtubeLinkConverter(link) {
-    var embedLink = link.replace('watch?v=', 'embed/');
+    let embedLink = link.replace('watch?v=', 'embed/');
     return embedLink;
 };
+
 
 //================= modifiedDate converter ==========================
 function modifiedDateConverter(dateString){

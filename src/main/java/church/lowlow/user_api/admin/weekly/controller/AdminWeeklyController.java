@@ -1,8 +1,6 @@
 package church.lowlow.user_api.admin.weekly.controller;
 
 import church.lowlow.rest_api.weekly.db.Weekly;
-import church.lowlow.user_api.admin.weekly.service.WeeklyService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -10,10 +8,6 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/admin/weekly")
 public class AdminWeeklyController {
-
-    @Autowired
-    private WeeklyService weeklyService;
-
 
     // ========== List View ==========
     @GetMapping
@@ -33,12 +27,8 @@ public class AdminWeeklyController {
     // ========== Detail (Update) View ==========
     @GetMapping("/{id}")
     public String getWeeklyDetailView(@PathVariable Long id, Model model) {
-
-        Weekly weekly = weeklyService.getWeekly(id);
-        model.addAttribute("weekly", weekly);
-
+        model.addAttribute("id", id);
         return "admin/weekly/weeklyDetail";
-
     }
 
 }

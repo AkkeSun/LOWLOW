@@ -8,9 +8,7 @@
 <script th:inline="javascript">
     $(document).ready(function(){
         useSummernote('notice');
-        $('#contents').summernote('code', [[${notice.contents}]]);
-        $("#editView").hide();
-        $("#updateProcessBtn").hide();
+        getNoticeDetail([[${id}]]);
     });
 </script>
 
@@ -24,22 +22,22 @@
 
             <!-- Main Contents -->
             <div class="container">
-                <form class="form-horizontal" id="noticeFrm" th:object="${notice}" enctype="multipart/form-data">
+                <form class="form-horizontal" id="noticeFrm">
 
                     <!--========== preView ============-->
                     <div id="preView">
                         <hr>
-                        <h2 th:text="*{title}"></h2>
-                        <div th:utext="*{contents}"></div>
+                        <h2 id="preViewTitle"></h2>
+                        <div id="preViewContents"></div>
                     </div>
 
                     <!-- ========== editView ============ -->
-                    <div id="editView">
+                    <div id="editView" class="hide">
                         <input type="hidden" id="id" th:value="*{id}">
                         <div class="form-group">
                             <label for="title" class="col-sm-2 control-label">제목</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control input-large" id="title" name="title" placeholder="제목"  th:value="*{title}">
+                                <input type="text" class="form-control input-large" id="title" name="title" placeholder="제목">
                             </div>
                         </div>
                         <textarea maxlength="13" class="form-control input-large" id="contents" name="contents"></textarea>
@@ -49,7 +47,7 @@
 
                     <!-- ========== button ============ -->
                     <button type="button" class="btn btn-outline-primary" id="updateViewBtn" onclick="commonUpdateViewSetting('notices')">수정</button>
-                    <button type="button" class="btn btn-outline-primary" id="updateProcessBtn" onclick="commonInsertAndUpdate('notices', 'put')">수정완료</button>
+                    <button type="button" class="btn btn-outline-primary hide" id="updateProcessBtn" onclick="commonInsertAndUpdate('notices', 'put')">수정완료</button>
                     <button type="button" class="btn btn-outline-primary" id="deleteBtn" onclick="commonDelete('notices')">삭제</button>
                     <a class="btn btn-outline-primary" th:href="@{/admin/notices}">목록 </a>
                 </form>
