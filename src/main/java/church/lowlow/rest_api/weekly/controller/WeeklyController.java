@@ -9,7 +9,7 @@ import church.lowlow.rest_api.weekly.db.WeeklyValidation;
 import church.lowlow.rest_api.weekly.repository.WeeklyRepository;
 import church.lowlow.rest_api.weekly.resource.WeeklyErrorsResource;
 import church.lowlow.rest_api.weekly.resource.WeeklyResource;
-import church.lowlow.user_api.fileProcess.service.basic.FileService;
+import church.lowlow.user_api.common.fileProcess.service.basic.FileService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -86,7 +86,7 @@ public class WeeklyController {
         return ResponseEntity.ok(pagedResources);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity getWeekly(@PathVariable Integer id){
 
         Optional<Weekly> optional = repository.findById(id);

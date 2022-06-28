@@ -9,7 +9,7 @@ import church.lowlow.rest_api.member.resource.MemberErrorsResource;
 import church.lowlow.rest_api.member.resource.MemberResource;
 import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.member.db.MemberDto;
-import church.lowlow.user_api.fileProcess.service.basic.FileService;
+import church.lowlow.user_api.common.fileProcess.service.basic.FileService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

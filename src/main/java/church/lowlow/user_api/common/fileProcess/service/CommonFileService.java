@@ -1,8 +1,8 @@
-package church.lowlow.user_api.fileProcess.service;
+package church.lowlow.user_api.common.fileProcess.service;
 
 import church.lowlow.rest_api.common.entity.FileDto;
-import church.lowlow.user_api.fileProcess.service.aws.AwsS3Service;
-import church.lowlow.user_api.fileProcess.service.basic.FileService;
+import church.lowlow.user_api.common.fileProcess.service.aws.AwsS3Service;
+import church.lowlow.user_api.common.fileProcess.service.basic.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
-package church.lowlow.user_api.fileProcess.controller;
+package church.lowlow.user_api.common.fileProcess.controller;
 
 import church.lowlow.rest_api.common.entity.FileDto;
-import church.lowlow.user_api.fileProcess.service.CommonFileService;
+import church.lowlow.user_api.common.fileProcess.service.CommonFileService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

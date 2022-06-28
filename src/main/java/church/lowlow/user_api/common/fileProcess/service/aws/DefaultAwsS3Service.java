@@ -1,4 +1,4 @@
-package church.lowlow.user_api.fileProcess.service.aws;
+package church.lowlow.user_api.common.fileProcess.service.aws;
 
 import church.lowlow.rest_api.common.entity.FileDto;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -190,7 +190,7 @@ public class DefaultAwsS3Service implements AwsS3Service {
 
     //================== 생성한 로컬 파일을 삭제하는 함수 ====================
     private void removeLocalFile(File targetFile) {
-        /*
+
         try {
             Files.delete(Paths.get(targetFile.getPath()));
             log.info("[LOCAL FILE DELETE SUCCESS]");
@@ -202,7 +202,6 @@ public class DefaultAwsS3Service implements AwsS3Service {
             e.printStackTrace();
         }
 
-         */
     }
 
 }

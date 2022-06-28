@@ -1,6 +1,8 @@
-package church.lowlow.user_api.admin.weekly.controller;
+package church.lowlow.user_api.admin.weekly;
 
 import church.lowlow.rest_api.weekly.db.Weekly;
+import church.lowlow.user_api.common.restApiService.RestApiService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/admin/weekly")
 public class AdminWeeklyController {
+
+    @Autowired
+    private RestApiService restApiService;
 
     // ========== List View ==========
     @GetMapping

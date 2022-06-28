@@ -1,18 +1,14 @@
 package church.lowlow.user_api.batch.summerNote.service;
 
-import church.lowlow.rest_api.accounting.db.Accounting;
 import church.lowlow.user_api.batch.summerNote.domain.SummerNoteVo;
 import church.lowlow.user_api.batch.summerNote.singleton.SummerNoteSingleton;
+import church.lowlow.user_api.common.restApiService.RestApiService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,21 +23,17 @@ public class DefaultSummerNoteService implements SummerNoteService {
     @Value("${cloud.aws.cloud_front.file_url_format}")
     private String awsUrl;
 
-    @Value("${restApiBaseUrl}")
-    private String REST_API_URL;
-
-    private RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private RestApiService restApiService;
 
     private SummerNoteSingleton instance = SummerNoteSingleton.getInstance();
-
 
     @Override
     // 업로드된 이미지 정보가 들어있는 데이터 로드
     public SummerNoteVo getUploadFileList() {
 
         int uploadFileListCnt = instance.getUploadFileListCnt();
-
-        Map resultMap = restTemplate.exchange(REST_API_URL + "/summerNote", HttpMethod.GET, null, Map.class).getBody();
+        Map resultMap = restApiService.getRestApiMap( "/summerNote", "GET", null);
 
         List<Map<String, Object>> summernoteImgList = (List)resultMap.get("summernoteImgList");
 
@@ -79,7 +71,7 @@ public class DefaultSummerNoteService implements SummerNoteService {
 
         int contentCnt = instance.getGalleryContentCnt();
 
-        Map resultMap = restTemplate.exchange(REST_API_URL + "/galleries/list", HttpMethod.GET, null, Map.class).getBody();
+        Map resultMap = restApiService.getRestApiMap( "/galleries/list", "GET", null);
         List<Map<String, Object>> bbsDataList = (List)resultMap.get("galleryList");
 
         // data converting
@@ -105,7 +97,7 @@ public class DefaultSummerNoteService implements SummerNoteService {
 
         int contentCnt = instance.getNoticeContentCnt();
 
-        Map resultMap = restTemplate.exchange(REST_API_URL + "/notices/list", HttpMethod.GET, null, Map.class).getBody();
+        Map resultMap = restApiService.getRestApiMap( "/notices/list", "GET", null);
         List<Map<String, Object>> bbsDataList = (List)resultMap.get("noticeList");
 
         // 본문에서 이미지 파일명만 추출
@@ -128,7 +120,7 @@ public class DefaultSummerNoteService implements SummerNoteService {
 
     @Override
     public void deleteData(Integer id) {
-        restTemplate.exchange(REST_API_URL + "/summerNote/" + id, HttpMethod.DELETE, null, Map.class);
+        restApiService.getRestApiMap("/summerNote/" + id, "DELETE", null);
     }
 
 

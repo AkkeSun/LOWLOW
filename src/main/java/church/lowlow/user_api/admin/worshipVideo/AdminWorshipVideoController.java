@@ -1,9 +1,7 @@
-package church.lowlow.user_api.admin.worshipVideo.controller;
+package church.lowlow.user_api.admin.worshipVideo;
 
 import church.lowlow.rest_api.worshipVideo.db.WorshipVideo;
-import church.lowlow.user_api.admin.worshipVideo.service.WorshipVideoService;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,9 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin/worshipVideos")
 @Log4j2
 public class AdminWorshipVideoController {
-
-    @Autowired
-    private WorshipVideoService service;
 
 
     // ========== List View ==========
@@ -38,8 +33,7 @@ public class AdminWorshipVideoController {
     @GetMapping("/{id}")
     public String getWorshipVideoDetailView(@PathVariable Long id, Model model) {
 
-        WorshipVideo worshipVideo = service.getWorshipVideo(id);
-        model.addAttribute("worshipVideo",worshipVideo);
+        model.addAttribute("id",id);
         return "admin/worshipVideo/worshipVideoDetail";
 
     }

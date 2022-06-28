@@ -8,6 +8,6 @@ public interface SummerNoteService {
     SummerNoteVo getUploadFileList();
     SummerNoteVo getGalleryList();
     SummerNoteVo getNoticeList();
-    void deleteData(Integer id);
 
+    void deleteData(Integer id);
 }

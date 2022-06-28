@@ -1,4 +1,4 @@
-package church.lowlow.user_api.fileProcess.service.basic;
+package church.lowlow.user_api.common.fileProcess.service.basic;
 
 import church.lowlow.rest_api.common.entity.FileDto;
 import lombok.extern.log4j.Log4j2;
