@@ -5,7 +5,7 @@ function noticeListLoad(nowPage){
     // param setting
     var type        = "get";
     var data        = "searchId="+$("#searchId").val()+"&searchData="+$("#searchData").val()+"&nowPage="+nowPage;
-    var url         = "/api/notices";
+    var url         = REST_API_URL + "/notices";
     var csrfHeader  = $("#_csrf_header").attr('content');
     var csrfToken   = $("#_csrf").attr('content');
     var async       = false;
@@ -56,7 +56,7 @@ function noticeListLoad(nowPage){
 function getNoticeDetail(id) {
 
     var type        = "get";
-    var url         = "/api/notices/"+id;
+    var url         = REST_API_URL + "/notices/"+id;
     var csrfHeader  = $("#_csrf_header").attr('content');
     var csrfToken   = $("#_csrf").attr('content');
     var async       = true;

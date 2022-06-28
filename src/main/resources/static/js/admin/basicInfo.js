@@ -247,7 +247,7 @@ function basicInfoProcess (type) {
 
         let csrfHeader  = $("#_csrf_header").attr('content');
         let csrfToken   = $("#_csrf").attr('content');
-        let url = '/api/basicInfo'
+        let url = REST_API_URL+'/api/basicInfo';
 
         // file Upload
         let fileUploadCallback = ajaxFileUpload(csrfHeader, csrfToken,  new FormData($("#basicInfoFrm3")[0]), "basicInfo");

@@ -6,7 +6,7 @@ function weeklyListLoad(nowPage){
     // param setting
     var type        = "get";
     var data        = "searchId="+$("#searchId").val()+"&searchData="+$("#searchData").val()+"&nowPage="+nowPage;
-    var url         = "/api/weekly";
+    var url         = REST_API_URL+"/weekly";
     var csrfHeader  = $("#_csrf_header").attr('content');
     var csrfToken   = $("#_csrf").attr('content');
     var async       = false;
@@ -52,7 +52,7 @@ function weeklyListLoad(nowPage){
 function getWeeklyDetail(id) {
 
     let type        = "get";
-    let url         = "/api/weekly/"+id;
+    let url         = REST_API_URL+"/weekly/"+id;
     let csrfHeader  = $("#_csrf_header").attr('content');
     let csrfToken   = $("#_csrf").attr('content');
     let async       = true;

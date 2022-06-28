@@ -1,7 +1,7 @@
 // ================ 전역변수 ==============
 let totalPages = "";
 let mAttendCreatListCnt = "";
-let REST_API_URL = "http://localhost:8080/api"
+let REST_API_URL = "http://sewoomch.com/api"
 
 
 // ================= Ajax 처리 함수 ====================
@@ -117,7 +117,7 @@ function commonInsertAndUpdate(pageName, type){
     // param setting
     var csrfHeader  = $("#_csrf_header").attr('content');
     var csrfToken   = $("#_csrf").attr('content');
-    var url         = `/api/${pageName}`;
+    var url         = `${REST_API_URL}/${pageName}`;
     var redirectUrl = `/admin/${pageName}`;
     var async       = true;
     var isSecurity  = false;
@@ -159,7 +159,7 @@ function commonInsertAndUpdate(pageName, type){
 
     // update url 변경
     if(type == 'put')
-        url = `/api/${pageName}/${$("#id").val()}`;
+        url = `${REST_API_URL}/${pageName}/${$("#id").val()}`;
 
 
     // ajax
@@ -192,7 +192,7 @@ function commonDelete(pageName){
         var csrfHeader  = $("#_csrf_header").attr('content');
         var csrfToken   = $("#_csrf").attr('content');
         var type        = "delete";
-        var url         = `/api/${pageName}/${$("#id").val()}`;
+        var url         = `${REST_API_URL}/${pageName}/${$("#id").val()}`;
         var redirectUrl = `/admin/${pageName}`;
         var async       = true;
         var isSecurity  = false;
@@ -439,7 +439,7 @@ function uploadSummernoteImageFile(file, el, bbsType) {
         ajaxData.originalName = data.image.originalName;
         ajaxData.bbsType = bbsType;
 
-        ajaxComm("post", JSON.stringify(ajaxData), "/api/summerNote", 'true', csrfHeader, csrfToken);
+        ajaxComm("post", JSON.stringify(ajaxData), REST_API_URL+"/summerNote", 'true', csrfHeader, csrfToken);
     })
 }
 

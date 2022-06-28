@@ -6,7 +6,7 @@ function getM_AttendList(nowPage){
     // param setting
     var type        = "get";
     var data        = `searchId=checkDate&searchData=${$("#checkDate").val()}&nowPage=${nowPage}&belong=&${$("#belong").val()}`;
-    var url         = "/api/memberAttend";
+    var url         = REST_API_URL+"/memberAttend";
     var csrfHeader  = $("#_csrf_header").attr('content');
     var csrfToken   = $("#_csrf").attr('content');
     var async       = false;
@@ -63,7 +63,7 @@ function getM_AttendList(nowPage){
 function getM_AttendCreateTable(nowPage){
 
     // param setting
-    var url         = '/api/members'
+    var url         = REST_API_URL+'/members'
     var type        = "get";
     var data        = `searchId=belong&searchData=${$("#belong").val()}&nowPage=${nowPage}&is_MAttend=true`;
     var csrfHeader  = $("#_csrf_header").attr('content');
@@ -130,7 +130,7 @@ function getM_AttendCreateTable(nowPage){
 function getM_AttendUpdateTable(){
 
     // param setting
-    var url         = `/api/memberAttend/${$('#checkDate').val()}`
+    var url         = `${REST_API_URL}/memberAttend/${$('#checkDate').val()}`
     var type        = "get";
     var data        = `belong=${$('#belong').val()}`;
     var csrfHeader  = $("#_csrf_header").attr('content');

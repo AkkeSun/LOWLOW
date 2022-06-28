@@ -5,7 +5,7 @@ function galleryListLoad(nowPage){
     // param setting
     var type        = "get";
     var data        = "searchId="+$("#searchId").val()+"&searchData="+$("#searchData").val()+"&nowPage="+nowPage;
-    var url         = "/api/galleries";
+    var url         = REST_API_URL+ "/galleries";
     var csrfHeader  = $("#_csrf_header").attr('content');
     var csrfToken   = $("#_csrf").attr('content');
     var async       = false;
@@ -55,7 +55,7 @@ function galleryListLoad(nowPage){
 function getGalleryDetail(id) {
 
     var type        = "get";
-    var url         = "/api/galleries/"+id;
+    var url         = REST_API_URL+ "/galleries/"+id;
     var csrfHeader  = $("#_csrf_header").attr('content');
     var csrfToken   = $("#_csrf").attr('content');
     var async       = true;

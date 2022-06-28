@@ -41,7 +41,7 @@ function accountingListLoad(nowPage){
     var data        = "searchId="+savedSearchId+"&searchData="+savedSearchData+
                       "&startDate="+startDate+"&endDate="+endDate+
                       "&nowPage="+nowPage+"&totalPages=10";
-    var url         = "/api/accounting";
+    var url         = REST_API_URL + "/accounting";
     var csrfHeader  = $("#_csrf_header").attr('content');
     var csrfToken   = $("#_csrf").attr('content');
     var async       = false;
@@ -120,7 +120,7 @@ function accountingStatisticsDataLoad(){
     var type        = "get";
     var data        = "searchId="+savedSearchId+"&searchData="+savedSearchData+
                       "&startDate="+startDate+"&endDate="+endDate;
-    var url         = "/api/accounting/statistics";
+    var url         = REST_API_URL+"/accounting/statistics";
     var csrfHeader  = $("#_csrf_header").attr('content');
     var csrfToken   = $("#_csrf").attr('content');
     var async       = false;
@@ -198,7 +198,7 @@ function getAccountDetail(userId){
     let csrfToken   = $("#_csrf").attr('content');
 
     let callback =
-        ajaxComm("get", "", `/api/accounting/${userId}`,csrfHeader, csrfToken);
+        ajaxComm("get", "", `${REST_API_URL}/accounting/${userId}`,csrfHeader, csrfToken);
 
     callback.done((data) => {
         $("#memberId").val(data.member.id);
@@ -301,7 +301,7 @@ function nameCheckFunc(){
 
         var type        = "get";
         var data        = "searchId=name"+"&searchData="+$("#nameCheck").val()+"&nowPage=0";
-        var url         = "/api/members";
+        var url         = REST_API_URL+"/members";
         var csrfHeader  = $("#_csrf_header").attr('content');
         var csrfToken   = $("#_csrf").attr('content');
         var async       = false;

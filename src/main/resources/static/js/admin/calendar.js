@@ -3,7 +3,7 @@ function calendarSetting(){
     // param setting
     var type        = "get";
     var data        = "";
-    var url         = "/api/calendars";
+    var url         = REST_API_URL+"/calendars";
     var csrfHeader  = $("#_csrf_header").attr('content');
     var csrfToken   = $("#_csrf").attr('content');
     var async       = false;

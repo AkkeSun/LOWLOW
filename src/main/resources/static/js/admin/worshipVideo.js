@@ -6,7 +6,7 @@ function worshipVideoListLoad(nowPage){
     // param setting
     var type        = "get";
     var data        = "searchId="+$("#searchId").val()+"&searchData="+$("#searchData").val()+"&nowPage="+nowPage;
-    var url         = "/api/worshipVideos";
+    var url         = REST_API_URL+"/worshipVideos";
     var csrfHeader  = $("#_csrf_header").attr('content');
     var csrfToken   = $("#_csrf").attr('content');
     var async       = false;
@@ -54,7 +54,7 @@ function worshipVideoListLoad(nowPage){
 function getVideoDetail(id) {
 
     var type        = "get";
-    var url         = "/api/worshipVideos/"+id;
+    var url         = REST_API_URL+ "/worshipVideos/"+id;
     var csrfHeader  = $("#_csrf_header").attr('content');
     var csrfToken   = $("#_csrf").attr('content');
     var async       = true;

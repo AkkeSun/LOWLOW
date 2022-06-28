@@ -22,7 +22,7 @@ function memberListLoad(nowPage){
     // param setting
     var type        = "get";
     var data        = "searchId="+$("#searchId").val()+"&searchData="+$("#searchData").val()+"&nowPage="+nowPage;
-    var url         = "/api/members";
+    var url         = REST_API_URL+"/members";
     var csrfHeader  = $("#_csrf_header").attr('content');
     var csrfToken   = $("#_csrf").attr('content');
     var async       = false;
@@ -81,7 +81,7 @@ function memberListLoad(nowPage){
 function getMemberDetail(id) {
 
     var type        = "get";
-    var url         = "/api/members/"+id;
+    var url         = REST_API_URL+"/members/"+id;
     var csrfHeader  = $("#_csrf_header").attr('content');
     var csrfToken   = $("#_csrf").attr('content');
     var async       = true;
