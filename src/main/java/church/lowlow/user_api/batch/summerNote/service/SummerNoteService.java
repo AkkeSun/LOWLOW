@@ -9,5 +9,5 @@ public interface SummerNoteService {
     SummerNoteVo getGalleryList();
     SummerNoteVo getNoticeList();
 
-    void deleteData(Integer id);
+    void deleteData(SummerNoteVo summerNoteVo);
 }

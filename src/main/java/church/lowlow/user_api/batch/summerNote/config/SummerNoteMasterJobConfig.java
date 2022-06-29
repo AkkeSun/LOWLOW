@@ -1,22 +1,17 @@
 package church.lowlow.user_api.batch.summerNote.config;
 
 import church.lowlow.user_api.batch.summerNote.listener.SummerNoteJobListener;
+import church.lowlow.user_api.batch.summerNote.service.SummerNoteService;
+import church.lowlow.user_api.common.fileProcess.service.CommonFileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor;
-import org.springframework.batch.core.job.flow.Flow;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.step.job.DefaultJobParametersExtractor;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.task.TaskExecutor;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.util.Date;
 
 /**
  * SummerNote 를 사용하는 테이블 이미지를 처리하는 Batch
@@ -59,11 +54,14 @@ public class SummerNoteMasterJobConfig {
 
     private final JobRegistry jobRegistry;
 
+    private final CommonFileService fileService;
+
+    private final SummerNoteService summerNoteService;
 
     @Bean
     public Job SummerNoteJob(){
         return jobBuilderFactory.get("SummerNoteJob")
-                .listener(new SummerNoteJobListener())
+                .listener(new SummerNoteJobListener(summerNoteService))
                 .start(parallel1Step)
                 .next(parallel2Step)
                 .build();

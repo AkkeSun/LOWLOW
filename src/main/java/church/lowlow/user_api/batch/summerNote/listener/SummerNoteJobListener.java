@@ -1,16 +1,25 @@
 package church.lowlow.user_api.batch.summerNote.listener;
 
+import church.lowlow.user_api.batch.summerNote.domain.SummerNoteVo;
+import church.lowlow.user_api.batch.summerNote.service.SummerNoteService;
 import church.lowlow.user_api.batch.summerNote.singleton.SummerNoteSingleton;
+import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
+@RequiredArgsConstructor
 public class SummerNoteJobListener implements JobExecutionListener {
 
     private int deleteCnt = 0;
 
+    @Autowired
+    private final SummerNoteService summerNoteService;
 
     @Override
     public void beforeJob(JobExecution jobExecution) {
@@ -27,31 +36,33 @@ public class SummerNoteJobListener implements JobExecutionListener {
 
     @Override
     public void afterJob(JobExecution jobExecution) {
-        parallel2ProcessingLog();
+        parallel2FileDelete();
         afterJobLog(jobExecution);
         deleteCnt = 0;
     }
 
 
 
-    private void parallel2ProcessingLog(){
+    private void parallel2FileDelete() {
         System.err.println();
         System.err.println(">> [Parallel 2] Processing Success");
 
         SummerNoteSingleton instance = SummerNoteSingleton.getInstance();
-        List<String> deleteGalleryFileList = instance.getDeleteGalleryFileList();
-        List<String> deleteNoticeFileList = instance.getDeleteNoticeFileList();
+        List<SummerNoteVo> deleteGalleryFileList = instance.getDeleteGalleryFileList();
+        List<SummerNoteVo> deleteNoticeFileList = instance.getDeleteNoticeFileList();
 
         if(deleteGalleryFileList.size() != 0){
             deleteCnt += deleteGalleryFileList.size();
             deleteGalleryFileList.forEach(deleteFile -> {
-                System.err.println(">> [Parallel 2] 삭제된 파일 : " + deleteFile);
+                summerNoteService.deleteData(deleteFile);
+                System.err.println(">> [Parallel 2] 삭제된 파일 : " + deleteFile.getUploadName());
             });
         }
         if(deleteNoticeFileList.size() != 0){
             deleteCnt += deleteNoticeFileList.size();
             deleteNoticeFileList.forEach(deleteFile -> {
-                System.err.println(">> [Parallel 2] 삭제된 파일 : " + deleteFile);
+                summerNoteService.deleteData(deleteFile);
+                System.err.println(">> [Parallel 2] 삭제된 파일 : " + deleteFile.getUploadName());
             });
         }
         System.err.println(">> [Parallel 2] 삭제된 파일 총 수 : " + deleteCnt);
@@ -73,4 +84,5 @@ public class SummerNoteJobListener implements JobExecutionListener {
         System.err.println();
         System.err.println();
     }
+
 }

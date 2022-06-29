@@ -1,15 +1,10 @@
 package church.lowlow.user_api.batch.summerNote.service;
 
-import church.lowlow.rest_api.gallery.db.Gallery;
-import church.lowlow.rest_api.gallery.repository.GalleryRepository;
-import church.lowlow.rest_api.notice.db.Notice;
-import church.lowlow.rest_api.notice.repository.NoticeRepository;
-import church.lowlow.rest_api.summerNote.db.SummerNoteImg;
 import church.lowlow.rest_api.summerNote.repository.SummerNoteImgRepository;
 import church.lowlow.user_api.batch.summerNote.domain.SummerNoteVo;
 import church.lowlow.user_api.batch.summerNote.singleton.SummerNoteSingleton;
+import church.lowlow.user_api.common.fileProcess.service.CommonFileService;
 import church.lowlow.user_api.common.restApiService.RestApiService;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -18,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,70 +31,59 @@ public class DefaultSummerNoteService implements SummerNoteService {
     @Value("${cloud.aws.cloud_front.file_url_format}")
     private String awsUrl;
 
-    @Value("${serverGbn}")
-    private String serverGbn;
-
     @Autowired
-    private RestApiService restApiService;
+    private CommonFileService fileService;
 
     @Autowired
     private SummerNoteImgRepository summerNoteImgRepository;
 
-    @Autowired
-    private GalleryRepository galleryRepository;
-
-    @Autowired
-    private NoticeRepository noticeRepository;
-
     private SummerNoteSingleton instance = SummerNoteSingleton.getInstance();
-
-    private ObjectMapper om = new ObjectMapper();
 
 
     @Override
+    @Transactional
     // 업로드된 이미지 정보가 들어있는 데이터 로드
     public SummerNoteVo getUploadFileList() {
 
-        List<SummerNoteVo> returnList = null;
+        List<Map<String, Object>> summernoteImgList = instance.getSummernoteImgList();
+        int uploadFileListCnt = instance.getUploadFileListCnt();
+        // Data Converting
+        List<SummerNoteVo> returnList = new ArrayList<>();
+        summernoteImgList.forEach(data -> {
 
-        if("gabia".equals(serverGbn))
-            returnList = getUploadFileListFromJpa();
-        else
-            returnList = getUploadFileListFromHttp();
+            String uploadName = ((Map<String, String>) data.get("image")).get("uploadName");
+            String bbsType = (String) data.get("bbsType");
+            Integer id = (Integer) data.get("id");
 
+            SummerNoteVo vo = SummerNoteVo.builder().uploadName(uploadName).bbsType(bbsType).id(id).build();
+            returnList.add(vo);
+        });
 
         // return
-        int uploadFileListCnt = instance.getUploadFileListCnt();
         SummerNoteVo summerNoteVo = null;
-
         if(uploadFileListCnt < returnList.size()){
             summerNoteVo = returnList.get(uploadFileListCnt);
             uploadFileListCnt++;
         }
 
         instance.setUploadFileListCnt(uploadFileListCnt);
-
         return summerNoteVo;
     }
 
 
 
     @Override
+    @Transactional
     // gallery summernote 본문에 삽입된 파일명 추출
     public SummerNoteVo getGalleryList() {
 
-        List<SummerNoteVo> returnList = null;
-
-        if("gabia".equals(serverGbn))
-            returnList = getGalleryListFromJap();
-        else
-            returnList = getGalleryListFromHttp();
-
-
-        // return
         int contentCnt = instance.getGalleryContentCnt();
-        SummerNoteVo summerNoteVo = null;
+        List<Map<String, Object>> galleryList = instance.getGalleryList();
 
+        // 본문에서 이미지 파일명만 추출
+        List<SummerNoteVo> returnList = getSummerNoteImgName(galleryList);
+        // return
+        SummerNoteVo summerNoteVo = null;
         if(contentCnt < returnList.size()){
             summerNoteVo = returnList.get(contentCnt);
             contentCnt++;
@@ -113,165 +97,38 @@ public class DefaultSummerNoteService implements SummerNoteService {
 
 
     @Override
+    @Transactional
     // notice summernote 본문에 삽입된 파일명 추출
     public SummerNoteVo getNoticeList() {
 
-        List<SummerNoteVo> returnList = null;
+        int contentCnt = instance.getNoticeContentCnt();
+        List<Map<String, Object>> noticeList = instance.getNoticeList();
 
-        if("gabia".equals(serverGbn))
-            returnList = getNoticeListFromJap();
-        else
-            returnList = getNoticeListFromHttp();
-
+        // 본문에서 이미지 파일명만 추출
+        List<SummerNoteVo> returnList = getSummerNoteImgName(noticeList);
 
         // return
-        int contentCnt = instance.getNoticeContentCnt();
         SummerNoteVo summerNoteVo = null;
-
         if(contentCnt < returnList.size()){
             summerNoteVo = returnList.get(contentCnt);
             contentCnt++;
         }
 
-        instance.setNoticeContentCnt(contentCnt);
+        instance.setGalleryContentCnt(contentCnt);
 
         return summerNoteVo;
     }
 
-    
-    
+
+
     @Override
+    @Transactional
     // 파일 분석 후 이미지 데이터 삭제
-    public void deleteData(Integer id) {
+    public void deleteData(SummerNoteVo summerNoteVo) {
 
-        if("gabia".equals(serverGbn))
-            deleteDataFromJpa(id);
-        else
-            deleteDataFromHttp(id);
-    }
+        summerNoteImgRepository.deleteById(summerNoteVo.getId());
+        fileService.deleteFile(summerNoteVo.getUploadName(), "summernote");
 
-
-
-
-
-
-    //============================  HttpURLConnection 통신 매소드 ============================
-    private List<SummerNoteVo> getUploadFileListFromHttp() {
-
-        Map resultMap = restApiService.getRestApiMap( "/summerNote", "GET", null);
-
-        List<Map<String, Object>> summernoteImgList = (List)resultMap.get("summernoteImgList");
-
-        // Data Converting
-        List<SummerNoteVo> returnList = new ArrayList<>();
-        summernoteImgList.forEach(data -> {
-
-            String uploadName = ((Map<String, String>) data.get("image")).get("uploadName");
-            String bbsType = (String) data.get("bbsType");
-            Integer id = (Integer) data.get("id");
-
-            SummerNoteVo vo = SummerNoteVo.builder().uploadName(uploadName).bbsType(bbsType).id(id).build();
-            returnList.add(vo);
-        });
-
-        return returnList;
-    }
-
-    private List<SummerNoteVo> getGalleryListFromHttp() {
-        Map resultMap = restApiService.getRestApiMap( "/galleries/list", "GET", null);
-        List<Map<String, Object>> bbsDataList = (List)resultMap.get("galleryList");
-
-        // 파일명만 추출
-        List<SummerNoteVo> returnList = getSummerNoteImgName(bbsDataList);
-
-        return returnList;
-    }
-
-    private List<SummerNoteVo> getNoticeListFromHttp() {
-        Map resultMap = restApiService.getRestApiMap( "/notices/list", "GET", null);
-        List<Map<String, Object>> bbsDataList = (List)resultMap.get("noticeList");
-
-        // 파일명만 추출
-        List<SummerNoteVo> returnList = getSummerNoteImgName(bbsDataList);
-
-        return returnList;
-    }
-
-    public void deleteDataFromHttp(Integer id) {
-        restApiService.getRestApiMap("/summerNote/" + id, "DELETE", null);
-    }
-
-
-
-
-
-    //============================ JpaRepository 사용 (for Gabia Server) ============================
-    private List<SummerNoteVo> getUploadFileListFromJpa() {
-
-        List<SummerNoteImg> list = summerNoteImgRepository.findAll();
-        List<Map<String, Object>> convertList = null;
-
-        try {
-            String jsonString = om.writeValueAsString(list);
-            convertList = om.readValue(jsonString, new TypeReference<List<Map<String, Object>>>(){});
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Data Converting
-        List<SummerNoteVo> returnList = new ArrayList<>();
-        convertList.forEach(data -> {
-
-            String uploadName = ((Map<String, String>) data.get("image")).get("uploadName");
-            String bbsType = (String) data.get("bbsType");
-            Integer id = (Integer) data.get("id");
-
-            SummerNoteVo vo = SummerNoteVo.builder().uploadName(uploadName).bbsType(bbsType).id(id).build();
-            returnList.add(vo);
-        });
-        return returnList;
-    }
-
-    private List<SummerNoteVo> getGalleryListFromJap() {
-
-        List<Gallery> list = galleryRepository.findAll();
-        List<Map<String, Object>> convertList = null;
-
-        try {
-            String jsonString = om.writeValueAsString(list);
-            convertList = om.readValue(jsonString, new TypeReference<List<Map<String, Object>>>(){});
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // 파일명만 추출
-        List<SummerNoteVo> returnList = getSummerNoteImgName(convertList);
-
-        return returnList;
-    }
-
-    private List<SummerNoteVo> getNoticeListFromJap() {
-        List<Notice> list = noticeRepository.findAll();
-        List<Map<String, Object>> convertList = null;
-
-        try {
-            String jsonString = om.writeValueAsString(list);
-            convertList = om.readValue(jsonString, new TypeReference<List<Map<String, Object>>>(){});
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // 파일명만 추출
-        List<SummerNoteVo> returnList = getSummerNoteImgName(convertList);
-
-        return returnList;
-    }
-
-    public void deleteDataFromJpa(Integer id) {
-        summerNoteImgRepository.deleteById(id);
     }
 
 

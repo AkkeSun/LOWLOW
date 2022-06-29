@@ -1,8 +1,6 @@
 package church.lowlow.user_api.batch.summerNote.tasklet;
 
-import church.lowlow.user_api.common.fileProcess.service.CommonFileService;
 import church.lowlow.user_api.batch.summerNote.domain.SummerNoteVo;
-import church.lowlow.user_api.batch.summerNote.service.SummerNoteService;
 import church.lowlow.user_api.batch.summerNote.singleton.SummerNoteSingleton;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.StepContribution;
@@ -18,8 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GalleryTasklet implements Tasklet {
 
-    private final CommonFileService fileService;
-    private final SummerNoteService summerNoteService;
     private boolean isFileExist = false;
 
     @Override
@@ -29,7 +25,7 @@ public class GalleryTasklet implements Tasklet {
 
         List<SummerNoteVo> galleryUploadFileList = instance.getGalleryUploadFileList();
         List<String> galleryContentList = instance.getGalleryContentList();
-        List<String> deleteFileList = new ArrayList<>();
+        List<SummerNoteVo> deleteFileList = new ArrayList<>();
 
         if(galleryUploadFileList.size() != 0 && galleryContentList.size() != 0) {
             deleteFileList = fileCheckProcess(galleryUploadFileList, galleryContentList);
@@ -40,9 +36,9 @@ public class GalleryTasklet implements Tasklet {
     }
 
 
-    public List<String> fileCheckProcess(List<SummerNoteVo> galleryUploadFileList, List<String> galleryContentList) {
+    public List<SummerNoteVo> fileCheckProcess(List<SummerNoteVo> galleryUploadFileList, List<String> galleryContentList) {
 
-        List<String> deleteFileList = new ArrayList<>();
+        List<SummerNoteVo> deleteFileList = new ArrayList<>();
 
         galleryUploadFileList.forEach(summerNoteVo -> {
 
@@ -56,18 +52,11 @@ public class GalleryTasklet implements Tasklet {
 
             // 본문에 수록된 파일이 아니라면 삭제처리
             if(!isFileExist) {
-                fileDeleteProcess(summerNoteVo);
-                deleteFileList.add(summerNoteVo.getUploadName());
+                deleteFileList.add(summerNoteVo);
             }
             isFileExist = false;
         });
 
         return deleteFileList;
-    }
-    
-
-    private void fileDeleteProcess(SummerNoteVo summerNoteVo) {
-        summerNoteService.deleteData(summerNoteVo.getId());
-        fileService.deleteFile(summerNoteVo.getUploadName(), "summernote");
     }
 }

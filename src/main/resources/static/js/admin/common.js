@@ -1,7 +1,7 @@
 // ================ 전역변수 ==============
 let totalPages = "";
 let mAttendCreatListCnt = "";
-let REST_API_URL = "http://sewoomch.com/api"
+let REST_API_URL = "http://localhost:8080/api"
 
 
 // ================= Ajax 처리 함수 ====================

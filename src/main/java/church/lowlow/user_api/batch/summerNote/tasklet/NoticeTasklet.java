@@ -17,9 +17,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class NoticeTasklet implements Tasklet {
-
-    private final CommonFileService fileService;
-    private final SummerNoteService summerNoteService;
     private boolean isFileExist = false;
 
     @Override
@@ -29,7 +26,7 @@ public class NoticeTasklet implements Tasklet {
 
         List<SummerNoteVo> noticeUploadFileList = instance.getNoticeUploadFileList();
         List<String> noticeContentList = instance.getNoticeContentList();
-        List<String> deleteFileList = new ArrayList<>();
+        List<SummerNoteVo> deleteFileList = new ArrayList<>();
 
         if(noticeUploadFileList.size() != 0 && noticeContentList.size() != 0) {
             deleteFileList = fileCheckProcess(noticeUploadFileList, noticeContentList);
@@ -41,9 +38,9 @@ public class NoticeTasklet implements Tasklet {
     }
 
 
-    public List<String> fileCheckProcess(List<SummerNoteVo> noticeUploadFileList, List<String> noticeContentList) {
+    public List<SummerNoteVo> fileCheckProcess(List<SummerNoteVo> noticeUploadFileList, List<String> noticeContentList) {
 
-        List<String> deleteFileList = new ArrayList<>();
+        List<SummerNoteVo> deleteFileList = new ArrayList<>();
 
         noticeUploadFileList.forEach(summerNoteVo -> {
 
@@ -57,19 +54,12 @@ public class NoticeTasklet implements Tasklet {
 
             // 본문에 수록된 파일이 아니라면 삭제처리
             if(!isFileExist) {
-                fileDeleteProcess(summerNoteVo);
-                deleteFileList.add(summerNoteVo.getUploadName());
+                deleteFileList.add(summerNoteVo);
             }
             isFileExist = false;
         });
 
         return deleteFileList;
-    }
-
-
-    public void fileDeleteProcess(SummerNoteVo summerNoteVo) {
-        summerNoteService.deleteData(summerNoteVo.getId());
-        fileService.deleteFile(summerNoteVo.getUploadName(), "summernote");
     }
 
 
