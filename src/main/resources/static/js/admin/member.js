@@ -92,6 +92,7 @@ function getMemberDetail(id) {
         $("#name").val(data.name);
         $("#phoneNumber").val(data.phoneNumber);
         $("#gender").val(data.gender);
+        $("#belong").val(data.belong);
         $("#birthDay").val(data.birthDay);
         $('#churchOfficer').val(data.churchOfficer);
         $('#regiDate').val(data.regiDate);

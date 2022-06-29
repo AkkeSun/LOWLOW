@@ -54,8 +54,6 @@ public class SummerNoteMasterJobConfig {
 
     private final JobRegistry jobRegistry;
 
-    private final CommonFileService fileService;
-
     private final SummerNoteService summerNoteService;
 
     @Bean
