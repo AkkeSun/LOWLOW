@@ -1,5 +1,6 @@
 package church.lowlow.user_api.common;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
@@ -7,14 +8,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Order(1)
+@Log4j2
 public class ServerStartCheck implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        System.err.println();
-        System.err.println("==============================================================================================================================================================================");
-        System.err.println("=============================================================          LOWLOW SERVER START SUCCESS       =====================================================================");
-        System.err.println("==============================================================================================================================================================================");
-        System.err.println();System.err.println(); System.err.println();System.err.println(); System.err.println();System.err.println();System.err.println();System.err.println();System.err.println();System.err.println();System.err.println();
+        log.info("");
+        log.info("=====================================");
+        log.info("==   LOWLOW SERVER START SUCCESS   ==");
+        log.info("=====================================");
+        log.info(""); log.info("");  log.info("");
     }
 }

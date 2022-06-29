@@ -4,6 +4,7 @@ import church.lowlow.user_api.batch.summerNote.domain.SummerNoteVo;
 import church.lowlow.user_api.batch.summerNote.service.SummerNoteService;
 import church.lowlow.user_api.batch.summerNote.singleton.SummerNoteSingleton;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Log4j2
 public class SummerNoteJobListener implements JobExecutionListener {
 
     private int deleteCnt = 0;
@@ -26,12 +28,11 @@ public class SummerNoteJobListener implements JobExecutionListener {
         String jobName = jobExecution.getJobInstance().getJobName();
         String requestDate = jobExecution.getJobParameters().getString("requestDate");
 
-        System.err.println();
-        System.err.println();
-        System.err.println("================================================================");
-        System.err.println("[JOB] " + "\""+ jobName + "\"" + " 배치를 시작합니다");
-        System.err.println("[JOB] 시작일 : " + requestDate);
-        System.err.println();
+        log.info("");
+        log.info("================================================================");
+        log.info("[JOB] " + "\""+ jobName + "\"" + " Batch Start");
+        log.info("[JOB] Start Date : " + requestDate);
+        log.info("");
     }
 
     @Override
@@ -44,8 +45,8 @@ public class SummerNoteJobListener implements JobExecutionListener {
 
 
     private void parallel2FileDelete() {
-        System.err.println();
-        System.err.println(">> [Parallel 2] Processing Success");
+        log.info("");
+        log.info(">> [Parallel 2] Processing Success");
 
         SummerNoteSingleton instance = SummerNoteSingleton.getInstance();
         List<SummerNoteVo> deleteGalleryFileList = instance.getDeleteGalleryFileList();
@@ -55,17 +56,17 @@ public class SummerNoteJobListener implements JobExecutionListener {
             deleteCnt += deleteGalleryFileList.size();
             deleteGalleryFileList.forEach(deleteFile -> {
                 summerNoteService.deleteData(deleteFile);
-                System.err.println(">> [Parallel 2] 삭제된 파일 : " + deleteFile.getUploadName());
+                log.info(">> [Parallel 2] Delete File : " + deleteFile.getUploadName());
             });
         }
         if(deleteNoticeFileList.size() != 0){
             deleteCnt += deleteNoticeFileList.size();
             deleteNoticeFileList.forEach(deleteFile -> {
                 summerNoteService.deleteData(deleteFile);
-                System.err.println(">> [Parallel 2] 삭제된 파일 : " + deleteFile.getUploadName());
+                log.info(">> [Parallel 2] Delete File  : " + deleteFile.getUploadName());
             });
         }
-        System.err.println(">> [Parallel 2] 삭제된 파일 총 수 : " + deleteCnt);
+        log.info(">> [Parallel 2] Delete Total count : " + deleteCnt);
     }
 
 
@@ -76,13 +77,13 @@ public class SummerNoteJobListener implements JobExecutionListener {
         long time = endTime - startTime;
         BatchStatus status = jobExecution.getStatus();
 
-        System.err.println();
-        System.err.println("[JOB] Batch Status : "+ status);
-        System.err.println("[JOB] 총 소요시간 : " + time + " ms");
-        System.err.println("[JOB] " + "\""+ jobName + "\"" + " 배치를 종료합니다");
-        System.err.println("================================================================");
-        System.err.println();
-        System.err.println();
+        log.info("");
+        log.info("[JOB] Batch Status : "+ status);
+        log.info("[JOB] Total Time : " + time + " ms");
+        log.info("[JOB] " + "\""+ jobName + "\"" + " Batch End");
+        log.info("================================================================");
+        log.info("");
+        log.info("");
     }
 
 }
