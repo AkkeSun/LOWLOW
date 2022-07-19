@@ -1,5 +1,6 @@
 package church.lowlow.rest_api.gallery.controller;
 
+import church.lowlow.rest_api.accounting.db.Accounting;
 import church.lowlow.rest_api.common.aop.LogComponent;
 import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
@@ -13,6 +14,7 @@ import church.lowlow.rest_api.weekly.db.WeeklyDto;
 import church.lowlow.user_api.batch.summerNote.domain.SummerNoteVo;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.ApiOperation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,6 +25,7 @@ import org.springframework.hateoas.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -56,6 +59,7 @@ public class GalleryController {
      * CREATE API
      */
     @PostMapping
+    @ApiOperation(value = "갤러리 등록", notes = "갤러리를 등록합니다", response = Gallery.class)
     public ResponseEntity createGallery(@RequestBody GalleryDto dto, Errors errors){
 
         // request param logging
@@ -86,6 +90,7 @@ public class GalleryController {
      * READ API
      */
     @GetMapping
+    @ApiOperation(value = "갤러리 리스트", notes = "갤러리 리스트를 출력합니다", response = Gallery.class)
     public ResponseEntity getGalleries(PagedResourcesAssembler<Gallery> assembler, SearchDto searchDto, PagingDto pagingDto){
 
         // request param logging
@@ -98,6 +103,7 @@ public class GalleryController {
     }
 
     @GetMapping("/list")
+    @ApiIgnore // swagger hide
     public ResponseEntity getGalleryList(){
 
         List<Gallery> list = repository.findAll();
@@ -108,6 +114,7 @@ public class GalleryController {
     }
 
     @GetMapping("/{id}")
+    @ApiOperation(value = "갤러리", notes = "한 건의 갤러리를 출력합니다", response = Gallery.class)
     public ResponseEntity getGallery(@PathVariable Integer id){
 
         Optional<Gallery> optional = repository.findById(id);
@@ -123,6 +130,7 @@ public class GalleryController {
      * UPDATE API
      */
     @PutMapping("/{id}")
+    @ApiOperation(value = "갤러리 수정", notes = "갤러리를 수정합니다", response = Gallery.class)
     public ResponseEntity updateGallery(@RequestBody GalleryDto dto, @PathVariable Integer id, Errors errors){
 
         // request param logging
@@ -152,6 +160,7 @@ public class GalleryController {
      * DELETE API
      */
     @DeleteMapping("/{id}")
+    @ApiOperation(value = "갤러리 삭제", notes = "갤러리를 삭제합니다", response = Gallery.class)
     public ResponseEntity deleteGallery(@PathVariable Integer id, Resource resource){
 
         // check
@@ -166,23 +175,5 @@ public class GalleryController {
         resource.add(linkTo(GalleryController.class).withRel("index"));
         return ResponseEntity.ok(resource);
     }
-
-    @GetMapping("/test")
-    public void test () {
-        ObjectMapper om = new ObjectMapper();
-        List<Gallery> list = repository.findAll();
-        List<Map<String, Object>> convertList = null;
-
-        try {
-            String jsonString = om.writeValueAsString(list);
-            convertList = om.readValue(jsonString, new TypeReference<List<Map<String, Object>>>(){});
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println(convertList);
-    }
-
 
 }

@@ -4,11 +4,13 @@ import church.lowlow.rest_api.common.aop.LogComponent;
 import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.gallery.db.Gallery;
+import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.notice.db.Notice;
 import church.lowlow.rest_api.notice.db.NoticeDto;
 import church.lowlow.rest_api.notice.repository.NoticeRepository;
 import church.lowlow.rest_api.notice.resource.NoticeErrorsResource;
 import church.lowlow.rest_api.notice.resource.NoticeResource;
+import io.swagger.annotations.ApiOperation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,6 +22,7 @@ import org.springframework.hateoas.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -49,6 +52,7 @@ public class NoticeController {
      * CREATE API
      */
     @PostMapping
+    @ApiOperation(value = "공지사항 등록", notes = "공지사항을 등록합니다", response = Notice.class)
     public ResponseEntity createNotice(@RequestBody @Valid NoticeDto dto, Errors errors){
 
         // request param logging
@@ -78,7 +82,8 @@ public class NoticeController {
      * READ API
      */
     @GetMapping
-    public ResponseEntity getNotice(PagedResourcesAssembler<Notice> assembler, SearchDto searchDto, PagingDto pagingDto){
+    @ApiOperation(value = "공지사항 리스트", notes = "공지사항 리스트를 출력합니다", response = Notice.class)
+    public ResponseEntity getNotices(PagedResourcesAssembler<Notice> assembler, SearchDto searchDto, PagingDto pagingDto){
 
 
         // request param logging
@@ -89,7 +94,9 @@ public class NoticeController {
         var pagedResources = assembler.toResource(page, e -> new NoticeResource(e));
         return ResponseEntity.ok(pagedResources);
     }
+
     @GetMapping("/list")
+    @ApiIgnore // swagger Ignore
     public ResponseEntity getNoticeList(){
 
         List<Notice> list = repository.findAll();
@@ -100,7 +107,8 @@ public class NoticeController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity geWorshipVideo(@PathVariable Integer id){
+    @ApiOperation(value = "공지사항", notes = "공지사항을 출력합니다", response = Notice.class)
+    public ResponseEntity getNotice(@PathVariable Integer id){
 
         Optional<Notice> optional = repository.findById(id);
         Notice notice = optional.orElseThrow(ArithmeticException::new);
@@ -115,7 +123,8 @@ public class NoticeController {
      * UPDATE API
      */
     @PutMapping("/{id}")
-    public ResponseEntity updateWorshipVideo(@RequestBody @Valid NoticeDto dto, @PathVariable Integer id, Errors errors){
+    @ApiOperation(value = "공지사항 수정", notes = "공지사항을 수정합니다", response = Notice.class)
+    public ResponseEntity updateNotice(@RequestBody @Valid NoticeDto dto, @PathVariable Integer id, Errors errors){
 
         // request param logging
         logComponent.noticeDtoLogging(dto);
@@ -146,7 +155,8 @@ public class NoticeController {
      * DELETE API
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteWorshipVideo(@PathVariable Integer id, Resource resource){
+    @ApiOperation(value = "공지사항 삭제", notes = "공지사항을 삭제합니다", response = Notice.class)
+    public ResponseEntity deleteNotice(@PathVariable Integer id, Resource resource){
 
         // check
         Optional<Notice> optional = repository.findById(id);

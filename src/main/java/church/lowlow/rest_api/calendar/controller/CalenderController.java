@@ -1,5 +1,6 @@
 package church.lowlow.rest_api.calendar.controller;
 
+import church.lowlow.rest_api.accounting.db.Accounting;
 import church.lowlow.rest_api.calendar.db.Calendar;
 import church.lowlow.rest_api.calendar.db.CalendarDto;
 import church.lowlow.rest_api.calendar.db.CalenderValidation;
@@ -7,6 +8,7 @@ import church.lowlow.rest_api.calendar.repository.CalendarRepository;
 import church.lowlow.rest_api.calendar.resource.CalendarErrorsResource;
 import church.lowlow.rest_api.calendar.resource.CalendarResource;
 import church.lowlow.rest_api.common.aop.LogComponent;
+import io.swagger.annotations.ApiOperation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -50,6 +52,7 @@ public class CalenderController {
      * CREATE API
      */
     @PostMapping
+    @ApiOperation(value = "일정 등록", notes = "일정을 등록합니다", response = Calendar.class)
     public ResponseEntity createCalendar(@RequestBody CalendarDto dto, Errors errors){
 
         // request param logging
@@ -80,6 +83,7 @@ public class CalenderController {
      * READ API
      */
     @GetMapping
+    @ApiOperation(value = "일정 리스트", notes = "일정 리스트를 출력합니다", response = Calendar.class)
     public ResponseEntity getCalendarList(){
         List<Calendar> page = repository.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(page);
@@ -87,6 +91,7 @@ public class CalenderController {
 
 
     @GetMapping("{id}")
+    @ApiOperation(value = "일정", notes = "한 건의 일정을 출력합니다", response = Calendar.class)
     public ResponseEntity getCalendar(@PathVariable Integer id){
 
         Optional<Calendar> optional = repository.findById(id);
@@ -102,6 +107,7 @@ public class CalenderController {
      * UPDATE API
      */
     @PutMapping("/{id}")
+    @ApiOperation(value = "일정 수정", notes = "일정을 수정합니다", response = Calendar.class)
     public ResponseEntity updateCalendar(@RequestBody @Valid CalendarDto dto, @PathVariable Integer id, Errors errors){
 
         // request param logging
@@ -132,6 +138,7 @@ public class CalenderController {
      * DELETE API
      */
     @DeleteMapping("/{id}")
+    @ApiOperation(value = "일정 삭제", notes = "일정을 삭제합니다", response = Calendar.class)
     public ResponseEntity deleteCalendar(@PathVariable Integer id, Resource resource){
 
         // check

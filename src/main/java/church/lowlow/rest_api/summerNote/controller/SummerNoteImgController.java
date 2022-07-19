@@ -9,6 +9,7 @@ import church.lowlow.rest_api.summerNote.resource.SummernoteImgResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 @RestController
 @RequestMapping("/api/summerNote")
+@ApiIgnore // swagger Ignore
 public class SummerNoteImgController {
 
     @Autowired

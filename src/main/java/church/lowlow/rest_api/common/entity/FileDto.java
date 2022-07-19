@@ -1,5 +1,6 @@
 package church.lowlow.rest_api.common.entity;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.persistence.Embeddable;
@@ -13,8 +14,13 @@ import javax.persistence.Embeddable;
 @Embeddable
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class FileDto {
+
+    @ApiModelProperty(value = "실제 파일명")
     private String originalName;
+    @ApiModelProperty(value = "업로드 파일명")
     private String uploadName;
+    @ApiModelProperty(value = "업로드 폴더명")
     private String fileDir;
+    @ApiModelProperty(value = "S3 경로")
     private String fullUrl;
 }

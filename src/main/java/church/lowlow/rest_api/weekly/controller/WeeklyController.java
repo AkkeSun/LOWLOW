@@ -3,6 +3,7 @@ package church.lowlow.rest_api.weekly.controller;
 import church.lowlow.rest_api.common.aop.LogComponent;
 import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
+import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.weekly.db.Weekly;
 import church.lowlow.rest_api.weekly.db.WeeklyDto;
 import church.lowlow.rest_api.weekly.db.WeeklyValidation;
@@ -10,6 +11,7 @@ import church.lowlow.rest_api.weekly.repository.WeeklyRepository;
 import church.lowlow.rest_api.weekly.resource.WeeklyErrorsResource;
 import church.lowlow.rest_api.weekly.resource.WeeklyResource;
 import church.lowlow.user_api.common.fileProcess.service.basic.FileService;
+import io.swagger.annotations.ApiOperation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -50,6 +52,7 @@ public class WeeklyController {
      * CREATE API
      */
     @PostMapping
+    @ApiOperation(value = "주보 등록", notes = "주보를 등록합니다", response = Weekly.class)
     public ResponseEntity createWeekly(@RequestBody WeeklyDto dto, Errors errors){
 
         // request param logging
@@ -80,6 +83,7 @@ public class WeeklyController {
      * READ API
      */
     @GetMapping
+    @ApiOperation(value = "주보 리스트", notes = "주보 리스트를 출력합니다", response = Weekly.class)
     public ResponseEntity getWeekly(SearchDto searchDto, PagingDto pagingDto, PagedResourcesAssembler<Weekly> assembler){
         Page<Weekly> page = repository.getWeeklyList(searchDto, pagingDto);
         var pagedResources = assembler.toResource(page, e -> new WeeklyResource(e));
@@ -87,6 +91,7 @@ public class WeeklyController {
     }
 
     @GetMapping("/{id}")
+    @ApiOperation(value = "주보", notes = "한 건의 주보를 출력합니다", response = Weekly.class)
     public ResponseEntity getWeekly(@PathVariable Integer id){
 
         Optional<Weekly> optional = repository.findById(id);
@@ -102,6 +107,7 @@ public class WeeklyController {
      * UPDATE API
      */
     @PutMapping("/{id}")
+    @ApiOperation(value = "주보 수정", notes = "주보를 수정합니다", response = Weekly.class)
     public ResponseEntity updateWeekly(@RequestBody WeeklyDto dto, @PathVariable Integer id, Errors errors){
 
         // request param logging
@@ -134,6 +140,7 @@ public class WeeklyController {
      * DELETE API
      */
     @DeleteMapping("/{id}")
+    @ApiOperation(value = "주보 삭제", notes = "주보를 삭제합니다", response = Weekly.class)
     public ResponseEntity deleteMembers(@PathVariable Integer id, Resource resource){
 
         // check

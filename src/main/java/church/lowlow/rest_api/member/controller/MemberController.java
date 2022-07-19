@@ -3,6 +3,7 @@ package church.lowlow.rest_api.member.controller;
 import church.lowlow.rest_api.common.aop.LogComponent;
 import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
+import church.lowlow.rest_api.gallery.db.Gallery;
 import church.lowlow.rest_api.member.db.MemberValidation;
 import church.lowlow.rest_api.member.repository.MemberRepository;
 import church.lowlow.rest_api.member.resource.MemberErrorsResource;
@@ -10,6 +11,7 @@ import church.lowlow.rest_api.member.resource.MemberResource;
 import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.member.db.MemberDto;
 import church.lowlow.user_api.common.fileProcess.service.basic.FileService;
+import io.swagger.annotations.ApiOperation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -50,6 +52,7 @@ public class MemberController {
      *       CREATE API
      **************************/
     @PostMapping
+    @ApiOperation(value = "성도 등록", notes = "성도를 등록합니다", response = Member.class)
     public ResponseEntity createMember(@RequestBody MemberDto dto, Errors errors){
 
         // request param logging
@@ -80,6 +83,7 @@ public class MemberController {
      *       READ API
      **************************/
     @GetMapping
+    @ApiOperation(value = "성도 리스트", notes = "성도 리스트를 출력합니다", response = Member.class)
     public ResponseEntity getMembers(PagedResourcesAssembler<Member> assembler,
                                      SearchDto searchDto, PagingDto pagingDto, @RequestParam(required = false) String is_MAttend) {
 
@@ -94,6 +98,7 @@ public class MemberController {
     }
 
     @GetMapping("{id}")
+    @ApiOperation(value = "성도", notes = "한 건의 성도 정보를 출력합니다", response = Member.class)
     public ResponseEntity getMember(@PathVariable Integer id){
 
         Optional<Member> optional = repository.findById(id);
@@ -109,6 +114,7 @@ public class MemberController {
      *       UPDATE API
      **************************/
     @PutMapping("/{id}")
+    @ApiOperation(value = "성도 수정", notes = "성도 정보를 수정합니다", response = Member.class)
     public ResponseEntity updateMembers(@RequestBody MemberDto dto, @PathVariable Integer id, Errors errors){
 
         // request param logging
@@ -138,6 +144,7 @@ public class MemberController {
      *       DELETE API
      **************************/
     @DeleteMapping("/{id}")
+    @ApiOperation(value = "성도 삭제", notes = "성도 정보를 삭제합니다", response = Member.class)
     public ResponseEntity deleteMembers(@PathVariable Integer id){
 
         // check

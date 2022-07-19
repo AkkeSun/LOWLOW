@@ -1,5 +1,7 @@
 package church.lowlow.rest_api.accounting.db;
 import church.lowlow.rest_api.common.entity.Writer;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +28,7 @@ public class AccountingDto {
     private Writer writer;
 
     private String note;
-
+    
     private String name;
 
 }
