@@ -11,7 +11,6 @@ import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.member.repository.MemberRepository;
 import com.querydsl.core.Tuple;
-import io.swagger.annotations.ApiOperation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,12 +22,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.net.URI;
 import java.util.*;
 
-import static church.lowlow.rest_api.common.util.WriterUtil.getWriter;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.http.ResponseEntity.badRequest;
 
@@ -56,12 +53,10 @@ public class AccountingController {
 
 
 
-
     /*******************************************
      *                  CREATE API
      ********************************************/
     @PostMapping
-    @ApiOperation(value = "헌금 내역 등록", notes = "헌금 내역을 등록합니다", response = Accounting.class)
     public ResponseEntity createAccounting(@RequestBody AccountingDto dto, Errors errors){
 
         // request Logging
@@ -78,7 +73,7 @@ public class AccountingController {
             accounting.setMember(memberRepository.findByName("익명"));
         else
             accounting.setMember(memberRepository.findById(dto.getMemberId()).get());
-        accounting.setWriter(getWriter());
+        accounting.setWriter(dto.getWriter());
 
         Accounting newAccounting = accountingRepository.save(accounting);
         URI createdUri = linkTo(AccountingController.class).slash(newAccounting.getId()).toUri();
@@ -98,7 +93,6 @@ public class AccountingController {
      ********************************************/
     // ======================== paging data ========================
     @GetMapping
-    @ApiOperation(value = "헌금 내역 리트스", notes = "헌금 내역 리스트를 출력합니다", response = Accounting.class)
     public ResponseEntity getAccountingPage(SearchDto searchDto, PagingDto pagingDto, Errors errors,
                                             PagedResourcesAssembler<Accounting> assembler) {
 
@@ -122,7 +116,6 @@ public class AccountingController {
 
     // ======================== one data ========================
     @GetMapping("/{id}")
-    @ApiOperation(value = "헌금 내역", notes = "한 건의 헌금 내역을 출력합니다", response = Accounting.class)
     public ResponseEntity getAccounting(@PathVariable Integer id){
 
         Optional<Accounting> optional = accountingRepository.findById(id);
@@ -136,7 +129,6 @@ public class AccountingController {
 
     // ======================== 헌금 내용 분석 ========================
     @GetMapping("/statistics")
-    @ApiIgnore // swagger 제외
     public ResponseEntity getStatisticsMap(SearchDto searchDto, Errors errors) {
 
         // request Logging
@@ -159,7 +151,6 @@ public class AccountingController {
      *                UPDATE API
      ********************************************/
     @PutMapping("/{id}")
-    @ApiOperation(value = "헌금 내역 수정", notes = "헌금 내역을 수정합니다", response = Accounting.class)
     public ResponseEntity updateAccounting(@RequestBody AccountingDto dto,
                                            @PathVariable Integer id,
                                            Errors errors){
@@ -177,7 +168,7 @@ public class AccountingController {
         Member member = memberRepository.findById(dto.getMemberId()).get();
         accounting.setMember(member);
         accounting.setId(id);
-        accounting.setWriter(getWriter());
+        accounting.setWriter(dto.getWriter());
         Accounting updateAccounting = accountingRepository.save(accounting);
 
 
@@ -194,7 +185,6 @@ public class AccountingController {
      *                 DELETE API
      ********************************************/
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "헌금 내역 수정", notes = "헌금 내역을 삭제합니다", response = Accounting.class)
     public ResponseEntity deleteWorshipVideo(@PathVariable Integer id, Resource resource){
 
         // check
@@ -216,7 +206,6 @@ public class AccountingController {
     /*******************************************
      *    헌금 내용을 분석하여 Map 으로 출력하는 함수
      ********************************************/
-    @ApiIgnore // swagger 제외
     public Map<String, Object> getStatisticsMap(SearchDto searchDto){
 
         // data load

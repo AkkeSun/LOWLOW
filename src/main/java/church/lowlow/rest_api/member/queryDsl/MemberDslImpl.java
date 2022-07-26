@@ -5,10 +5,8 @@ import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.member.db.ChurchOfficer;
 import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.member.db.QMember;
-import church.lowlow.rest_api.memberAttend.db.MemberAttend;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
-import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -16,8 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import javax.transaction.Transactional;
-
-import java.util.List;
 
 import static church.lowlow.rest_api.common.util.StringUtil.objNullToStr;
 

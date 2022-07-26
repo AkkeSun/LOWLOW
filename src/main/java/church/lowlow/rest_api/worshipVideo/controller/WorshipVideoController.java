@@ -1,24 +1,16 @@
 package church.lowlow.rest_api.worshipVideo.controller;
 
-import church.lowlow.rest_api.accounting.db.Accounting;
 import church.lowlow.rest_api.common.aop.LogComponent;
 import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
-import church.lowlow.rest_api.weekly.db.Weekly;
-import church.lowlow.rest_api.weekly.db.WeeklyDto;
-import church.lowlow.rest_api.weekly.repository.WeeklyRepository;
-import church.lowlow.rest_api.weekly.resource.WeeklyErrorsResource;
-import church.lowlow.rest_api.weekly.resource.WeeklyResource;
 import church.lowlow.rest_api.worshipVideo.db.WorshipVideo;
 import church.lowlow.rest_api.worshipVideo.db.WorshipVideoDto;
 import church.lowlow.rest_api.worshipVideo.repository.WorshipRepository;
 import church.lowlow.rest_api.worshipVideo.resource.WorshipVideoErrorsResource;
 import church.lowlow.rest_api.worshipVideo.resource.WorshipVideoResource;
-import io.swagger.annotations.ApiOperation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
@@ -30,7 +22,6 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 
-import static church.lowlow.rest_api.common.util.WriterUtil.getWriter;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.http.ResponseEntity.badRequest;
 
@@ -51,7 +42,6 @@ public class WorshipVideoController {
      * CREATE API
      */
     @PostMapping
-    @ApiOperation(value = "예베 영상 등록", notes = "예배 영상을 등록합니다", response = WorshipVideo.class)
     public ResponseEntity createWorshipVideo(@RequestBody @Valid WorshipVideoDto dto, Errors errors){
 
         // request param logging
@@ -63,7 +53,7 @@ public class WorshipVideoController {
 
         // save
         WorshipVideo worshipVideo = modelMapper.map(dto, WorshipVideo.class);
-        worshipVideo.setWriter(getWriter());
+        worshipVideo.setWriter(dto.getWriter());
         WorshipVideo newWorshipVideo = repository.save(worshipVideo);
         URI createdUri = linkTo(WorshipVideoController.class).slash(newWorshipVideo.getId()).toUri();
 
@@ -81,7 +71,6 @@ public class WorshipVideoController {
      * READ API
      */
     @GetMapping
-    @ApiOperation(value = "예베 영상 리스트", notes = "예배 영상 리스트를 출력합니다", response = WorshipVideo.class)
     public ResponseEntity getWorshipVideo(SearchDto searchDto, PagingDto pagingDto, PagedResourcesAssembler<WorshipVideo> assembler){
 
         // request param logging
@@ -95,7 +84,6 @@ public class WorshipVideoController {
     }
 
     @GetMapping("{id}")
-    @ApiOperation(value = "예베 영상", notes = "한 건의 예배 영상을 출력합니다", response = WorshipVideo.class)
     public ResponseEntity getWorshipVideo(@PathVariable Integer id){
 
         Optional<WorshipVideo> optional = repository.findById(id);
@@ -111,7 +99,6 @@ public class WorshipVideoController {
      * UPDATE API
      */
     @PutMapping("/{id}")
-    @ApiOperation(value = "예베 영상 수정", notes = "한 건의 예배 수정합니다", response = WorshipVideo.class)
     public ResponseEntity updateWorshipVideo(@RequestBody @Valid WorshipVideoDto dto, @PathVariable Integer id, Errors errors){
 
         // request param logging
@@ -126,7 +113,7 @@ public class WorshipVideoController {
 
         // save
         WorshipVideo worshipVideo = modelMapper.map(dto, WorshipVideo.class);
-        worshipVideo.setWriter(getWriter());
+        worshipVideo.setWriter(dto.getWriter());
         worshipVideo.setId(id);
         WorshipVideo updateWorshipVideo = repository.save(worshipVideo);
 
@@ -143,7 +130,6 @@ public class WorshipVideoController {
      * DELETE API
      */
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "예베 영상 삭제", notes = "예배 영상을 삭제합니다", response = WorshipVideo.class)
     public ResponseEntity deleteWorshipVideo(@PathVariable Integer id, Resource resource){
 
         // check

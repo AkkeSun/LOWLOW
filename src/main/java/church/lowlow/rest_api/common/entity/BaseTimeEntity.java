@@ -1,7 +1,6 @@
 package church.lowlow.rest_api.common.entity;
 
 import church.lowlow.rest_api.common.converter.LocalDateTimeConverter;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -26,11 +25,9 @@ public class BaseTimeEntity {
     @CreatedDate
     @Column(updatable = false)
     @Convert(converter= LocalDateTimeConverter.class)
-    @ApiModelProperty(value = "신규 등록일", example = "2022-05-17 15:00:00")
     private LocalDateTime createdDate;
 
     @LastModifiedDate
     @Convert(converter= LocalDateTimeConverter.class)
-    @ApiModelProperty(value = "수정일", example = "2022-05-17 15:00:00")
     private LocalDateTime modifiedDate;
 }

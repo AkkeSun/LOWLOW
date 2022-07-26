@@ -1,5 +1,6 @@
 package church.lowlow.rest_api.gallery.db;
 
+import church.lowlow.rest_api.common.entity.Writer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,4 +16,6 @@ public class GalleryDto {
     private String title;
 
     private String contents;
+
+    private Writer writer;
 }

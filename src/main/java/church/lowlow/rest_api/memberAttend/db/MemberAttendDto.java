@@ -1,5 +1,6 @@
 package church.lowlow.rest_api.memberAttend.db;
 
+import church.lowlow.rest_api.common.entity.Writer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,5 +21,5 @@ public class MemberAttendDto {
     private LocalDate checkDate;
     private String isAttend;
     private String note;
-
+    private Writer writer;
 }

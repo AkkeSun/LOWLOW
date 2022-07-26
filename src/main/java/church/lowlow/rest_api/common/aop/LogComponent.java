@@ -1,6 +1,5 @@
 package church.lowlow.rest_api.common.aop;
 
-import church.lowlow.rest_api.memberAttend.db.MemberAttendDto;
 import church.lowlow.rest_api.accounting.db.AccountingDto;
 import church.lowlow.rest_api.basicInfo.db.BasicInfoDto;
 import church.lowlow.rest_api.calendar.db.CalendarDto;
@@ -8,9 +7,8 @@ import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.gallery.db.GalleryDto;
 import church.lowlow.rest_api.member.db.MemberDto;
-import church.lowlow.rest_api.memberAttend.db.MemberAttendListDto;
+import church.lowlow.rest_api.memberAttend.db.MemberAttendDto;
 import church.lowlow.rest_api.notice.db.NoticeDto;
-import church.lowlow.rest_api.summerNote.db.SummerNoteImgDto;
 import church.lowlow.rest_api.weekly.db.WeeklyDto;
 import church.lowlow.rest_api.worshipVideo.db.WorshipVideoDto;
 import lombok.extern.log4j.Log4j2;
@@ -108,13 +106,6 @@ public class LogComponent {
     public void worshipVideoDtoLogging(WorshipVideoDto dto){
         log.info("[REQUEST] title : \"" + dto.getTitle() + "\"");
         log.info("[REQUEST] link : \"" + dto.getLink() + "\"");
-    }
-
-    public void summernoteDtoLogging(SummerNoteImgDto dto){
-        log.info("[REQUEST] originalName : \"" + dto.getOriginalName() + "\"");
-        log.info("[REQUEST] uploadName : \"" + dto.getUploadName() + "\"");
-        log.info("[REQUEST] BbsType : \"" + dto.getBbsType() + "\"");
-
     }
 
     public void searchDtoLogging(SearchDto dto){
