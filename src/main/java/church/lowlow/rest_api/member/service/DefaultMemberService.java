@@ -3,7 +3,7 @@ package church.lowlow.rest_api.member.service;
 import church.lowlow.rest_api.common.entity.FileDto;
 import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
-import church.lowlow.rest_api.common.fileProcess.service.basic.FileService;
+import church.lowlow.rest_api.common.fileProcess.service.CommonFileService;
 import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.member.db.MemberDto;
 import church.lowlow.rest_api.member.db.MemberValidation;
@@ -31,7 +31,7 @@ public class DefaultMemberService implements MemberService {
     private ModelMapper modelMapper;
 
     @Autowired
-    private FileService fileService;
+    private CommonFileService fileService;
 
     @Autowired
     private MemberValidation validation;
