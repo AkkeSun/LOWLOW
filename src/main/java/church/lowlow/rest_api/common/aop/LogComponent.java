@@ -1,5 +1,6 @@
 package church.lowlow.rest_api.common.aop;
 
+import church.lowlow.jwt.entity.UserDto;
 import church.lowlow.rest_api.accounting.db.AccountingDto;
 import church.lowlow.rest_api.basicInfo.db.BasicInfoDto;
 import church.lowlow.rest_api.calendar.db.CalendarDto;
@@ -126,5 +127,12 @@ public class LogComponent {
         log.info("[REQUEST] searchData : \"" + searchDto.getSearchData() + "\"");
         log.info("[REQUEST] nowPage : \"" + pagingDto.getNowPage() + "\"");
         log.info("[REQUEST] belong : \"" + belong + "\"");
+    }
+
+    public void userDtoLogging (UserDto dto) {
+        log.info("[REQUEST] email : \"" + dto.getEmail() + "\"");
+        log.info("[REQUEST] password : \"" + dto.getPassword() + "\"");
+        log.info("[REQUEST] role : \"" + dto.getRole() + "\"");
+        log.info("[REQUEST] refreshToken : \"" + dto.getRefreshToken() + "\"");
     }
 }
