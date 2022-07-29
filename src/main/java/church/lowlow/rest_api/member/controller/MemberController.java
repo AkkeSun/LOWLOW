@@ -45,7 +45,7 @@ public class MemberController {
         logComponent.memberDtoLogging(dto);
 
         // check
-        validation.duplicate(dto, errors, "register");
+        validation.duplicate(dto, errors);
         if(errors.hasErrors())
             return badRequest().body(new MemberErrorsResource(errors));
 
