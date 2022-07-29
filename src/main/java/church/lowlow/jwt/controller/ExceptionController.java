@@ -1,59 +1,73 @@
 package church.lowlow.jwt.controller;
 
+import church.lowlow.jwt.entity.SecurityDto;
 import church.lowlow.jwt.entity.TokenDto;
-import church.lowlow.jwt.resource.TokenErrorsResource;
-import church.lowlow.jwt.resource.TokenResource;
 import church.lowlow.jwt.service.UserService;
+import church.lowlow.jwt.validation.TokenValidation;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.http.ResponseEntity.badRequest;
 
 @Log4j2
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/exception", produces = MediaTypes.HAL_JSON_UTF8_VALUE)
 public class ExceptionController {
 
-    @Autowired
-    private UserService service;
+    private final UserService service;
+    private final TokenValidation tokenValidation;
 
-    @GetMapping("/access")
-    public ResponseEntity nonLogin(HttpServletRequest request)
-    {
+    @GetMapping("/authentication")
+    public ResponseEntity nonLogin(@RequestHeader(value="ACCESS-TOKEN",  required = false) String accessToken,
+                                   @RequestHeader(value="REFRESH-TOKEN", required = false) String refreshToken) {
 
-        String accessToken = request.getHeader("ACCESS-TOKEN");
 
-        // 토큰이 존재한다면 (토큰이 만료 되었다면) -> ACCESS-TOKEN 신규 발급
-        if (accessToken != null)
+        Link link = linkTo(ExceptionController.class).slash("authentication").withSelfRel();
+
+        // ~~~~~~~~~ 토큰이 존재한다면 (토큰이 만료 되었다면) -> TOKEN 신규 발급 ~~~~~~~~~
+        if (accessToken != null && refreshToken != null)
         {
-            String refreshToken = request.getHeader("REFRESH-TOKEN");
+
             TokenDto token = TokenDto.builder().accessToken(accessToken).refreshToken(refreshToken).build();
 
-            TokenDto newToken = service.issueAccessToken(token);
-            Resource resource = new TokenResource(newToken);
+            // 토큰 유효성 검증
+            SecurityDto validationResult = tokenValidation.duplicated(token);
+            if(validationResult != null) {
+                return badRequest().body(new Resource(validationResult, link));
+            }
 
-            return ResponseEntity.ok(resource);
+            // 토큰 신규발급
+            TokenDto newToken = service.issueAccessToken(token);
+
+            return ResponseEntity.ok(new Resource(newToken, link));
         }
 
-        TokenDto token = TokenDto.builder().errCode("access").build();
-        Resource resource = new TokenErrorsResource(token);
-        return  ResponseEntity.badRequest().body(resource);
+        // ~~~~~~~~~ 토큰이 존재하지 않는다면 (인증하지 않은 상태) ~~~~~~~~~
+        log.info("[AUTHENTICATION] 인증이 필요한 서비스입니다");
+        SecurityDto securityDto = SecurityDto.builder().errCode("Authentication Error").errMsg("인증이 필요한 서비스입니다").build();
+
+        return  badRequest().body(new Resource(securityDto, link));
     }
 
 
     @GetMapping("/access-denied")
     public ResponseEntity denied(){
 
-        log.info("[DENIED] 접근 권한 이 없습니다");
+        Link link = linkTo(ExceptionController.class).slash("/access-denied").withSelfRel();
 
-        TokenDto token = TokenDto.builder().errCode("access-denied").build();
-        Resource resource = new TokenErrorsResource(token);
-        return  ResponseEntity.badRequest().body(resource);
+        log.info("[ACCESS DENIED] 접근 권한이 없습니다");
+        SecurityDto securityDto = SecurityDto.builder().errCode("access-denied").errMsg("접근 권한이 없습니다").build();
+
+        return  badRequest().body(new Resource(securityDto, link));
     }
 }

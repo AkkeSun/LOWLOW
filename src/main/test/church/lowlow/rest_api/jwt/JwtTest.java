@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-public class UserControllerTest extends BaseControllerTest {
+public class JwtTest extends BaseControllerTest {
 
 
     @Autowired
@@ -47,7 +47,6 @@ public class UserControllerTest extends BaseControllerTest {
         UserDto user = UserDto.builder()
                 .email("akkessun@gmail.com")
                 .password("1234")
-                .role("DEV")
                 .build();
 
         // when
