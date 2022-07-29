@@ -1,5 +1,7 @@
 package church.lowlow.jwt.service;
 
+import church.lowlow.jwt.controller.UserController;
+import church.lowlow.jwt.entity.ErrorDto;
 import church.lowlow.jwt.entity.TokenDto;
 import church.lowlow.jwt.entity.User;
 import church.lowlow.jwt.entity.UserDto;
@@ -12,12 +14,18 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.http.ResponseEntity.badRequest;
 
 @Log4j2
 @Service
@@ -90,25 +98,50 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto getUser (Integer id){
-        User user = repository.findById(id).orElseThrow(ArithmeticException::new);
-        return userDtoBuilder(user);
+    public Object getUser (Integer id){
+
+        Optional<User> optional = repository.findById(id);
+        if(optional.isEmpty())
+        {
+            Link link = linkTo(UserController.class).slash(id).withSelfRel();
+            ErrorDto dto = ErrorDto.builder().errCode("getUserErr").errMsg("유저를 찾을 수 없습니다").build();
+            return badRequest().body(new Resource(dto, link));
+        }
+
+        return userDtoBuilder(optional.get());
     }
 
     @Transactional
-    public UserDto updateUser (Integer id, UserDto dto) {
+    public Object updateUser (Integer id, UserDto userDto) {
 
-        User user = modelMapper.map(dto, User.class);
+        Optional<User> optional = repository.findById(id);
+        if(optional.isEmpty())
+        {
+            Link link = linkTo(UserController.class).slash(id).withSelfRel();
+            ErrorDto dto = ErrorDto.builder().errCode("getUserErr").errMsg("유저를 찾을 수 없습니다").build();
+            return badRequest().body(new Resource(dto, link));
+        }
+
+        User user = modelMapper.map(userDto, User.class);
         user.setId(id);
         User updateUser = repository.save(user);
         return userDtoBuilder(updateUser);
+
     }
 
 
     @Transactional
-    public UserDto deleteUser(Integer id) {
+    public Object deleteUser(Integer id) {
 
-        User removeUser  = repository.findById(id).get();
+        Optional<User> optional = repository.findById(id);
+        if(optional.isEmpty())
+        {
+            Link link = linkTo(UserController.class).slash(id).withSelfRel();
+            ErrorDto dto = ErrorDto.builder().errCode("getUserErr").errMsg("유저를 찾을 수 없습니다").build();
+            return badRequest().body(new Resource(dto, link));
+        }
+
+        User removeUser = optional.get();
         repository.delete(removeUser);
 
         return userDtoBuilder(removeUser);

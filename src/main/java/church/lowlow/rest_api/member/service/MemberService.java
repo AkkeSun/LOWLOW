@@ -9,10 +9,10 @@ import org.springframework.validation.Errors;
 
 public interface MemberService {
 
-    Object createMember(MemberDto dto, Errors errors);
+    Member createMember(MemberDto dto, Errors errors);
     Page<Member> getMemberPage(SearchDto searchDto, PagingDto pagingDto, String is_MAttend);
-    Member getMember(Integer id);
-    Object updateMember (Integer id, MemberDto dto, Errors errors);
+    Object getMember(Integer id);
+    Object updateMember (Integer id, MemberDto dto);
     Object deleteMember (Integer id);
 
 }

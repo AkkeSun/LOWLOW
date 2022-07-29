@@ -6,8 +6,10 @@ import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.member.db.MemberDto;
 import church.lowlow.rest_api.member.repository.MemberRepository;
+import church.lowlow.rest_api.member.resource.MemberErrorsResource;
 import church.lowlow.rest_api.member.resource.MemberResource;
 import church.lowlow.rest_api.member.service.MemberService;
+import church.lowlow.rest_api.member.validation.MemberValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -17,9 +19,9 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.Optional;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.http.ResponseEntity.badRequest;
 
 @RestController
 @RequestMapping(value = "/api/members", produces = MediaTypes.HAL_JSON_UTF8_VALUE)
@@ -34,7 +36,8 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
-
+    @Autowired
+    private MemberValidation validation;
 
     /**************************
      *       CREATE API
@@ -45,17 +48,18 @@ public class MemberController {
         // request param logging
         logComponent.memberDtoLogging(dto);
 
-        Object serviceResponse = memberService.createMember(dto, errors);
-        if(serviceResponse instanceof ResponseEntity)
-            return (ResponseEntity) serviceResponse;
+        // check
+        validation.duplicate(dto, errors, "register");
+        if(errors.hasErrors())
+            return badRequest().body(new MemberErrorsResource(errors));
 
-        Member newMember = (Member) serviceResponse;
+        Member newMember = memberService.createMember(dto, errors);
         URI createdUri = linkTo(MemberController.class).slash(newMember.getId()).toUri();
 
         // return
         MemberResource resource = new MemberResource(newMember);
-        resource.add(linkTo(MemberController.class).slash(newMember.getId()).withRel("update-event"));
-        resource.add(linkTo(MemberController.class).slash(newMember.getId()).withRel("delete-event"));
+        resource.add(linkTo(MemberController.class).slash(newMember.getId()).withRel("update-member"));
+        resource.add(linkTo(MemberController.class).slash(newMember.getId()).withRel("delete-member"));
 
         return ResponseEntity.created(createdUri).body(resource);
     }
@@ -82,11 +86,17 @@ public class MemberController {
     @GetMapping("{id}")
     public ResponseEntity getMember(@PathVariable Integer id){
 
-        Member member = memberService.getMember(id);
+        // check
+        Object serviceResponse = memberService.getMember(id);
+        if(serviceResponse instanceof ResponseEntity)
+            return (ResponseEntity) serviceResponse;
+
+        Member member = (Member)serviceResponse;
 
         MemberResource resource = new MemberResource(member);
         resource.add(linkTo(MemberController.class).slash(member.getId()).withRel("update-event"));
         resource.add(linkTo(MemberController.class).slash(member.getId()).withRel("delete-event"));
+
         return ResponseEntity.ok(resource);
     }
 
@@ -96,14 +106,16 @@ public class MemberController {
      *       UPDATE API
      **************************/
     @PutMapping("/{id}")
-    public ResponseEntity updateMembers(@RequestBody MemberDto dto, @PathVariable Integer id, Errors errors) {
+    public ResponseEntity updateMembers(@RequestBody MemberDto dto, @PathVariable Integer id) {
 
         // request param logging
         logComponent.memberDtoLogging(dto);
 
-        Object serviceResponse = memberService.updateMember(id, dto, errors);
+        // check
+        Object serviceResponse = memberService.updateMember(id, dto);
         if(serviceResponse instanceof ResponseEntity)
             return (ResponseEntity) serviceResponse;
+
         Member updateMember = (Member) serviceResponse;
 
         // return
@@ -122,13 +134,10 @@ public class MemberController {
     public ResponseEntity deleteMembers(@PathVariable Integer id) {
 
         // check
-        Optional<Member> optional = repository.findById(id);
-        if(optional.isEmpty())
-            return ResponseEntity.notFound().build();
-
         Object serviceResponse = memberService.deleteMember(id);
         if(serviceResponse instanceof ResponseEntity)
             return (ResponseEntity) serviceResponse;
+
         Member deleteMember = (Member) serviceResponse;
 
         // return

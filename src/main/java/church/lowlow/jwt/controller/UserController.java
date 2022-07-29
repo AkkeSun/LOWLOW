@@ -80,14 +80,14 @@ public class UserController {
      */
 
     @GetMapping("/{id}")
-    public ResponseEntity getMember(@PathVariable Integer id, Errors errors){
+    public ResponseEntity getMember(@PathVariable Integer id){
 
-        // check
-        validation.duplicated(UserDto.builder().id(id).build(), errors, "find");
-        if (errors.hasErrors())
-            return badRequest().body(new UserErrorsResource(errors));
 
-        UserDto user = service.getUser(id);
+        Object serviceResponse = service.getUser(id);
+        if(serviceResponse instanceof ResponseEntity)
+            return (ResponseEntity)serviceResponse;
+
+        UserDto user = (UserDto) serviceResponse;
 
         UserResource resource = new UserResource(user);
         resource.add(linkTo(UserController.class).slash(user.getId()).withRel("update-user"));
@@ -99,17 +99,16 @@ public class UserController {
      *       UPDATE API
      **************************/
     @PutMapping("/{id}")
-    public ResponseEntity updateMembers(@RequestBody UserDto dto, @PathVariable Integer id, Errors errors) {
+    public ResponseEntity updateMembers(@RequestBody UserDto dto,@PathVariable Integer id) {
 
         // request param logging
         logComponent.userDtoLogging(dto);
 
-        // check
-        validation.duplicated(UserDto.builder().id(id).build(), errors, "find");
-        if (errors.hasErrors())
-            return badRequest().body(new UserErrorsResource(errors));
+        Object serviceResponse = service.deleteUser(id);
+        if(serviceResponse instanceof ResponseEntity)
+            return (ResponseEntity)serviceResponse;
 
-        UserDto updateUser = service.updateUser(id, dto);
+        UserDto updateUser = (UserDto) serviceResponse;
 
         // return
         UserResource resource = new UserResource(updateUser);
@@ -124,18 +123,16 @@ public class UserController {
      *       DELETE API
      **************************/
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteMembers(@PathVariable Integer id, Errors errors) {
+    public ResponseEntity deleteMembers(@PathVariable Integer id) {
 
-        // check
-        validation.duplicated(UserDto.builder().id(id).build(), errors, "find");
-        if (errors.hasErrors())
-            return badRequest().body(new UserErrorsResource(errors));
+        Object serviceResponse = service.deleteUser(id);
+        if(serviceResponse instanceof ResponseEntity)
+            return (ResponseEntity)serviceResponse;
 
-        UserDto updateUser = service.deleteUser(id);
+        UserDto deleteUser = (UserDto) serviceResponse;
 
         // return
-        UserResource resource = new UserResource(updateUser);
+        UserResource resource = new UserResource(deleteUser);
         return ResponseEntity.ok(resource);
     }
-
 }

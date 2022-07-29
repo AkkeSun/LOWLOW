@@ -19,6 +19,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class MemberDto {
 
+    private Integer id;
+
     private String name;
 
     private String phoneNumber;

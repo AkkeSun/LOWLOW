@@ -1,24 +1,26 @@
 package church.lowlow.rest_api.member.service;
 
+import church.lowlow.jwt.entity.ErrorDto;
 import church.lowlow.rest_api.common.entity.FileDto;
 import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.common.fileProcess.service.CommonFileService;
+import church.lowlow.rest_api.member.controller.MemberController;
 import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.member.db.MemberDto;
-import church.lowlow.rest_api.member.db.MemberValidation;
 import church.lowlow.rest_api.member.repository.MemberRepository;
-import church.lowlow.rest_api.member.resource.MemberErrorsResource;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.http.ResponseEntity.badRequest;
 
 @Service
@@ -33,17 +35,10 @@ public class DefaultMemberService implements MemberService {
     @Autowired
     private CommonFileService fileService;
 
-    @Autowired
-    private MemberValidation validation;
 
     @Override
     @Transactional
-    public Object createMember(MemberDto dto, Errors errors) {
-        validation.createValidate(dto, errors);
-
-        if(errors.hasErrors())
-            return badRequest().body(new MemberErrorsResource(errors));
-
+    public Member createMember(MemberDto dto, Errors errors) {
         Member member = modelMapper.map(dto, Member.class);
         return repository.save(member);
     }
@@ -58,17 +53,35 @@ public class DefaultMemberService implements MemberService {
 
     @Override
     @Transactional
-    public Member getMember(Integer id) {
+    public Object getMember(Integer id) {
+
+        // check
         Optional<Member> optional = repository.findById(id);
+        if(optional.isEmpty())
+        {
+            Link link = linkTo(MemberController.class).slash(id).withSelfRel();
+            ErrorDto dto = ErrorDto.builder().errCode("getMemberErr").errMsg("성도를 찾을 수 없습니다").build();
+            return badRequest().body(new Resource(dto, link));
+        }
+
         return optional.orElseThrow(ArithmeticException::new);
     }
 
 
     @Override
     @Transactional
-    public Member updateMember(Integer id, MemberDto dto, Errors errors) {
+    public Object updateMember(Integer id, MemberDto dto) {
 
-        Member member = repository.findById(id).orElseThrow(ArithmeticException::new);
+        // check
+        Optional<Member> optional = repository.findById(id);
+        if(optional.isEmpty())
+        {
+            Link link = linkTo(MemberController.class).slash(id).withSelfRel();
+            ErrorDto errDto = ErrorDto.builder().errCode("updateMemberErr").errMsg("성도를 찾을 수 없습니다").build();
+            return badRequest().body(new Resource(errDto, link));
+        }
+
+        Member member = optional.get();
         Member updateMember = modelMapper.map(dto, Member.class);
         updateMember.setId(id);
 
@@ -80,13 +93,20 @@ public class DefaultMemberService implements MemberService {
     @Transactional
     public Object deleteMember(Integer id) {
 
+        // check
         Optional<Member> optional = repository.findById(id);
         if(optional.isEmpty())
-            return ResponseEntity.notFound().build();
+        {
+            Link link = linkTo(MemberController.class).slash(id).withSelfRel();
+            ErrorDto dto = ErrorDto.builder().errCode("deleteMemberErr").errMsg("성도를 찾을 수 없습니다").build();
+            return badRequest().body(new Resource(dto, link));
+        }
 
+        // delete
         Member member = optional.get();
         member.setBlock(true);
 
+        // 이미지 삭제
         if(member.getImage() != null)
             fileService.deleteFile(member.getImage().getUploadName(), "member");
         return repository.save(member);

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SecurityDto {
+public class ErrorDto {
 
     private String errCode;
     private String errMsg;

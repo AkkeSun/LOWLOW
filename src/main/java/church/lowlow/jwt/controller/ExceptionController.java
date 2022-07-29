@@ -1,6 +1,6 @@
 package church.lowlow.jwt.controller;
 
-import church.lowlow.jwt.entity.SecurityDto;
+import church.lowlow.jwt.entity.ErrorDto;
 import church.lowlow.jwt.entity.TokenDto;
 import church.lowlow.jwt.service.UserService;
 import church.lowlow.jwt.validation.TokenValidation;
@@ -41,7 +41,7 @@ public class ExceptionController {
             TokenDto token = TokenDto.builder().accessToken(accessToken).refreshToken(refreshToken).build();
 
             // 토큰 유효성 검증
-            SecurityDto validationResult = tokenValidation.duplicated(token);
+            ErrorDto validationResult = tokenValidation.duplicated(token);
             if(validationResult != null) {
                 return badRequest().body(new Resource(validationResult, link));
             }
@@ -54,9 +54,9 @@ public class ExceptionController {
 
         // ~~~~~~~~~ 토큰이 존재하지 않는다면 (인증하지 않은 상태) ~~~~~~~~~
         log.info("[AUTHENTICATION] 인증이 필요한 서비스입니다");
-        SecurityDto securityDto = SecurityDto.builder().errCode("Authentication Error").errMsg("인증이 필요한 서비스입니다").build();
+        ErrorDto errorDto = ErrorDto.builder().errCode("Authentication Error").errMsg("인증이 필요한 서비스입니다").build();
 
-        return  badRequest().body(new Resource(securityDto, link));
+        return  badRequest().body(new Resource(errorDto, link));
     }
 
 
@@ -66,7 +66,7 @@ public class ExceptionController {
         Link link = linkTo(ExceptionController.class).slash("/access-denied").withSelfRel();
 
         log.info("[ACCESS DENIED] 접근 권한이 없습니다");
-        SecurityDto securityDto = SecurityDto.builder().errCode("access-denied").errMsg("접근 권한이 없습니다").build();
+        ErrorDto securityDto = ErrorDto.builder().errCode("access-denied").errMsg("접근 권한이 없습니다").build();
 
         return  badRequest().body(new Resource(securityDto, link));
     }
