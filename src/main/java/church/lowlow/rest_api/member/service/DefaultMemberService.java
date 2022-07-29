@@ -64,7 +64,7 @@ public class DefaultMemberService implements MemberService {
             return badRequest().body(new Resource(dto, link));
         }
 
-        return optional.orElseThrow(ArithmeticException::new);
+        return optional.get();
     }
 
 

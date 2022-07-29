@@ -5,7 +5,6 @@ import church.lowlow.rest_api.common.entity.PagingDto;
 import church.lowlow.rest_api.common.entity.SearchDto;
 import church.lowlow.rest_api.member.db.Member;
 import church.lowlow.rest_api.member.db.MemberDto;
-import church.lowlow.rest_api.member.repository.MemberRepository;
 import church.lowlow.rest_api.member.resource.MemberErrorsResource;
 import church.lowlow.rest_api.member.resource.MemberResource;
 import church.lowlow.rest_api.member.service.MemberService;
@@ -26,9 +25,6 @@ import static org.springframework.http.ResponseEntity.badRequest;
 @RestController
 @RequestMapping(value = "/api/members", produces = MediaTypes.HAL_JSON_UTF8_VALUE)
 public class MemberController {
-
-    @Autowired
-    private MemberRepository repository;
 
     @Autowired
     private LogComponent logComponent;
@@ -94,8 +90,8 @@ public class MemberController {
         Member member = (Member)serviceResponse;
 
         MemberResource resource = new MemberResource(member);
-        resource.add(linkTo(MemberController.class).slash(member.getId()).withRel("update-event"));
-        resource.add(linkTo(MemberController.class).slash(member.getId()).withRel("delete-event"));
+        resource.add(linkTo(MemberController.class).slash(member.getId()).withRel("update-member"));
+        resource.add(linkTo(MemberController.class).slash(member.getId()).withRel("delete-member"));
 
         return ResponseEntity.ok(resource);
     }
@@ -120,7 +116,7 @@ public class MemberController {
 
         // return
         MemberResource resource = new MemberResource(updateMember);
-        resource.add(linkTo(MemberController.class).slash(updateMember.getId()).withRel("delete-event"));
+        resource.add(linkTo(MemberController.class).slash(updateMember.getId()).withRel("delete-member"));
 
         return ResponseEntity.ok(resource);
     }

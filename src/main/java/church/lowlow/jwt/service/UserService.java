@@ -104,7 +104,7 @@ public class UserService {
         if(optional.isEmpty())
         {
             Link link = linkTo(UserController.class).slash(id).withSelfRel();
-            ErrorDto dto = ErrorDto.builder().errCode("getUserErr").errMsg("유저를 찾을 수 없습니다").build();
+            ErrorDto dto = ErrorDto.builder().errCode("getUserErr").errMsg("관리자 정보를 찾을 수 없습니다").build();
             return badRequest().body(new Resource(dto, link));
         }
 
@@ -118,7 +118,7 @@ public class UserService {
         if(optional.isEmpty())
         {
             Link link = linkTo(UserController.class).slash(id).withSelfRel();
-            ErrorDto dto = ErrorDto.builder().errCode("getUserErr").errMsg("유저를 찾을 수 없습니다").build();
+            ErrorDto dto = ErrorDto.builder().errCode("getUserErr").errMsg("관리자 정보를 찾을 수 없습니다").build();
             return badRequest().body(new Resource(dto, link));
         }
 
@@ -137,7 +137,7 @@ public class UserService {
         if(optional.isEmpty())
         {
             Link link = linkTo(UserController.class).slash(id).withSelfRel();
-            ErrorDto dto = ErrorDto.builder().errCode("getUserErr").errMsg("유저를 찾을 수 없습니다").build();
+            ErrorDto dto = ErrorDto.builder().errCode("getUserErr").errMsg("관리자 정보를 찾을 수 없습니다").build();
             return badRequest().body(new Resource(dto, link));
         }
 
